@@ -54,9 +54,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
   }
 
-    /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+  /**
+   * This function is called periodically during all robot modes (disabled, test, autonomous, teleop).
    */
   @Override
   public void robotPeriodic() {
