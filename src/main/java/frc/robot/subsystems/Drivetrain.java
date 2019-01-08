@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import harkerrobolib.subsystems.HSDrivetrain;
 import harkerrobolib.wrappers.HSTalon;
@@ -58,10 +59,12 @@ public class Drivetrain extends HSDrivetrain {
     public void talonInit() {
         invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED);
         setNeutralMode(NeutralMode.Brake);
-        setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT);                                                          
+        setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT);    
+                                                          
     }
 
-    public void arcadeDrivePercentageOutput(double speed, double turn) {
-        super.getLeftMaster().
+    public void arcadeDrivePercentOutput(double speed, double turn) {
+        getLeftMaster().set(ControlMode.PercentOutput, speed + turn);
+        getRightMaster().set(ControlMode.PercentOutput, speed - turn);
     }
 }
