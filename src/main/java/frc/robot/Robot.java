@@ -7,38 +7,64 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.*;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 
+/**
+ * Represents the core of the code, where the highest-level robot functions are called.
+ * 
+ * @author Finn Frankis
+ * @author Jatin Kohli
+ * @author Chirag Kaushik
+ * 
+ * @version 1/6/19
+ */
 public class Robot extends TimedRobot {
-	@Override
-	public void robotInit() {
 
-	}
+  /**
+   * This function is run when the robot is first started up and should be
+   * used for any initialization code.
+   */
+  @Override
+  public void robotInit() {
+  }
 
-	@Override
-	public void autonomousInit() {
+  /**
+   * This function is run once each time the robot enters autonomous mode.
+   */
+  @Override
+  public void autonomousInit() {
+  }
 
-	}
+  /**
+   * This function is called periodically during autonomous.
+   */
+  @Override
+  public void autonomousPeriodic() {
+  }
 
-	@Override
-	public void autonomousPeriodic() {
+  /**
+   * This function is called once each time the robot enters teleoperated mode.
+   */
+  @Override
+  public void teleopInit() {
+  }
 
-	}
+  /**
+   * This function is called periodically during teleoperated mode.
+   */
+  @Override
+  public void teleopPeriodic() {
+  }
 
-	@Override
-	public void teleopInit() {
-
-	}
-
-	@Override
-	public void teleopPeriodic() {
-		
-	}
-
-	@Override
-	public void robotPeriodic() {
-		NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
+  /**
+   * This function is called periodically during all robot modes (disabled, test, autonomous, teleop).
+   */
+  @Override
+  public void robotPeriodic() {
+    NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
 		NetworkTableEntry tx = networkTable.getEntry("tx");
 		NetworkTableEntry ty = networkTable.getEntry("ty");
 		NetworkTableEntry ta = networkTable.getEntry("ta");
@@ -47,10 +73,12 @@ public class Robot extends TimedRobot {
 		double area = ta.getDouble(0.0);
 
 		System.out.println(String.format("tx: %.2f ty: %.2f ta: %.2f", x, y, area));
-	}
+  }
 
-	@Override
-	public void testPeriodic() {
-
-	}
+  /**
+   * This function is called periodically during test mode.
+   */
+  @Override
+  public void testPeriodic() {
+  }
 }
