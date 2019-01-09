@@ -12,7 +12,12 @@ import harkerrobolib.util.MathUtil;
  * 
  * @version 1/7/19
  */
-public class DriveWithVelocity extends IndefiniteCommand {     
+public class DriveWithVelocity extends IndefiniteCommand {  
+    
+    public DriveWithVelocity() {
+        requires(Drivetrain.getInstance());
+    }
+
     @Override
     public void initialize() {
         Drivetrain.getInstance().setBoth(ControlMode.PercentOutput, 0.0);

@@ -26,6 +26,16 @@ public class Drivetrain extends HSDrivetrain {
     private static int TALON_PEAK_TIME = 750;
     private static int TALON_CONTINUOUS_LIMIT = 15;
 
+    public static final int ALLOWABLE_ERROR = 0;
+    public static final int POSITION_INDEX = 0;
+    public static final double POSITION_LEFT_KP = 0;
+    public static final double POSITION_LEFT_KI = 0;
+    public static final double POSITION_LEFT_KD = 0;
+    public static final double POSITION_RIGHT_KP = 0;
+    public static final double POSITION_RIGHT_KI = 0;
+    public static final double POSITION_RIGHT_KD = 0;
+
+
     /**
      * Creates new instance of Drivetrain
      */
@@ -59,8 +69,13 @@ public class Drivetrain extends HSDrivetrain {
     public void talonInit() {
         invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED);
         setNeutralMode(NeutralMode.Brake);
-        setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT);    
-                                                          
+        setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
+        Drivetrain.getInstance().getLeftMaster().configAllowableClosedloopError(Drivetrain.POSITION_INDEX, Drivetrain.ALLOWABLE_ERROR);
+        Drivetrain.getInstance().getLeftMaster().config_kP(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KP);
+        Drivetrain.getInstance().getLeftMaster().config_kI(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KI);  
+        Drivetrain.getInstance().getRightMaster().configAllowableClosedloopError(Drivetrain.POSITION_INDEX, Drivetrain.ALLOWABLE_ERROR);
+        Drivetrain.getInstance().getRightMaster().config_kP(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KP);
+        Drivetrain.getInstance().getRightMaster().config_kI(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KI);                                     
     }
 
     public void arcadeDrivePercentOutput(double speed, double turn) {
