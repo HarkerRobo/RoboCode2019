@@ -3,8 +3,10 @@ package frc.robot;
 public class RobotMap {
 
     public class CAN_IDS {
-        public static final int LEFT_MASTER = 0;
-        public static final int RIGHT_MASTER = 0;
+        public static final int DT_LEFT_MASTER = 0;
+        public static final int DT_RIGHT_MASTER = 0;
+        public static final int DT_LEFT_FOLLOWER = 0;
+        public static final int DT_RIGHT_FOLLOWER = 0;
     }
 
     public class Global {
