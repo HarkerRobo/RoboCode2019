@@ -34,6 +34,7 @@ public class Drivetrain extends HSDrivetrain {
     public static final double POSITION_RIGHT_KP = 0;
     public static final double POSITION_RIGHT_KI = 0;
     public static final double POSITION_RIGHT_KD = 0;
+    public static final double POSITION_KF = 0;
 
 
     /**
@@ -72,10 +73,16 @@ public class Drivetrain extends HSDrivetrain {
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
         Drivetrain.getInstance().getLeftMaster().configAllowableClosedloopError(Drivetrain.POSITION_INDEX, Drivetrain.ALLOWABLE_ERROR);
         Drivetrain.getInstance().getLeftMaster().config_kP(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KP);
-        Drivetrain.getInstance().getLeftMaster().config_kI(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KI);  
+        Drivetrain.getInstance().getLeftMaster().config_kI(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KI);
+        Drivetrain.getInstance().getLeftMaster().config_kD(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KD);  
+        Drivetrain.getInstance().getLeftMaster().config_kF(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_KF);
         Drivetrain.getInstance().getRightMaster().configAllowableClosedloopError(Drivetrain.POSITION_INDEX, Drivetrain.ALLOWABLE_ERROR);
         Drivetrain.getInstance().getRightMaster().config_kP(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KP);
-        Drivetrain.getInstance().getRightMaster().config_kI(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KI);                                     
+        Drivetrain.getInstance().getRightMaster().config_kI(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_LEFT_KI); 
+        Drivetrain.getInstance().getRightMaster().config_kD(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_RIGHT_KD);  
+        Drivetrain.getInstance().getRightMaster().config_kF(Drivetrain.POSITION_INDEX, Drivetrain.POSITION_KF);  
+
+
     }
 
     public void arcadeDrivePercentOutput(double speed, double turn) {
