@@ -11,9 +11,12 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import frc.robot.subsystems.Drivetrain;
 
 /**
- * Represents the core of the code, where the highest-level robot functions are called.
+ * Represents the core of the code, where the highest-level robot functions are
+ * called.
  * 
  * @author Finn Frankis
  * @author Jatin Kohli
@@ -23,12 +26,15 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
 
+  private Drivetrain dt;
+
   /**
-   * This function is run when the robot is first started up and should be
-   * used for any initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
+    dt = Drivetrain.getInstance();
   }
 
   /**
@@ -43,6 +49,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    Scheduler.getInstance().run();
   }
 
   /**
@@ -57,22 +64,24 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    Scheduler.getInstance().run();
   }
 
   /**
-   * This function is called periodically during all robot modes (disabled, test, autonomous, teleop).
+   * This function is called periodically during all robot modes (disabled, test,
+   * autonomous, teleop).
    */
   @Override
   public void robotPeriodic() {
     NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
-		NetworkTableEntry tx = networkTable.getEntry("tx");
-		NetworkTableEntry ty = networkTable.getEntry("ty");
-		NetworkTableEntry ta = networkTable.getEntry("ta");
-		double x = tx.getDouble(0.0);
-		double y = ty.getDouble(0.0);
-		double area = ta.getDouble(0.0);
+    NetworkTableEntry tx = networkTable.getEntry("tx");
+    NetworkTableEntry ty = networkTable.getEntry("ty");
+    NetworkTableEntry ta = networkTable.getEntry("ta");
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double area = ta.getDouble(0.0);
 
-		System.out.println(String.format("tx: %.2f ty: %.2f ta: %.2f", x, y, area));
+    System.out.println(String.format("tx: %.2f ty: %.2f ta: %.2f", x, y, area));
   }
 
   /**
@@ -80,5 +89,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  /**
+   * Gets the instance of the drivetrain on the robot.
+   * @return the drivetrain
+   */
+  public Drivetrain getDrivetrain() {
+    return dt;
   }
 }
