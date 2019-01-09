@@ -42,8 +42,11 @@ public class Robot extends TimedRobot {
 		NetworkTableEntry tx = networkTable.getEntry("tx");
 		NetworkTableEntry ty = networkTable.getEntry("ty");
 		NetworkTableEntry ta = networkTable.getEntry("ta");
-	  
-		System.out.println("tx: " + tx.getDouble(0.0) + "; ty: " + ty.getDouble(0.0) + "; ta: " + ta.getDouble(0.0));
+		double x = tx.getDouble(0.0);
+		double y = ty.getDouble(0.0);
+		double area = ta.getDouble(0.0);
+
+		System.out.println(String.format("tx: %.2f ty: %.2f ta: %.2f", x, y, area));
 	}
 
 	@Override
