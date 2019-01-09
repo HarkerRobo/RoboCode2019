@@ -3,13 +3,11 @@ package frc.robot.commands;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.util.Conversions;
-import harkerrobolib.util.Conversions.*;
+import harkerrobolib.util.Conversions.PositionUnit;
 
 /**
  * Drives forward to desired position.
@@ -40,8 +38,8 @@ public class DriveToPosition extends Command {
     }
 
     protected void initialize() {
-        Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.POSITION_INDEX, Global.PID_PRIMARY);
-        Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.POSITION_INDEX, Global.PID_PRIMARY);
+        Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
+        Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
 
         Drivetrain.getInstance().getLeftMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
         Drivetrain.getInstance().getRightMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
