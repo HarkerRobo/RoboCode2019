@@ -2,9 +2,9 @@ package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.OI;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
@@ -12,9 +12,9 @@ import harkerrobolib.util.MathUtil;
  * 
  * @version 1/7/19
  */
-public class DriveWithVelocity extends IndefiniteCommand {  
+public class DriveWithVelocityManual extends IndefiniteCommand {  
     
-    public DriveWithVelocity() {
+    public DriveWithVelocityManual() {
         requires(Drivetrain.getInstance());
     }
 

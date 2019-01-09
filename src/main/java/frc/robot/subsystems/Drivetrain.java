@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import frc.robot.RobotMap;
+import frc.robot.commands.DriveWithVelocityManual;
 import harkerrobolib.subsystems.HSDrivetrain;
 import harkerrobolib.wrappers.HSTalon;
-import frc.robot.RobotMap;
 
 /**
  * Represents the Drivetrain on the robot.
@@ -50,7 +52,7 @@ public class Drivetrain extends HSDrivetrain {
      */
     @Override
     protected void initDefaultCommand() {
-        //setDefaultCommand();
+        setDefaultCommand(new DriveWithVelocityManual());
     }
 
     /**
