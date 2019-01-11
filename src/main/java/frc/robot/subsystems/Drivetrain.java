@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-import frc.robot.RobotMap.CAN_IDS;
+import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.DriveWithVelocityManual;
 import harkerrobolib.subsystems.HSDrivetrain;
 import harkerrobolib.util.Gains;
@@ -44,10 +44,10 @@ public class Drivetrain extends HSDrivetrain {
      * Creates new instance of Drivetrain
      */
     private Drivetrain() { 
-        super(new HSTalon(CAN_IDS.DT_LEFT_MASTER), 
-                new HSTalon(CAN_IDS.DT_RIGHT_MASTER), 
-                new VictorSPX (CAN_IDS.DT_LEFT_FOLLOWER),
-                new VictorSPX (CAN_IDS.DT_RIGHT_FOLLOWER));
+        super(new HSTalon(CAN_IDs.DT_LEFT_MASTER), 
+                new HSTalon(CAN_IDs.DT_RIGHT_MASTER), 
+                new VictorSPX (CAN_IDs.DT_LEFT_FOLLOWER),
+                new VictorSPX (CAN_IDs.DT_RIGHT_FOLLOWER));
         //Update IDs
     }
 

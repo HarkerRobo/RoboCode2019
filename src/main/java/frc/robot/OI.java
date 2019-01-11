@@ -13,8 +13,12 @@ public class OI {
     private HSGamepad driverGamepad;
     private HSGamepad operatorGamepad;
     private static OI instance;
+
     private static final int DRIVER_PORT = 0;
     private static final int OPERATOR_PORT = 1;
+
+    public static final double DRIVER_DEADBAND = 0.1;
+    public static final double OPERATOR_DEADBAND = 0.1;
 
     private OI() {
         driverGamepad = new XboxGamepad(DRIVER_PORT);
