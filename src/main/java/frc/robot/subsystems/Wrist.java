@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -52,5 +53,28 @@ public class Wrist extends Subsystem {
         wristMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         wristMaster.configPeakCurrentDuration(PEAK_TIME);
         wristMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+    }
+
+    public HSTalon getMasterTalon () {
+        return wristMaster;
+    }
+
+    public VictorSPX getFollowerTalon () {
+        return wristFollower;
+    }
+
+    public enum WristDirection {
+        TO_BACK (1), TO_FRONT (-1);
+
+        private final int direction;
+        private WristDirection (int direction) {
+            this.direction = direction;
+        }
+
+        public int getSign () {return direction;}
+    }
+
+    public void setWrist (double percent, WristDirection direction) {
+        wristMaster.set(ControlMode.PercentOutput, percent * direction.getSign());
     }
 }
