@@ -14,8 +14,8 @@ import harkerrobolib.wrappers.HSTalon;
  * @author Anirudh Kotamraju
  * @since 1/11/2019
  */
-public class IntakeBall extends Subsystem {
-    private static IntakeBall instance;
+public class BallIntake extends Subsystem {
+    private static BallIntake instance;
     private HSTalon intakeTalon;
 
     private final static int PEAK_LIMIT = 20;
@@ -33,7 +33,7 @@ public class IntakeBall extends Subsystem {
         getTalon().set(ControlMode.PercentOutput, percentOutput);
     }
 
-    private IntakeBall() {
+    private BallIntake() {
         intakeTalon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
         initTalons();
     }
@@ -43,9 +43,9 @@ public class IntakeBall extends Subsystem {
         intakeTalon.setNeutralMode(NEUTRAL_MODE);
     }
 
-    public static IntakeBall getInstance() {
+    public static BallIntake getInstance() {
         if(instance == null){
-            instance = new IntakeBall();
+            instance = new BallIntake();
         }
         return instance;
     }

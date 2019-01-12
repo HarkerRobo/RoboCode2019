@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.TimedCommand;
-import frc.robot.subsystems.IntakeBall;
+import frc.robot.subsystems.BallIntake;
 
 /**
  * Intakes the ball into the robot
@@ -19,7 +19,7 @@ public class MoveIntakeBallTime extends TimedCommand {
      */
     public MoveIntakeBallTime(double percentOutput, double time) {
         super(time);
-        requires(IntakeBall.getInstance());
+        requires(BallIntake.getInstance());
         this.percentOutput = percentOutput;
     }
 
