@@ -11,19 +11,17 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import harkerrobolib.wrappers.HSTalon;
 public class Rollers extends Subsystem {
+
     private final boolean TOP_INVERTED =false;
     private final boolean BOTTOM_INVERTED = false;
     private final int CONTINUOUS_CURRENT_LIMIT = 0;
     private final int PEAK_CURRENT_LIMIT = 0;
     private final int PEAK_TIME = 0;
 
-	@Override
-	protected void initDefaultCommand() {
-		
-	}
     private static Rollers r;
     private HSTalon rTalonTop;
     private HSTalon rTalonBottom;
+    
     /**
      * Creates new Talons
      */
@@ -31,6 +29,12 @@ public class Rollers extends Subsystem {
         rTalonTop = new HSTalon(CAN_IDs.RO_TOP);
         rTalonBottom = new HSTalon(CAN_IDs.RO_BOTTOM);
     }
+
+    @Override
+	protected void initDefaultCommand() {
+		
+    }
+    
     /**
      * Gets the talon instance
      */
@@ -53,6 +57,12 @@ public class Rollers extends Subsystem {
         rTalonBottom.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
         rTalonTop.configPeakCurrentDuration(PEAK_TIME);
         rTalonBottom.configPeakCurrentDuration(PEAK_TIME);
+    }
+    public HSTalon getTopTalon(){
+        return rTalonTop;        
+    }
+    public HSTalon getBottomTalon() {
+        return rTalonBottom;
     }
     
 

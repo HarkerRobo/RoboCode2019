@@ -20,6 +20,7 @@ public class OI {
     public static final double DRIVER_DEADBAND = 0.1;
     public static final double OPERATOR_DEADBAND = 0.1;
 
+    public static final boolean HAS_TWO_CONTROLLERS = true;
     private OI() {
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);

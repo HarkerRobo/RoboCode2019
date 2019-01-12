@@ -1,8 +1,10 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import frc.robot.OI;
+import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
@@ -11,7 +13,7 @@ import harkerrobolib.util.MathUtil;
  * Moves elevator based on driver right joystick input.
  * 
  * @author  Angela Jia
- * @version 1/
+ * @version 1/10/19
  */
 public class MoveElevatorManual extends IndefiniteCommand {
 
@@ -21,7 +23,7 @@ public class MoveElevatorManual extends IndefiniteCommand {
 
     @Override
     public void initialize() {
-        //Elevator.getInstance().getMaster().confi
+        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
     }
 
     @Override
@@ -32,6 +34,7 @@ public class MoveElevatorManual extends IndefiniteCommand {
         if(Math.abs(speed) > oi.DRIVER_DEADBAND)
         {
             boolean isDown = speed < 0;
+           // boolean reverseBeyondLimit = Elevator.getInstance().getVictorTwo().getSelectedSensorPosition();
             //boolean 
         }
         
