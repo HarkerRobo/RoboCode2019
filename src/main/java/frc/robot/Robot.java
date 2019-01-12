@@ -31,7 +31,7 @@ import frc.robot.subsystems.Wrist;
  */
 public class Robot extends TimedRobot {
 
-  private Drivetrain dt;  
+  private Drivetrain drivetrain;  
   private Arm arm;
   private Elevator elevator;
   private Rollers rollers;
@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    dt = Drivetrain.getInstance();
+    drivetrain = Drivetrain.getInstance();
     arm = Arm.getInstance();
     elevator = Elevator.getInstance();
     rollers = Rollers.getInstance();
@@ -112,6 +112,38 @@ public class Robot extends TimedRobot {
    * @return the drivetrain
    */
   public Drivetrain getDrivetrain() {
-    return dt;
+    return drivetrain;
+  }
+
+    /**
+   * Gets the instance of the elevator on the robot.
+   * @return the elevator
+   */
+  public Elevator getElevator() {
+    return elevator;
+  }
+  
+  /**
+   * Gets the instance of the wrist on the robot.
+   * @return the wrist
+   */
+  public Wrist getWrist() {
+    return wrist;
+  }
+
+  /**
+   * Gets the instance of the rollers on the robot.
+   * @return the rollers
+   */
+  public Rollers getRollers() {
+    return rollers;
+  }
+
+      /**
+   * Gets the instance of the arm on the robot.
+   * @return the arm
+   */
+  public Arm getArm() {
+    return arm;
   }
 }
