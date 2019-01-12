@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.wrist;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
@@ -10,7 +10,7 @@ import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
 /**
- * 
+ * Moves the wrist manually.
  * @author Finn Frankis
  * 
  * @since 1/10/19

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
 import frc.robot.OI;
 import frc.robot.subsystems.Intake;

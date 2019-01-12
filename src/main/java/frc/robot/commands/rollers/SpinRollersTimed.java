@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.rollers;
 
 import edu.wpi.first.wpilibj.command.TimedCommand;
 import frc.robot.subsystems.Rollers;
@@ -6,12 +6,12 @@ import frc.robot.subsystems.Rollers.RollerDirection;
 /**
  * Moves the rollers for a certain time
  */
-public class MoveRollersTimed extends TimedCommand
+public class SpinRollersTimed extends TimedCommand
 {
     private double magnitude;
     private RollerDirection direction;
 
-    public MoveRollersTimed(double magnitude, double time, RollerDirection direction) {
+    public SpinRollersTimed(double magnitude, double time, RollerDirection direction) {
         super(time);
         requires(Rollers.getInstance());
         this.magnitude = magnitude; 

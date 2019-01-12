@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.rollers;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -16,8 +16,8 @@ import harkerrobolib.commands.IndefiniteCommand;
  * @author Shahzeb Lakhani
  * @since January 10, 2019
  */
-public class MoveRollersManual extends IndefiniteCommand {
-	public MoveRollersManual() {
+public class SpinRollersManual extends IndefiniteCommand {
+	public SpinRollersManual() {
 		requires(Rollers.getInstance());
     }	
 

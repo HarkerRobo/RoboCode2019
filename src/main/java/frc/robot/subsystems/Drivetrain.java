@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.DriveWithVelocityManual;
+import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import harkerrobolib.subsystems.HSDrivetrain;
 import harkerrobolib.util.Gains;
 import harkerrobolib.wrappers.HSPigeon;

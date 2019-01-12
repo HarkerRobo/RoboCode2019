@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.MoveWristManual;
+import frc.robot.commands.wrist.MoveWristManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -28,6 +28,7 @@ public class Wrist extends Subsystem {
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int PEAK_TIME = 500;
 
+    public static final int ALLOWABLE_ERROR = 400;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 10000; // TUNE
     public static final int RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
@@ -47,7 +48,15 @@ public class Wrist extends Subsystem {
     public static final int MAX_SPEED = 100; // TUNE
 
     
+    public static final int POSITION_SLOT = 0;
 
+    public static final boolean SENSOR_PHASE = false;
+
+    //Position Constants
+    public static final double KP = 0.0;
+    public static final double KI = 0.0;
+    public static final double KD = 0.0;
+    public static final double KF = 0.0;
 
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
@@ -74,6 +83,11 @@ public class Wrist extends Subsystem {
         wristMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         wristMaster.configPeakCurrentDuration(PEAK_TIME);
         wristMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+
+        wristMaster.config_kP(Wrist.POSITION_SLOT, KP);
+        wristMaster.config_kI(Wrist.POSITION_SLOT, KI);
+        wristMaster.config_kD(Wrist.POSITION_SLOT, KD);
+        wristMaster.config_kF(Wrist.POSITION_SLOT, KF);
     }
 
     public HSTalon getMasterTalon () {

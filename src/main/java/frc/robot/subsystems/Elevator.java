@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.MoveElevatorManual;
+import frc.robot.commands.elevator.MoveElevatorManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**

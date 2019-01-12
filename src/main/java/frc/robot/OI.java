@@ -1,7 +1,12 @@
 package frc.robot;
 
-import frc.robot.commands.SetArmPosition;
+import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.rollers.SpinRollersIndefinite;
+import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm.ArmDirection;
+import frc.robot.subsystems.Rollers.RollerDirection;
+import frc.robot.subsystems.Wrist;
+import harkerrobolib.wrappers.HSDPadButton;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
@@ -33,6 +38,18 @@ public class OI {
     public void initBindings() {
         driverGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.UP));
         driverGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.DOWN));
+        driverGamepad.getButtonX().whenPressed(new MoveWristPosition(Wrist.MAX_BACKWARD_POSITION));
+        driverGamepad.getButtonB().whenPressed(new MoveWristPosition(Wrist.MAX_FORWARD_POSITION));
+        
+        operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(1,RollerDirection.IN));
+        operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(1,RollerDirection.OUT));
+
+        HSDPadButton upButton = new HSDPadButton(operatorGamepad,0);
+        HSDPadButton leftButton = new HSDPadButton(operatorGamepad,270);
+        HSDPadButton downButton = new HSDPadButton(operatorGamepad,180);
+        HSDPadButton rightButton = new HSDPadButton(operatorGamepad,90);
+        upButton.whenPressed(new SetArmPosition(ArmDirection.UP));
+        downButton.whenPressed(new SetArmPosition(ArmDirection.DOWN));
     }
 
     public HSGamepad getDriverGamepad() {
