@@ -25,8 +25,9 @@ import frc.robot.subsystems.Wrist;
  * @author Finn Frankis
  * @author Jatin Kohli
  * @author Chirag Kaushik
+ * @author Angela Jia
  * 
- * @version 1/6/19
+ * @since 1/6/19
  */
 public class Robot extends TimedRobot {
 

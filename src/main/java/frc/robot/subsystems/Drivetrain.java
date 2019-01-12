@@ -20,7 +20,7 @@ import harkerrobolib.wrappers.HSTalon;
  * @author Rohan Rashingkar
  * @author Anirudh Kotamraju
  * @author Angela Jia
- * @version 1/7/19
+ * @since 1/7/19
  */
 public class Drivetrain extends HSDrivetrain {
     private static Drivetrain instance;

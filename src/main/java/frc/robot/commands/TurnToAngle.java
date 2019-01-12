@@ -14,7 +14,8 @@ import frc.robot.subsystems.Drivetrain;
  * 
  * @author Angela Jia
  * @author Dawson Chen
- * @version 1/8/19
+ * @author Aimee Wang
+ * @since 1/8/19
  */
 public class TurnToAngle extends Command {
 

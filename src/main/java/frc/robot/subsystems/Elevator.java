@@ -12,7 +12,7 @@ import harkerrobolib.wrappers.HSTalon;
  * Represents the elevator on the robot.
  * 
  * @author Angela Jia
- * @version 1/10/19
+ * @since 1/10/19
  */
 public class Elevator extends Subsystem {
 

@@ -6,12 +6,13 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.MoveWristManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
  * 
  * @author Finn Frankis
- * @version 1/10/19
+ * @since 1/10/19
  */
 public class Wrist extends Subsystem {
 
@@ -35,7 +36,7 @@ public class Wrist extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		
+		setDefaultCommand(new MoveWristManual());
 	}
 
     public static Wrist getInstance () {

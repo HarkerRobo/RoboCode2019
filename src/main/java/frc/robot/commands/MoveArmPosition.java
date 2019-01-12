@@ -1,10 +1,11 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-
 /**
  * 
- * @author
+ * @author Angela Jia
+ * @author Chirag Kaushik
+ * 
+ * @since 1/12/18
  */
 public MoveArmPosition extends Command {
     private double position;

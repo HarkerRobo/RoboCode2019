@@ -12,7 +12,7 @@ import harkerrobolib.wrappers.HSTalon;
  * Intakes the ball into the robot
  * 
  * @author Anirudh Kotamraju
- * @version 1/11/2019
+ * @since 1/11/2019
  */
 public class IntakeBall extends Subsystem {
     private static IntakeBall instance;

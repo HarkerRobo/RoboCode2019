@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
 import frc.robot.OI;
+import frc.robot.subsystems.IntakeBall;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
-import frc.robot.subsystems.IntakeBall;
 
 
 /**
  * Controls ball intake
  * 
  * @author Anirudh Kotamraju
- * @version 1/11/2019
+ * @since 1/11/2019
  */
 
 public class MoveIntakeBallManual extends IndefiniteCommand {

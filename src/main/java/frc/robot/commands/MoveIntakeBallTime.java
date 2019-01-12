@@ -8,7 +8,7 @@ import frc.robot.subsystems.IntakeBall;
  * 
  * @author Anirudh Kotamraju
  * @author Austin Wang
- * @version 1/11/2019
+ * @since 1/11/2019
  */
 public class MoveIntakeBallTime extends TimedCommand {
     private double percentOutput;

@@ -10,8 +10,9 @@ import harkerrobolib.commands.IndefiniteCommand;
 
 /**
  * 
- * @version 1/10/19
  * @author Finn Frankis
+ * 
+ * @since 1/10/19
  */
 public class MoveWristManual extends IndefiniteCommand {
     public MoveWristManual () {

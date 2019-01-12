@@ -9,7 +9,7 @@ import harkerrobolib.wrappers.XboxGamepad;
 /**
  * Holds both driver and operator gamepads.
  * 
- * @version 1/7/19
+ * @since 1/7/19
  */
 public class OI {
     private HSGamepad driverGamepad;

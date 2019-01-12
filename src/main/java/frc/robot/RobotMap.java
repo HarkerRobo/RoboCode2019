@@ -1,5 +1,10 @@
 package frc.robot;
 
+/**
+ * Stores all non subsystem-specific constants and CAN IDs.
+ * 
+ * @since 1/7/19
+ */
 public class RobotMap {
 
     public class CAN_IDs {
