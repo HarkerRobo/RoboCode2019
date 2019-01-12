@@ -7,7 +7,6 @@ import frc.robot.subsystems.BallIntake;
  * Intakes the ball into the robot
  * 
  * @author Anirudh Kotamraju
- * @author Austin Wang
  * @since 1/11/2019
  */
 public class MoveIntakeBallTime extends TimedCommand {
