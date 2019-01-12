@@ -1,7 +1,8 @@
 package frc.robot.util;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.PIDSourceType;
 
 /**
  * Wraps Limelight functionality into a more easy-to-use class.
@@ -29,6 +30,8 @@ public class Limelight {
     public static final int NO_SNAPSHOT = 0;
     public static final int SNAPSHOT = 1;
 
+    private PIDSourceType sourceType;
+
     /**
      * Setup Limelight with default settings
      */
@@ -38,9 +41,8 @@ public class Limelight {
         table.getEntry(SNAP_KEY).setNumber(NO_SNAPSHOT);
     }
 
-    public static boolean isTargetVisible()
-    {
-        return table.getEntry(TX_KEY).getDouble(0.0) == 1.0;
+    public static boolean isTargetVisible() {
+        return Math.abs(table.getEntry(TV_KEY).getDouble(0.0) - 1.0) < 1e-5;
     }
 
     public static double getTx() {
@@ -59,6 +61,6 @@ public class Limelight {
         if(instance == null) {
             instance = new Limelight();
         }
-        return instance;                                        
-    }    
+        return instance;
+    }
 }
