@@ -12,7 +12,11 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Rollers;
+import frc.robot.subsystems.Wrist;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -26,7 +30,12 @@ import frc.robot.subsystems.Drivetrain;
  */
 public class Robot extends TimedRobot {
 
-  private Drivetrain dt;
+  private Drivetrain dt;  
+  private Arm arm;
+  private Elevator elevator;
+  private Rollers rollers;
+  private Wrist wrist;
+  private OI oi;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -35,6 +44,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     dt = Drivetrain.getInstance();
+    arm = Arm.getInstance();
+    elevator = Elevator.getInstance();
+    rollers = Rollers.getInstance();
+    wrist = Wrist.getInstance();
+    oi = OI.getInstance();        
+        
   }
 
   /**
