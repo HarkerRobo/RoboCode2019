@@ -1,8 +1,10 @@
 package frc.robot;
 
-import harkerrobolib.wrappers.XboxGamepad;
+import frc.robot.commands.SetArmPosition;
+import frc.robot.subsystems.Arm.ArmDirection;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
+import harkerrobolib.wrappers.XboxGamepad;
 
 /**
  * Holds both driver and operator gamepads.
@@ -26,6 +28,11 @@ public class OI {
         operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);
     }
     
+    public void initBindings() {
+        driverGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.UP));
+        driverGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.DOWN));
+    }
+
     public HSGamepad getDriverGamepad() {
         return driverGamepad;
     }
