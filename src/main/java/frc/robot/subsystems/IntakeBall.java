@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.MoveIntakeBallManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -34,7 +35,7 @@ public class IntakeBall extends Subsystem {
 
     private IntakeBall() {
         intakeTalon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
-        
+        initTalons();
     }
 
     private void initTalons() {
@@ -57,7 +58,7 @@ public class IntakeBall extends Subsystem {
     
     @Override    
     protected void initDefaultCommand() {
-        setDefaultCommand(new IntakeOuttakeBallManual());
+        setDefaultCommand(new MoveIntakeBallManual());
     }
 
     
