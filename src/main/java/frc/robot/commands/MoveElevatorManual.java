@@ -12,8 +12,8 @@ import harkerrobolib.util.MathUtil;
 /**
  * Moves elevator based on driver right joystick input.
  * 
- * @author  Angela Jia
- * @version 1/10/19
+ * @author Angela Jia
+ * @since 1/10/19
  */
 public class MoveElevatorManual extends IndefiniteCommand {
 
@@ -40,7 +40,10 @@ public class MoveElevatorManual extends IndefiniteCommand {
             double currSpeed = Elevator.getInstance().getMaster().getSelectedSensorVelocity(Global.PID_PRIMARY);
             double distFromSoft = position - Elevator.REVERSE_SOFT_LIMIT;
             double outputFactor = 1.0;
-            if(isDown && reverseBeyondLimit && Ma)
+            if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED < Elevator.SLOW_DOWN_SPEED)
+            {
+                outputFactor = MathUtil.map();
+            }
             //boolean 
         }
         

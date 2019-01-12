@@ -6,12 +6,13 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.MoveWristManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
- * 
+ * Represents the wrist on the robot.
  * @author Finn Frankis
- * @version 1/10/19
+ * @since 1/10/19
  */
 public class Wrist extends Subsystem {
 
@@ -20,12 +21,32 @@ public class Wrist extends Subsystem {
     private HSTalon wristMaster;
     private VictorSPX wristFollower;
 
-    private final boolean MASTER_INVERTED = false;
-    private final boolean FOLLOWER_INVERTED = false;
+    private static final boolean MASTER_INVERTED = false;
+    private static final boolean FOLLOWER_INVERTED = false;
 
-    private final int CONTINUOUS_CURRENT_LIMIT = 0;
-    private final int PEAK_CURRENT_LIMIT = 0;
-    private final int PEAK_TIME = 500;
+    private static final int CONTINUOUS_CURRENT_LIMIT = 0;
+    private static final int PEAK_CURRENT_LIMIT = 0;
+    private static final int PEAK_TIME = 500;
+
+    public static final int MAX_FORWARD_POSITION = 0;
+    public static final int MAX_BACKWARD_POSITION = 10000; // TUNE
+    public static final int RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+    /**
+     * The percentage distance from either the front or the back after which precautionary measures must be taken to limit max operable speed.
+     */
+    public static final double SLOW_DOWN_PERCENT_TO_ENDPOINT = 0.75;
+
+    /**
+     * The physical distance (encoder units) from either the front or the back after which precautionary measures must be taken to limit max operable speed.
+     */
+    public static final double SLOW_DOWN_DISTANCE_FROM_ENDPOINT = Wrist.RANGE_OF_MOTION * (1 - Wrist.SLOW_DOWN_PERCENT_TO_ENDPOINT);
+
+    public static final double MAX_PERCENT_OUTPUT = 1.0;
+    public static final double MIN_PERCENT_OUTPUT = 0.0;
+
+    public static final int MAX_SPEED = 100; // TUNE
+
+    
 
 
     private Wrist () {
@@ -35,7 +56,7 @@ public class Wrist extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		
+		setDefaultCommand(new MoveWristManual());
 	}
 
     public static Wrist getInstance () {

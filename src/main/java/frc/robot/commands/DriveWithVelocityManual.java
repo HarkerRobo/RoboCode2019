@@ -3,7 +3,6 @@ package frc.robot.commands;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import frc.robot.OI;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
@@ -12,7 +11,7 @@ import harkerrobolib.util.MathUtil;
  * Drives based on driver gamepad joystick input.
  * 
  * @author Chirag Kaushik
- * @version 1/7/19
+ * @since 1/7/19
  */
 public class DriveWithVelocityManual extends IndefiniteCommand {  
     

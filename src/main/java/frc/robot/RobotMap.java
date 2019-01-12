@@ -1,5 +1,10 @@
 package frc.robot;
 
+/**
+ * Stores all non subsystem-specific constants and CAN IDs.
+ * 
+ * @since 1/7/19
+ */
 public class RobotMap {
 
     public class CAN_IDs {
@@ -14,6 +19,7 @@ public class RobotMap {
         public static final int ARM_FORWARD_CHANNEL = 0;
         public static final int ARM_REVERSE_CHANNEL = 1;
         public static final int PIGEON = 0;
+        public static final int PCM = 0;
     }
 
     public class Global {

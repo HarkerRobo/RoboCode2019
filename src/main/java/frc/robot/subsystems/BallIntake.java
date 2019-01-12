@@ -5,16 +5,17 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.MoveIntakeBallManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
  * Intakes the ball into the robot
  * 
  * @author Anirudh Kotamraju
- * @version 1/11/2019
+ * @since 1/11/2019
  */
-public class IntakeBall extends Subsystem {
-    private static IntakeBall instance;
+public class BallIntake extends Subsystem {
+    private static BallIntake instance;
     private HSTalon intakeTalon;
 
     private final static int PEAK_LIMIT = 20;
@@ -32,9 +33,9 @@ public class IntakeBall extends Subsystem {
         getTalon().set(ControlMode.PercentOutput, percentOutput);
     }
 
-    private IntakeBall() {
+    private BallIntake() {
         intakeTalon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
-        
+        initTalons();
     }
 
     private void initTalons() {
@@ -42,9 +43,9 @@ public class IntakeBall extends Subsystem {
         intakeTalon.setNeutralMode(NEUTRAL_MODE);
     }
 
-    public static IntakeBall getInstance() {
+    public static BallIntake getInstance() {
         if(instance == null){
-            instance = new IntakeBall();
+            instance = new BallIntake();
         }
         return instance;
     }
@@ -57,7 +58,7 @@ public class IntakeBall extends Subsystem {
     
     @Override    
     protected void initDefaultCommand() {
-        setDefaultCommand(new IntakeOuttakeBallManual());
+        setDefaultCommand(new MoveIntakeBallManual());
     }
 
     
