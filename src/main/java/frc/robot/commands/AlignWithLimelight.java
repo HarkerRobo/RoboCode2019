@@ -15,6 +15,7 @@ import frc.robot.util.PIDOutputGetter;
  * 
  * @author Jatin Kohli
  * @author Chirag Kaushik
+ * @author Finn Frankis
  * @since 1/12/19
  */
 public class AlignWithLimelight extends Command {
@@ -28,14 +29,18 @@ public class AlignWithLimelight extends Command {
     public static final double FORWARD_KI = 0.0;
     public static final double FOWARD_KD = 0.0;    
 
-    public static final double TURN_ALLOWABLE_ERROR = 10;
-    public static final double FORWARD_ALLOWABLE_ERROR = 10;
+    public static final double TX_SETPOINT = 0.0;
+    public static final double TA_SETPOINT = 0.4;    
+    
+    public static final double TURN_ALLOWABLE_ERROR = 0.054;
+    public static final double FORWARD_ALLOWABLE_ERROR = 0.01;
 
     public PIDOutputGetter turnOutput;
     public PIDOutputGetter forwardOutput;
 
     private PIDController turnController;
     private PIDController forwardController;
+
 
     public AlignWithLimelight() {
         requires(Drivetrain.getInstance());
@@ -83,6 +88,9 @@ public class AlignWithLimelight extends Command {
             }                            
         }, forwardOutput);
 
+        turnController.setSetpoint(TX_SETPOINT);
+        forwardController.setSetpoint(TA_SETPOINT);
+        
         turnController.enable();
         forwardController.enable();
     }

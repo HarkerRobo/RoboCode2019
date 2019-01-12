@@ -13,9 +13,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.BallIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
     private Elevator elevator;
     private Rollers rollers;
     private Wrist wrist;
-    private BallIntake ballIntake;
+    private Intake ballIntake;
     private OI oi;
 
     /**
@@ -153,7 +153,7 @@ public class Robot extends TimedRobot {
      * Gets the instance of the arm on the robot.
      * @return the arm
      */
-    public BallIntake getBallIntake() {
+    public Intake getBallIntake() {
         return ballIntake;
     }
 }

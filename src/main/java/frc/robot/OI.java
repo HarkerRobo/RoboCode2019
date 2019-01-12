@@ -26,6 +26,8 @@ public class OI {
     private OI() {
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);
+
+        initBindings();
     }
     
     public void initBindings() {

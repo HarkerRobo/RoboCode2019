@@ -76,8 +76,8 @@ public class Rollers extends Subsystem {
     }
 
     public void stopRollers() {
-        rTalonTop.set(ControlMode.PercentOutput, 0);
-        rTalonBottom.set(ControlMode.PercentOutput, 0);
+        rTalonTop.set(ControlMode.Disabled, 0);
+        rTalonBottom.set(ControlMode.Disabled, 0);
     }
 
     public void moveRollers(double magnitude, RollerDirection direction) {

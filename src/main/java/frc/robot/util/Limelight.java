@@ -2,7 +2,6 @@ package frc.robot.util;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.PIDSourceType;
 
 /**
  * Wraps Limelight functionality into a more easy-to-use class.
@@ -29,8 +28,6 @@ public class Limelight {
 
     public static final int NO_SNAPSHOT = 0;
     public static final int SNAPSHOT = 1;
-
-    private PIDSourceType sourceType;
 
     /**
      * Setup Limelight with default settings

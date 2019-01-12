@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.MoveIntakeBallManual;
+import frc.robot.commands.SpinIntakeManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -14,8 +14,19 @@ import harkerrobolib.wrappers.HSTalon;
  * @author Anirudh Kotamraju
  * @since 1/11/2019
  */
-public class BallIntake extends Subsystem {
-    private static BallIntake instance;
+public class Intake extends Subsystem {
+    public enum IntakeDirection {
+        IN(1),OUT(-1),STOP(0);
+        private int sign;
+        private IntakeDirection(int sign) {
+            this.sign = sign;
+        }
+        public int getSign() {
+            return sign;
+        }
+    }
+
+    private static Intake instance;
     private HSTalon intakeTalon;
 
     private final static int PEAK_LIMIT = 20;
@@ -29,11 +40,15 @@ public class BallIntake extends Subsystem {
         return intakeTalon;
     }
 
+    public void setTalonOutput(double magnitude, IntakeDirection direction) {
+        getTalon().set(ControlMode.PercentOutput, magnitude * direction.getSign());
+    }
+
     public void setTalonOutput(double percentOutput) {
         getTalon().set(ControlMode.PercentOutput, percentOutput);
     }
 
-    private BallIntake() {
+    private Intake() {
         intakeTalon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
         initTalons();
     }
@@ -43,9 +58,9 @@ public class BallIntake extends Subsystem {
         intakeTalon.setNeutralMode(NEUTRAL_MODE);
     }
 
-    public static BallIntake getInstance() {
+    public static Intake getInstance() {
         if(instance == null){
-            instance = new BallIntake();
+            instance = new Intake();
         }
         return instance;
     }
@@ -58,7 +73,7 @@ public class BallIntake extends Subsystem {
     
     @Override    
     protected void initDefaultCommand() {
-        setDefaultCommand(new MoveIntakeBallManual());
+        setDefaultCommand(new SpinIntakeManual());
     }
 
     
