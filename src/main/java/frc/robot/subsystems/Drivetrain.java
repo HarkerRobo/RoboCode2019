@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.DriveWithVelocityManual;
@@ -13,7 +12,7 @@ import harkerrobolib.wrappers.HSPigeon;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
- * Represents the Drivetrain on the robot.
+ * Represents the drivetrain on the robot.
  * 
  * @author Finn Frankis
  * @author Chirag Kaushik

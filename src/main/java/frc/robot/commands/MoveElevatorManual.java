@@ -12,7 +12,7 @@ import harkerrobolib.util.MathUtil;
 /**
  * Moves elevator based on driver right joystick input.
  * 
- * @author  Angela Jia
+ * @author Angela Jia
  * @since 1/10/19
  */
 public class MoveElevatorManual extends IndefiniteCommand {
