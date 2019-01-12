@@ -28,6 +28,7 @@ public class Elevator extends Subsystem {
  
     public static final int REVERSE_SOFT_LIMIT = 0;
     public static final int POSITION_PID = 0;
+    public static final int MAX_SPEED = 0;
 
     private Elevator() {
         elTalon = new HSTalon(CAN_IDs.EL_MASTER);
