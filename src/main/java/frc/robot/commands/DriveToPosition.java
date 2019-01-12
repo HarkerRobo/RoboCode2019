@@ -47,12 +47,12 @@ public class DriveToPosition extends Command {
         Drivetrain.getInstance().getLeftMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
         Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
        
-       Drivetrain.getInstance().getLeftMaster().setSensorPhase(true);
-       Drivetrain.getInstance().getRightMaster().setSensorPhase(true);
+       Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_SENSOR_PHASE);
+       Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_SENSOR_PHASE);
     }
 
     protected void execute() {
         Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position, Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
-        Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position, Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.Position, Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
     }
 }

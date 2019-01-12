@@ -34,7 +34,13 @@ public class MoveElevatorManual extends IndefiniteCommand {
         if(Math.abs(speed) > oi.DRIVER_DEADBAND)
         {
             boolean isDown = speed < 0;
-           // boolean reverseBeyondLimit = Elevator.getInstance().getVictorTwo().getSelectedSensorPosition();
+            int position = Elevator.getInstance().getMaster().getSelectedSensorPosition(Global.PID_PRIMARY);
+            boolean reverseBeyondLimit = position
+                                         <= Elevator.REVERSE_SOFT_LIMIT;
+            double currSpeed = Elevator.getInstance().getMaster().getSelectedSensorVelocity(Global.PID_PRIMARY);
+            double distFromSoft = position - Elevator.REVERSE_SOFT_LIMIT;
+            double outputFactor = 1.0;
+            if(isDown && reverseBeyondLimit && Ma)
             //boolean 
         }
         

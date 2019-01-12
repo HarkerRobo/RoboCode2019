@@ -9,7 +9,9 @@ import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
 /**
+ * Drives based on driver gamepad joystick input.
  * 
+ * @author Chirag Kaushik
  * @version 1/7/19
  */
 public class DriveWithVelocityManual extends IndefiniteCommand {  

@@ -2,11 +2,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+/**
+ * 
+ * @author
+ */
 public MoveArmPosition extends Command {
     private double position;
 
     public MoveArmPosition(double position) {
         this.position = position;
+        requires(Arm.getInstance());;
     }
 
     @Override

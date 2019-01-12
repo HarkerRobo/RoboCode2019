@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.IntakeOuttakeBallManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -21,13 +21,20 @@ public class IntakeBall extends Subsystem {
     private final static int PEAK_TIME = 1;
     private final static int CONTINUOUS_CURRENT = 15;
 
-
-    
     private final static boolean MASTER_INVERTED = false;
     private final static NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
 
+    public HSTalon getTalon() {
+        return intakeTalon;
+    }
+
+    public void setTalonOutput(double percentOutput) {
+        getTalon().set(ControlMode.PercentOutput, percentOutput);
+    }
+
     private IntakeBall() {
         intakeTalon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
+        
     }
 
     private void initTalons() {

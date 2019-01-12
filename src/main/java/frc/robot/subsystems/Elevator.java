@@ -21,11 +21,14 @@ public class Elevator extends Subsystem {
     private VictorSPX victorOne;
     private VictorSPX victorTwo;
     
+    private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_TIME = 0;
-    private static final int PEAK_CURRENT_LIMIT = 0;
     private static final boolean INVERTED = false;
  
+    public static final int REVERSE_SOFT_LIMIT = 0;
+    public static final int POSITION_PID = 0;
+
     private Elevator() {
         elTalon = new HSTalon(CAN_IDs.EL_MASTER);
         victorOne = new VictorSPX(CAN_IDs.EL_VICTOR_ONE);

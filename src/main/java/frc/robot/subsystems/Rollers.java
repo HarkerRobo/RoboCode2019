@@ -1,24 +1,40 @@
-/**
- * Moves the balls to the cargo space
- * @author Shahzeb Lakhani
- * @version 1/10/19
- */
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import harkerrobolib.wrappers.HSTalon;
+
+/**
+ * Moves the balls to the cargo space
+ * @author Shahzeb Lakhani
+ * @author Chirag Kaushik
+ * @version 1/10/19
+ */
 public class Rollers extends Subsystem {
+    public enum RollerDirection {
+        IN(1), OUT(-1);
 
-    private final boolean TOP_INVERTED =false;
-    private final boolean BOTTOM_INVERTED = false;
-    private final int CONTINUOUS_CURRENT_LIMIT = 0;
-    private final int PEAK_CURRENT_LIMIT = 0;
-    private final int PEAK_TIME = 0;
+        private int sign;
 
-    private static Rollers r;
+        private RollerDirection(int sign) {
+            this.sign = sign;
+        }
+
+        public int getSign() {
+            return sign;
+        }
+    }
+
+    private static final boolean TOP_INVERTED = false;
+    private static final boolean BOTTOM_INVERTED = false;
+    private static final int CONTINUOUS_CURRENT_LIMIT = 0;
+    private static final int PEAK_CURRENT_LIMIT = 0;
+    private static final int PEAK_TIME = 0;
+
+    private static Rollers instance;
     private HSTalon rTalonTop;
     private HSTalon rTalonBottom;
     
@@ -32,17 +48,9 @@ public class Rollers extends Subsystem {
 
     @Override
 	protected void initDefaultCommand() {
-		
+		//setDefaultCommand();
     }
     
-    /**
-     * Gets the talon instance
-     */
-    public static Rollers getInstance() {
-        if(r == null)
-            r = new Rollers();
-        return r;
-    }
     /**
      * Initialises the Talons
      */
@@ -58,12 +66,33 @@ public class Rollers extends Subsystem {
         rTalonTop.configPeakCurrentDuration(PEAK_TIME);
         rTalonBottom.configPeakCurrentDuration(PEAK_TIME);
     }
+
     public HSTalon getTopTalon(){
         return rTalonTop;        
     }
+
     public HSTalon getBottomTalon() {
         return rTalonBottom;
     }
-    
 
+    public void stopRollers() {
+        rTalonTop.set(ControlMode.PercentOutput, 0);
+        rTalonBottom.set(ControlMode.PercentOutput, 0);
+    }
+
+    public void moveRollers(double magnitude, RollerDirection direction) {
+        rTalonTop.set(ControlMode.PercentOutput, magnitude * direction.getSign());
+        rTalonBottom.set(ControlMode.PercentOutput, -1 * magnitude * direction.getSign());
+    }
+
+     /**
+     * Gets the talon instance.
+     * 
+     * @return talon instance
+     */
+    public static Rollers getInstance() {
+        if(instance == null)
+            instance = new Rollers();
+        return instance;
+    }
 }

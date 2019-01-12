@@ -3,11 +3,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.DriveWithVelocityManual;
 import harkerrobolib.subsystems.HSDrivetrain;
 import harkerrobolib.util.Gains;
+import harkerrobolib.wrappers.HSPigeon;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -22,6 +24,7 @@ import harkerrobolib.wrappers.HSTalon;
  */
 public class Drivetrain extends HSDrivetrain {
     private static Drivetrain instance;
+    private static HSPigeon pigeon;
 
     private static boolean LEFT_MASTER_INVERTED = false;
     private static boolean RIGHT_MASTER_INVERTED = false;
@@ -32,12 +35,19 @@ public class Drivetrain extends HSDrivetrain {
 
     public static final int ALLOWABLE_ERROR = 0;
     public static final int POSITION_SLOT_INDEX = 0;
+    public static final int ANGLE_SLOT_INDEX = 1;
     public static final double POSITION_LEFT_KP = 0;
     public static final double POSITION_LEFT_KI = 0;
     public static final double POSITION_LEFT_KD = 0;
     public static final double POSITION_RIGHT_KP = 0;
     public static final double POSITION_RIGHT_KI = 0;
     public static final double POSITION_RIGHT_KD = 0;
+
+    public static final boolean LEFT_SENSOR_PHASE = true;
+    public static final boolean RIGHT_SENSOR_PHASE = true;
+
+    public static final boolean LEFT_PIGEON_PHASE = true;
+    public static final boolean RIGHT_PIGEON_PHASE = true;
 
 
     /**
@@ -47,7 +57,8 @@ public class Drivetrain extends HSDrivetrain {
         super(new HSTalon(CAN_IDs.DT_LEFT_MASTER), 
                 new HSTalon(CAN_IDs.DT_RIGHT_MASTER), 
                 new VictorSPX (CAN_IDs.DT_LEFT_FOLLOWER),
-                new VictorSPX (CAN_IDs.DT_RIGHT_FOLLOWER));
+                new VictorSPX (CAN_IDs.DT_RIGHT_FOLLOWER),
+                new HSPigeon(CAN_IDs.PIGEON));
         //Update IDs
     }
 
@@ -91,5 +102,8 @@ public class Drivetrain extends HSDrivetrain {
     public void arcadeDrivePercentOutput(double speed, double turn) {
         getLeftMaster().set(ControlMode.PercentOutput, speed + turn);
         getRightMaster().set(ControlMode.PercentOutput, speed - turn);
+    }
+    public HSPigeon getPigeon() {
+        return pigeon;
     }
 }
