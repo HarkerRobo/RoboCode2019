@@ -1,8 +1,7 @@
 package frc.robot.commands.wrist;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.RobotMap.Global;
@@ -21,6 +20,7 @@ public class MoveWristPosition extends Command {
     private double position;
 
     public MoveWristPosition (double position) {
+        requires (Wrist.getInstance());
         this.position = position;                
     }            
     
