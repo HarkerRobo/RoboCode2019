@@ -58,10 +58,6 @@ public class OI {
             new SpinRollersIndefinite(1.0, RollerDirection.IN),
             new SpinIntakeIndefinite(1.0, IntakeDirection.IN)));
         driverGamepad.getButtonA().whenReleased(new MoveWristPosition(Wrist.MAX_FORWARD_POSITION));
-
-        driverGamepad.getButtonX().whenPressed(new 
-
-        )
     }
 
     public HSGamepad getDriverGamepad() {
