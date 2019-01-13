@@ -25,8 +25,10 @@ public class Elevator extends Subsystem {
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_TIME = 0;
-    private static final boolean INVERTED = false;
- 
+    private static final boolean INVERTED_MASTER = false;
+    private static final boolean INVERTED_VICT_ONE = false;
+    private static final boolean INVERTED_VICT_TWO = false;
+
     public static final int REVERSE_SOFT_LIMIT= 0;
     public static final int POSITION_PID = 0;
     public static final int MAX_SPEED = 0;
@@ -62,7 +64,9 @@ public class Elevator extends Subsystem {
         elTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
         elTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
         elTalon.configPeakCurrentDuration(CONT_CURRENT_TIME);
-        elTalon.setInverted(INVERTED);
+        elTalon.setInverted(INVERTED_MASTER);
+        victorOne.setInverted(INVERTED_VICT_ONE);
+        victorTwo.setInverted(INVERTED_VICT_TWO);
     }
 
     public void moveElevatorVelocity(double speed) {
