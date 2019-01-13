@@ -31,6 +31,13 @@ public class OI {
     public static final double OPERATOR_DEADBAND = 0.1;
 
     public static final boolean HAS_TWO_CONTROLLERS = true;
+
+    //DPad angles in degrees
+    public static final int DPAD_UP_ANGLE = 0;
+    public static final int DPAD_LEFT_ANGLE = 270;
+    public static final int DPAD_RIGHT_ANGLE = 90;
+    public static final int DPAD_DOWN_ANGLE = 180;
+
     private OI() {
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);
@@ -47,10 +54,10 @@ public class OI {
         operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(1,RollerDirection.IN));
         operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(1,RollerDirection.OUT));
 
-        HSDPadButton upButton = new HSDPadButton(operatorGamepad,0);
-        HSDPadButton leftButton = new HSDPadButton(operatorGamepad,270);
-        HSDPadButton downButton = new HSDPadButton(operatorGamepad,180);
-        HSDPadButton rightButton = new HSDPadButton(operatorGamepad,90);
+        HSDPadButton upButton = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
+        HSDPadButton leftButton = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
+        HSDPadButton downButton = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
+        HSDPadButton rightButton = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
         upButton.whenPressed(new SetArmPosition(ArmDirection.UP));
         downButton.whenPressed(new SetArmPosition(ArmDirection.DOWN));
 
