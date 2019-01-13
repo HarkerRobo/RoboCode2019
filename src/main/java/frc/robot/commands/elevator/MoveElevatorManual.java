@@ -40,11 +40,18 @@ public class MoveElevatorManual extends IndefiniteCommand {
             double currSpeed = Elevator.getInstance().getMaster().getSelectedSensorVelocity(Global.PID_PRIMARY);
             double distFromSoft = position - Elevator.REVERSE_SOFT_LIMIT;
             double outputFactor = 1.0;
- /*           if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED < Elevator.SLOW_DOWN_SPEED)
+            if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED < Elevator.SLOW_DOWN_PERCENT)
             {
-                outputFactor = MathUtil.map();
-            }*/
-            //boolean 
+                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, 1, 0);
+            }
+            else if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED >= Elevator.SLOW_DOWN_PERCENT) {
+                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, 1, -0.5);
+            }
+            speed *= outputFactor;
+            Elevator.getInstance().moveElevatorVelocity(speed);
+        }
+        else {
+            Elevator.getInstance().moveElevatorVelocity(0);
         }
         
     }

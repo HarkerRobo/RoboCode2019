@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.elevator.MoveElevatorManual;
@@ -26,9 +26,11 @@ public class Elevator extends Subsystem {
     private static final int CONT_CURRENT_TIME = 0;
     private static final boolean INVERTED = false;
  
-    public static final int REVERSE_SOFT_LIMIT = 0;
+    public static final int REVERSE_SOFT_LIMIT= 0;
     public static final int POSITION_PID = 0;
     public static final int MAX_SPEED = 0;
+    public static final int SLOW_DOWN_PERCENT = 0;
+    public static final int FFGRAV = 0;
 
     private Elevator() {
         elTalon = new HSTalon(CAN_IDs.EL_MASTER);
@@ -59,6 +61,9 @@ public class Elevator extends Subsystem {
         elTalon.setInverted(INVERTED);
     }
 
+    public void moveElevatorVelocity(double speed) {
+        elTalon.set(ControlMode.PercentOutput, speed, Elevator.FFGRAV);
+    }
     public HSTalon getMaster() {
         return elTalon;
     }
