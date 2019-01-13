@@ -7,7 +7,7 @@ import harkerrobolib.util.MathUtil;
 
 
 /**
- * Controls ball intake
+ * Controls ball intake.
  * 
  * @author Anirudh Kotamraju
  * @since 1/11/2019

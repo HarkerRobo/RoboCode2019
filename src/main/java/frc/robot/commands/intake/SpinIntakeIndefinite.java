@@ -5,16 +5,17 @@ import frc.robot.subsystems.Intake.IntakeDirection;
 import harkerrobolib.commands.IndefiniteCommand;
 
 /**
- * Spins the intake indefinitely
+ * Spins the intake indefinitely.
  * 
  * @author Chirag Kaushik
- * @since January 12, 2019
+ * @since  1/12/19
  */
 public class SpinIntakeIndefinite extends IndefiniteCommand {
     private IntakeDirection direction;
     private double magnitude;
 
     public SpinIntakeIndefinite(double magnitude, IntakeDirection direction) {
+        requires(Intake.getInstance());
         this.magnitude = magnitude;
         this.direction = direction;
     }    

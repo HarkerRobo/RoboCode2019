@@ -5,7 +5,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
 
 /**
- * Intakes the ball into the robot
+ * Intakes the ball into the robot.
  * 
  * @author Anirudh Kotamraju
  * @since 1/11/2019

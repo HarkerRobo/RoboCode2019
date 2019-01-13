@@ -10,7 +10,7 @@ import harkerrobolib.util.MathUtil;
 import harkerrobolib.commands.IndefiniteCommand;
 
 /**
- * Allows manual control over the rollers for intake and outtake
+ * Allows manual control over the rollers for intake and outtake.
  * 
  * @author Chirag Kaushik
  * @author Shahzeb Lakhani

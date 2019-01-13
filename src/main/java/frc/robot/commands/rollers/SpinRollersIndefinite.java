@@ -15,6 +15,7 @@ public class SpinRollersIndefinite extends IndefiniteCommand {
     private double magnitude;
 
     public SpinRollersIndefinite(double magnitude, RollerDirection direction) {
+        requires(Rollers.getInstance());
         this.direction = direction;
         this.magnitude = magnitude;
     }
