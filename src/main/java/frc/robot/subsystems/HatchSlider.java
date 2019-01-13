@@ -4,6 +4,11 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 
+/**
+ * Represents the hatch slider on the robot.
+ * 
+ * @version 1/12/19
+ */
 public class HatchSlider extends Subsystem {
     private DoubleSolenoid solenoid;
 

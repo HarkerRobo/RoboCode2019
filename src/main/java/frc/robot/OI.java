@@ -15,7 +15,7 @@ import harkerrobolib.wrappers.LogitechAnalogGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
 /**
- * Holds both driver and operator gamepads.
+ * Contains both driver and operator gamepads.
  * 
  * @since 1/7/19
  */

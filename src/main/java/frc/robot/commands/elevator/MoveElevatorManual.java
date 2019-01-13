@@ -42,10 +42,10 @@ public class MoveElevatorManual extends IndefiniteCommand {
             double outputFactor = 1.0;
             if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED < Elevator.SLOW_DOWN_PERCENT)
             {
-                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, 1, 0);
+                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, Elevator.MAX_OUTPUT_FACTOR, Elevator.MIN_LESS_OUTPUT_FACTOR);
             }
             else if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED >= Elevator.SLOW_DOWN_PERCENT) {
-                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, 1, -0.5);
+                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, Elevator.MAX_OUTPUT_FACTOR, Elevator.MIN_MORE_OUTPUT_FACTOR);
             }
             speed *= outputFactor;
             Elevator.getInstance().moveElevatorVelocity(speed);

@@ -6,7 +6,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 
 /**
- * Picks up cargo from the human player station and the ground
+ * Represents the arm of the robot, 
+ * which picks up cargo from the human player station and the ground.
  * 
  * @author Chirag Kaushik
  * @author Finn Frankis

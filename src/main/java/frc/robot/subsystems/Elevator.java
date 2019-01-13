@@ -31,6 +31,9 @@ public class Elevator extends Subsystem {
     public static final int MAX_SPEED = 0;
     public static final int SLOW_DOWN_PERCENT = 0;
     public static final int FFGRAV = 0;
+    public static final int MAX_OUTPUT_FACTOR = 1;
+    public static final int MIN_LESS_OUTPUT_FACTOR = 0;
+    public static final int MIN_MORE_OUTPUT_FACTOR = -0.5;
 
     private Elevator() {
         elTalon = new HSTalon(CAN_IDs.EL_MASTER);

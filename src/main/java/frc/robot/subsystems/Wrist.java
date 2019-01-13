@@ -11,6 +11,7 @@ import harkerrobolib.wrappers.HSTalon;
 
 /**
  * Represents the wrist on the robot.
+ * 
  * @author Finn Frankis
  * @since 1/10/19
  */

@@ -9,7 +9,8 @@ import frc.robot.commands.rollers.SpinRollersManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
- * Moves the balls to the cargo space
+ * Moves the cargo to the cargo space.
+ * 
  * @author Shahzeb Lakhani
  * @author Chirag Kaushik
  * @since 1/10/19

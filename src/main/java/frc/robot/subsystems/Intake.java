@@ -9,7 +9,7 @@ import frc.robot.commands.intake.SpinIntakeManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
- * Intakes the ball into the robot
+ * Intakes the cargo into the robot.
  * 
  * @author Anirudh Kotamraju
  * @since 1/11/2019
