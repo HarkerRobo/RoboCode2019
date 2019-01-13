@@ -6,6 +6,9 @@ import harkerrobolib.commands.IndefiniteCommand;
 
 /**
  * Spin the rollers at a certain magnitude and direction while button is pressed.
+ * 
+ * @author Chirag Kaushik
+ * @since 1/12/19
  */
 public class SpinRollersIndefinite extends IndefiniteCommand {
     private RollerDirection direction;
