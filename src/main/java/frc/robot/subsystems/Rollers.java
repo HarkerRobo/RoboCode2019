@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.rollers.SpinRollersManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -48,7 +49,7 @@ public class Rollers extends Subsystem {
 
     @Override
 	protected void initDefaultCommand() {
-		//setDefaultCommand();
+		setDefaultCommand(new SpinRollersManual());
     }
     
     /**
