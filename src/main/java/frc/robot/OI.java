@@ -1,7 +1,7 @@
 package frc.robot;
 
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.elevator.MoveElevatorMagic;
+import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
@@ -70,7 +70,7 @@ public class OI {
         driverGamepad.getButtonA().whenReleased(new MoveWristPosition(Wrist.MAX_FORWARD_POSITION));
 
         driverGamepad.getButtonX().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorMagic(LOW_SCORING_POSITION),
+            new MoveElevatorMotionMagic(LOW_SCORING_POSITION),
             new MoveWristPosition(WRIST_ANGLE_SCORING)
         ));
         driverGamepad.getButtonY().whenPressed(new ParallelCommandGroup(

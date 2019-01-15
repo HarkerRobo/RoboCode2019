@@ -13,11 +13,11 @@ import frc.robot.subsystems.Elevator;
  * @author Dawson Chen
  * @since 1/14/19
  */
-public class MoveElevatorMagic extends Command {
+public class MoveElevatorMotionMagic extends Command {
 
 	private double setpoint;
 
-    public MoveElevatorMagic(double setpoint) {
+    public MoveElevatorMotionMagic(double setpoint) {
         requires(Elevator.getInstance());
         this.setpoint = setpoint;
     }
@@ -35,6 +35,6 @@ public class MoveElevatorMagic extends Command {
 
     @Override
     protected void execute() {
-        Elevator.getInstance().getMaster().set(ControlMode.MotionMagic, setpoint);    
+        Elevator.getInstance().getMaster().set(ControlMode.MotionMagic, setpoint);  
     }
 }
