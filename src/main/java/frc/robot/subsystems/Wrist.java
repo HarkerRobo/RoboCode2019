@@ -18,7 +18,7 @@ import harkerrobolib.wrappers.HSTalon;
 public class Wrist extends Subsystem {
 
     private static Wrist wr;
-
+    
     private HSTalon wristMaster;
     private VictorSPX wristFollower;
 
@@ -28,7 +28,8 @@ public class Wrist extends Subsystem {
     private static final int CONTINUOUS_CURRENT_LIMIT = 0;
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int PEAK_TIME = 500;
-
+    public static final double WRIST_ANGLE_SCORING = 0.0;
+    public static final double WRIST_ANGLE_INTAKE = 180.0;
     public static final int ALLOWABLE_ERROR = 400;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 10000; // TUNE

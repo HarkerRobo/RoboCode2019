@@ -7,10 +7,11 @@ import frc.robot.RobotMap.CAN_IDs;
 /**
  * Represents the hatch slider on the robot.
  * 
- * @version 1/12/19
+ * @since 1/12/19
+ * @author
  */
 public class HatchSlider extends Subsystem {
-    private DoubleSolenoid solenoid;
+    private static DoubleSolenoid solenoid;
 
     private static HatchSlider hatchSlider;
 
@@ -19,13 +20,18 @@ public class HatchSlider extends Subsystem {
     }
     @Override
     protected void initDefaultCommand() {
-        
+        //setDefaultCommand();
     }
 
     public static HatchSlider getInstance () {
         if (hatchSlider == null)
             hatchSlider = new HatchSlider();
         return hatchSlider;
+    }
+
+    public static DoubleSolenoid getSolenoid()
+    {
+        return solenoid;
     }
 
 }

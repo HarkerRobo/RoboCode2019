@@ -1,6 +1,8 @@
 package frc.robot;
 
 import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.elevator.MoveElevatorMagic;
+import frc.robot.commands.elevator.MoveElevatorPosition;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
@@ -13,6 +15,7 @@ import harkerrobolib.wrappers.HSDPadButton;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
+
 
 /**
  * Contains both driver and operator gamepads.
@@ -65,6 +68,26 @@ public class OI {
             new SpinRollersIndefinite(1.0, RollerDirection.IN),
             new SpinIntakeIndefinite(1.0, IntakeDirection.IN)));
         driverGamepad.getButtonA().whenReleased(new MoveWristPosition(Wrist.MAX_FORWARD_POSITION));
+
+        driverGamepad.getButtonX().whenPressed(new ParallelCommandGroup(
+            new MoveElevatorMagic(LOW_SCORING_POSITION),
+            new MoveWristPosition(WRIST_ANGLE_SCORING)
+        ));
+        driverGamepad.getButtonY().whenPressed(new ParallelCommandGroup(
+            new MoveElevatorPosition(HIGH_SCORING_POSITION),
+            new MoveWristPosition(WRIST_ANGLE_SCORING)            
+        ));
+
+        driverGamepad.getButtonB().whenPressed(new ParallelCommandGroup(
+            new MoveElevatorPosition(MEDIUM_SOCRING_POSITION), 
+            new MoveWristPosition(WRIST_ANGLE_SCORING)                    
+        )); 
+        
+
+        driverGamepad.getButtonA().whenPressed(new ParallelCommandGroup(
+            new MoveElevatorPosition(0.0),
+            new MoveWristPosition(wristAngleIntake)
+        ));        
     }
 
     public HSGamepad getDriverGamepad() {
