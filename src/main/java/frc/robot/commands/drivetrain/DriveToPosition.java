@@ -33,11 +33,6 @@ public class DriveToPosition extends Command {
         requires(Drivetrain.getInstance());
     }
 
-    @Override
-    protected boolean isFinished() {
-        return Drivetrain.getInstance().isClosedLoopErrorWithin(Global.PID_PRIMARY, Drivetrain.ALLOWABLE_ERROR);
-    }
-
     protected void initialize() {
         Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
         Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
@@ -55,5 +50,10 @@ public class DriveToPosition extends Command {
     protected void execute() {
         Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position, Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
         Drivetrain.getInstance().getRightMaster().set(ControlMode.Position, Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return Drivetrain.getInstance().isClosedLoopErrorWithin(Global.PID_PRIMARY, Drivetrain.ALLOWABLE_ERROR);
     }
 }

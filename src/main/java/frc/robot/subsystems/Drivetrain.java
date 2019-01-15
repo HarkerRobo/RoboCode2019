@@ -19,6 +19,7 @@ import harkerrobolib.wrappers.HSTalon;
  * @author Rohan Rashingkar
  * @author Anirudh Kotamraju
  * @author Angela Jia
+ * @author Arnav Gupta
  * @since 1/7/19
  */
 public class Drivetrain extends HSDrivetrain {
