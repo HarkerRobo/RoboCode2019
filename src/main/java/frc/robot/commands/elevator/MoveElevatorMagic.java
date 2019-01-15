@@ -1,29 +1,17 @@
 package frc.robot.commands.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
-
-import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.RobotMap.Global;
-import frc.robot.subsystems.Drivetrain;
-
 /**
- * Turn to specified angle.
+ * Move the elevator 
  * 
- * @author Angela Jia
  * @author Dawson Chen
- * @author Aimee Wang
- * @since 1/8/19
+ * @since 1/14/19
  */
-public class TurnToAngle extends Command {
+public class MoveElevatorMagic extends Command {
 
-    private double angle;
+    private double position;
 
-    public TurnToAngle(int angle) {
-        requires(Drivetrain.getInstance());
-        this.angle = angle;
+    public MoveElevatorMagic() {
+        requires(Elevator.getInstance());
     }
 
     @Override
@@ -33,7 +21,7 @@ public class TurnToAngle extends Command {
 
     @Override
     protected void initialize() {
-        Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.ANGLE_SLOT_INDEX, Global.PID_PRIMARY);
+        Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Elevator.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
         Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.ANGLE_SLOT_INDEX, Global.PID_PRIMARY);    
 
         Drivetrain.getInstance().getLeftMaster().configRemoteFeedbackFilter(CAN_IDs.PIGEON,RemoteSensorSource.Pigeon_Yaw,Global.REMOTE_SLOT_0);
