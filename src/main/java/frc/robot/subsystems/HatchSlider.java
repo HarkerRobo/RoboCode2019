@@ -18,6 +18,7 @@ public class HatchSlider extends Subsystem {
     private HatchSlider () {
         solenoid = new DoubleSolenoid(CAN_IDs.HATCH_FORWARD_CHANNEL, CAN_IDs.HATCH_REVERSE_CHANNEL);
     }
+    
     @Override
     protected void initDefaultCommand() {
         //setDefaultCommand();

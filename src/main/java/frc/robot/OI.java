@@ -7,6 +7,7 @@ import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm.ArmDirection;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import frc.robot.subsystems.Wrist;
@@ -67,26 +68,27 @@ public class OI {
         driverGamepad.getButtonA().whilePressed(new ParallelCommandGroup(
             new SpinRollersIndefinite(1.0, RollerDirection.IN),
             new SpinIntakeIndefinite(1.0, IntakeDirection.IN)));
+
         driverGamepad.getButtonA().whenReleased(new MoveWristPosition(Wrist.MAX_FORWARD_POSITION));
 
         driverGamepad.getButtonX().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorMotionMagic(LOW_SCORING_POSITION),
-            new MoveWristPosition(WRIST_ANGLE_SCORING)
+            new MoveElevatorMotionMagic(Elevator.LOW_SCORING_POSITION),
+            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)
         ));
+
         driverGamepad.getButtonY().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorPosition(HIGH_SCORING_POSITION),
-            new MoveWristPosition(WRIST_ANGLE_SCORING)            
+            new MoveElevatorPosition(Elevator.HIGH_SCORING_POSITION),
+            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)            
         ));
 
         driverGamepad.getButtonB().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorPosition(MEDIUM_SOCRING_POSITION), 
-            new MoveWristPosition(WRIST_ANGLE_SCORING)                    
+            new MoveElevatorPosition(Elevator.MEDIUM_SCORING_POSITION), 
+            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)                    
         )); 
-        
 
         driverGamepad.getButtonA().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorPosition(0.0),
-            new MoveWristPosition(wristAngleIntake)
+            new MoveElevatorPosition(Elevator.INTAKE_POSITION),
+            new MoveWristPosition(Wrist.WRIST_ANGLE_INTAKE)
         ));        
     }
 

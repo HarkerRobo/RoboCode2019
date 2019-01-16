@@ -30,11 +30,10 @@ public class Elevator extends Subsystem {
     private static final boolean INVERTED_MASTER = false;
     private static final boolean INVERTED_VICT_ONE = false;
     private static final boolean INVERTED_VICT_TWO = false;
-    
-    private static final int POSITION_SLOT_INDEX = 0;
 
     public static final int REVERSE_SOFT_LIMIT= 0;
     public static final int POSITION_PID = 0;
+    public static final double INTAKE_POSITION = 0.0;
     public static final double LOW_SCORING_POSITION = 60.0;
     public static final double MEDIUM_SCORING_POSITION = 120.0;
     public static final double HIGH_SCORING_POSITION = 180.0;
