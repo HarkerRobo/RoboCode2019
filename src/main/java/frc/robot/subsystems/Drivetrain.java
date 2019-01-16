@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
@@ -58,9 +57,9 @@ public class Drivetrain extends HSDrivetrain {
     private Drivetrain() { 
         super(new HSTalon(CAN_IDs.DT_LEFT_MASTER), 
                 new HSTalon(CAN_IDs.DT_RIGHT_MASTER), 
-                new VictorSPX (CAN_IDs.DT_LEFT_FOLLOWER),
-                new VictorSPX (CAN_IDs.DT_RIGHT_FOLLOWER),
-                new HSPigeon(CAN_IDs.PIGEON));
+                new HSTalon (CAN_IDs.DT_LEFT_FOLLOWER),
+                new HSTalon (CAN_IDs.DT_RIGHT_FOLLOWER));
+                //new HSPigeon(CAN_IDs.PIGEON));
         //Update IDs
     }
 
