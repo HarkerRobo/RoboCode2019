@@ -60,13 +60,22 @@ public class OI {
         operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(1,RollerDirection.IN));
         operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(1,RollerDirection.OUT));
 
-        HSDPadButton upButton = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
-        HSDPadButton leftButton = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
-        HSDPadButton downButton = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
-        HSDPadButton rightButton = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
-        upButton.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
-        downButton.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+        HSDPadButton driverUpDPad = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
+        HSDPadButton driverLeftDPad = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
+        HSDPadButton driverDownDPad = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
+        HSDPadButton driverRightDPad = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
 
+        HSDPadButton operatorUpDPad = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
+        HSDPadButton operatorLeftDPad = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
+        HSDPadButton operatorDownDPad = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
+        HSDPadButton operatorRightDPad = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
+
+        operatorUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
+        operatorDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+        
+        driverUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
+        driverDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+        
         driverGamepad.getButtonA().whilePressed(new ParallelCommandGroup(
             new SpinRollersIndefinite(1.0, RollerDirection.IN),
             new SpinIntakeIndefinite(1.0, IntakeDirection.IN)));
