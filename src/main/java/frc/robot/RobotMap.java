@@ -17,7 +17,7 @@ public class RobotMap {
         public static final int RO_TOP = 0; 
         public static final int RO_BOTTOM = 0;
         public static final int ARM_FORWARD_CHANNEL = 0, ARM_REVERSE_CHANNEL = 1;
-        public static final int HATCH_FORWARD_CHANNEL = 2, HATCH_REVERSE_CHANNEL = 3;
+        public static final int HATCH_FORWARD_CHANNEL = 2, HATCH_REVERSE_CHANNEL = 5;
         public static final int PIGEON = 0;
         public static final int PCM = 0;
     }

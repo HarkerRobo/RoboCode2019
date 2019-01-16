@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
         hatchPusher = HatchPusher.getInstance();
         oi = OI.getInstance();                
                 
+        drivetrain.talonInit();
     }
 
     /**
@@ -63,7 +64,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        drivetrain.talonInit();
     }
 
     /**
@@ -95,15 +95,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
-        NetworkTableEntry tx = networkTable.getEntry("tx");
-        NetworkTableEntry ty = networkTable.getEntry("ty");
-        NetworkTableEntry ta = networkTable.getEntry("ta");
-        double x = tx.getDouble(0.0);
-        double y = ty.getDouble(0.0);
-        double area = ta.getDouble(0.0);
-
-        System.out.println(String.format("tx: %.2f ty: %.2f ta: %.2f", x, y, area));
     }
 
     /**

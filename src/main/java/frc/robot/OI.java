@@ -60,10 +60,10 @@ public class OI {
         operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(1,RollerDirection.IN));
         operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(1,RollerDirection.OUT));
 
-        HSDPadButton driverUpDPad = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
-        HSDPadButton driverLeftDPad = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
-        HSDPadButton driverDownDPad = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
-        HSDPadButton driverRightDPad = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
+        HSDPadButton driverUpDPad = new HSDPadButton(driverGamepad, DPAD_UP_ANGLE);
+        HSDPadButton driverLeftDPad = new HSDPadButton(driverGamepad, DPAD_LEFT_ANGLE);
+        HSDPadButton driverDownDPad = new HSDPadButton(driverGamepad, DPAD_DOWN_ANGLE);
+        HSDPadButton driverRightDPad = new HSDPadButton(driverGamepad, DPAD_RIGHT_ANGLE);
 
         HSDPadButton operatorUpDPad = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
         HSDPadButton operatorLeftDPad = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);

@@ -16,7 +16,7 @@ import frc.robot.RobotMap.CAN_IDs;
  */
 public class HatchPusher extends Subsystem {
     public enum PushDirection {
-        IN(DoubleSolenoid.Value.kForward), OUT(DoubleSolenoid.Value.kReverse);
+        IN(DoubleSolenoid.Value.kReverse), OUT(DoubleSolenoid.Value.kForward);
         private DoubleSolenoid.Value value;
         private PushDirection(DoubleSolenoid.Value value) {
             this.value = value;
@@ -55,7 +55,7 @@ public class HatchPusher extends Subsystem {
    
     public static HatchPusher getInstance() {
         if(instance == null){
-           new HatchPusher();                                                                                        
+           instance = new HatchPusher();                                                                                        
         }
         return instance;
     }
