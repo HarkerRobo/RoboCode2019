@@ -28,6 +28,8 @@ public class Drivetrain extends HSDrivetrain {
 
     private static boolean LEFT_MASTER_INVERTED = false;
     private static boolean RIGHT_MASTER_INVERTED = false;
+    private static boolean LEFT_FOLLOWER_INVERTED = false;
+    private static boolean RIGHT_FOLLOWER_INVERTED = false;
 
     private static int TALON_PEAK_LIMIT = 20;
     private static int TALON_PEAK_TIME = 750;
@@ -85,7 +87,7 @@ public class Drivetrain extends HSDrivetrain {
      * A method to initialize the Talons for the start of the match
      */
     public void talonInit() {
-        invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED);
+        invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
         setNeutralMode(NeutralMode.Brake);
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
         configClosedLoopConstants(Drivetrain.POSITION_SLOT_INDEX, 
