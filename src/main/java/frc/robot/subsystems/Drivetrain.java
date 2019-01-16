@@ -107,4 +107,8 @@ public class Drivetrain extends HSDrivetrain {
     public HSPigeon getPigeon() {
         return pigeon;
     }
+
+    public boolean isProximitySensorTriggered () {
+        return getLeftMaster().getSensorCollection().isFwdLimitSwitchClosed();
+    }
 }
