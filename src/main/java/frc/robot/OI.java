@@ -3,11 +3,13 @@ package frc.robot;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
+import frc.robot.commands.hatchpanelintake.SetHatchPusherDirection;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.HatchPusher;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import frc.robot.subsystems.Wrist;
@@ -62,8 +64,8 @@ public class OI {
         HSDPadButton leftButton = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
         HSDPadButton downButton = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
         HSDPadButton rightButton = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
-        upButton.whenPressed(new SetArmPosition(ArmDirection.UP));
-        downButton.whenPressed(new SetArmPosition(ArmDirection.DOWN));
+        upButton.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
+        downButton.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
 
         driverGamepad.getButtonA().whilePressed(new ParallelCommandGroup(
             new SpinRollersIndefinite(1.0, RollerDirection.IN),

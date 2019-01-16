@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.HatchPusher;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
     private Rollers rollers;
     private Wrist wrist;
     private Intake ballIntake;
+    private HatchPusher hatchPusher;
     private OI oi;
 
     /**
@@ -47,10 +49,11 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         drivetrain = Drivetrain.getInstance();
-        arm = Arm.getInstance();
-        elevator = Elevator.getInstance();
-        rollers = Rollers.getInstance();
-        wrist = Wrist.getInstance();
+        //arm = Arm.getInstance();
+        //elevator = Elevator.getInstance();
+        //rollers = Rollers.getInstance();
+        //wrist = Wrist.getInstance();
+        hatchPusher = HatchPusher.getInstance();
         oi = OI.getInstance();                
                 
     }

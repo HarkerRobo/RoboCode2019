@@ -26,9 +26,9 @@ public class Drivetrain extends HSDrivetrain {
     private static HSPigeon pigeon;
 
     private static boolean LEFT_MASTER_INVERTED = false;
-    private static boolean RIGHT_MASTER_INVERTED = false;
+    private static boolean RIGHT_MASTER_INVERTED = true;
     private static boolean LEFT_FOLLOWER_INVERTED = false;
-    private static boolean RIGHT_FOLLOWER_INVERTED = false;
+    private static boolean RIGHT_FOLLOWER_INVERTED = true;
 
     private static int TALON_PEAK_LIMIT = 20;
     private static int TALON_PEAK_TIME = 750;

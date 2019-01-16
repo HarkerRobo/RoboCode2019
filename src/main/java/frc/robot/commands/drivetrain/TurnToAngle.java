@@ -1,5 +1,6 @@
 package frc.robot.commands.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 
@@ -50,7 +51,7 @@ public class TurnToAngle extends Command {
 
     @Override
     protected void execute() {
-        Drivetrain.getInstance().getLeftMaster().set(angle,Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
-        Drivetrain.getInstance().getRightMaster().set(angle,Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position, angle);
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.Position, angle);
     }
 }
