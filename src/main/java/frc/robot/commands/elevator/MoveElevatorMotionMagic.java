@@ -8,7 +8,8 @@ import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
 
 /**
- * Move the elevator 
+ * Moves the elevator to a specified setpoint
+ * using motion magic. 
  * 
  * @author Dawson Chen
  * @since 1/14/19

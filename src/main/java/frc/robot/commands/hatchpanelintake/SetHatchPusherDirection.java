@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.subsystems.HatchPusher;
 
 /**
- * Sets Hatch Intake Direction
+ * Sets the hatch's intake to a specified direction.
  * 
  * @author Chirag Kaushik
- * @since January 14 2019
+ * @since  1/14/19
  */
 public class SetHatchPusherDirection extends InstantCommand {
     private HatchPusher.PushDirection direction;

@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.subsystems.HatchPusher;
 
 /**
- * Toggles the hatch panel intake direction
+ * Toggles the hatch panel intake direction.
  * 
  * @author Chirag Kaushik
- * @since January 14, 2019
+ * @since  1/14/19
  */
 public class ToggleHatchPusher extends InstantCommand {
 

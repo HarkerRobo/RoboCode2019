@@ -8,9 +8,12 @@ import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
 
 /**
- * Moves the elevator to a certain encoder position
+ * Moves the elevator to a specified encoder position
+ * using position PID.
  * 
- * @authors Aimee W, Shahzeb L, Jatin K
+ * @author Aimee W
+ * @author Shahzeb L
+ * @author Jatin K
  */
 public class MoveElevatorPosition extends Command
 {
