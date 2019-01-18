@@ -1,11 +1,16 @@
 package frc.robot;
 
+import frc.robot.commands.SpinIntakeAndRollers;
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.intake.SpinIntakeIndefinite;
+import frc.robot.commands.elevator.MoveElevatorMotionMagic;
+import frc.robot.commands.elevator.MoveElevatorPosition;
+import frc.robot.commands.hatchpanelintake.SetHatchPusherDirection;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.Intake.IntakeDirection;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.HatchPusher;
+import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.ParallelCommandGroup;
@@ -28,7 +33,8 @@ public class OI {
     private static final int OPERATOR_PORT = 1;
 
     public static final double DRIVER_DEADBAND = 0.1;
-    public static final double OPERATOR_DEADBAND = 0.1;
+    public static final double OPERATOR_DEADBAND_JOYSTICK = 0.1;
+    public static final double OPERATOR_DEADBAND_TRIGGER = 0.1;
 
     public static final boolean HAS_TWO_CONTROLLERS = true;
 
@@ -46,26 +52,60 @@ public class OI {
     }
     
     public void initBindings() {
-        driverGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.UP));
-        driverGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.DOWN));
-        driverGamepad.getButtonX().whenPressed(new MoveWristPosition(Wrist.MAX_BACKWARD_POSITION));
-        driverGamepad.getButtonB().whenPressed(new MoveWristPosition(Wrist.MAX_FORWARD_POSITION));
+        //driver bumpers
+        driverGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.DOWN));
+        driverGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.UP));
+    
+        //driver buttons
+        driverGamepad.getButtonA().whenPressed(new ParallelCommandGroup(
+            new MoveElevatorPosition(Elevator.INTAKE_POSITION),
+            new MoveWristPosition(Wrist.WRIST_ANGLE_INTAKE)
+        ));
+
+        driverGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, RollerDirection.IN));
+                 
+        driverGamepad.getButtonX().whenPressed(new ParallelCommandGroup(
+            new MoveElevatorMotionMagic(Elevator.LOW_SCORING_POSITION),
+            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)
+        ));
+
+        driverGamepad.getButtonY().whenPressed(new ParallelCommandGroup(
+            new MoveElevatorPosition(Elevator.MEDIUM_SCORING_POSITION),
+            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)            
+        ));
+
+        driverGamepad.getButtonB().whenPressed(new SetArmPosition(ArmDirection.DOWN));
+        driverGamepad.getButtonB().whilePressed(new SpinIntakeAndRollers());
+
+        //driver dpad
+        HSDPadButton driverUpDPad = new HSDPadButton(driverGamepad, DPAD_UP_ANGLE);
+        HSDPadButton driverLeftDPad = new HSDPadButton(driverGamepad, DPAD_LEFT_ANGLE);
+        HSDPadButton driverDownDPad = new HSDPadButton(driverGamepad, DPAD_DOWN_ANGLE);
+        HSDPadButton driverRightDPad = new HSDPadButton(driverGamepad, DPAD_RIGHT_ANGLE);
+
+        driverUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
+        driverDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+
+        //operator bumpers                 
+        operatorGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.UP));
+        operatorGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.DOWN));
+             //done           
+        //operator dpad
+        HSDPadButton operatorUpDPad = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
+        HSDPadButton operatorLeftDPad = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
+        HSDPadButton operatorDownDPad = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
+        HSDPadButton operatorRightDPad = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
+        //done
+
+        //operator dpad
+        operatorUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
+        operatorDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
         
-        operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(1,RollerDirection.IN));
-        operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(1,RollerDirection.OUT));
-
-        HSDPadButton upButton = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
-        HSDPadButton leftButton = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
-        HSDPadButton downButton = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
-        HSDPadButton rightButton = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
-        upButton.whenPressed(new SetArmPosition(ArmDirection.UP));
-        downButton.whenPressed(new SetArmPosition(ArmDirection.DOWN));
-
-        driverGamepad.getButtonA().whilePressed(new ParallelCommandGroup(
-            new SpinRollersIndefinite(1.0, RollerDirection.IN),
-            new SpinIntakeIndefinite(1.0, IntakeDirection.IN)));
-        driverGamepad.getButtonA().whenReleased(new MoveWristPosition(Wrist.MAX_FORWARD_POSITION));
-    }
+        //operator buttons
+        
+        operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(SpinRollersIndefinite.magnitude1,RollerDirection.OUT));
+        operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(SpinRollersIndefinite.magnitude2,RollerDirection.OUT));
+    }  
 
     public HSGamepad getDriverGamepad() {
         return driverGamepad;

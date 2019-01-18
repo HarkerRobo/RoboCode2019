@@ -14,6 +14,7 @@ import harkerrobolib.util.Conversions.PositionUnit;
  * 
  * @author Angela Jia
  * @author Dawson Chen
+ * @author Arnav Gupta
  * @since 1/8/19
  */
 public class DriveToPosition extends Command {
@@ -30,11 +31,6 @@ public class DriveToPosition extends Command {
         this.setpoint = Conversions.convert(PositionUnit.FEET, setpoint,
                 Conversions.PositionUnit.ENCODER_UNITS);
         requires(Drivetrain.getInstance());
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return Drivetrain.getInstance().isClosedLoopErrorWithin(Global.PID_PRIMARY, Drivetrain.ALLOWABLE_ERROR);
     }
 
     protected void initialize() {
@@ -54,5 +50,10 @@ public class DriveToPosition extends Command {
     protected void execute() {
         Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position, Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
         Drivetrain.getInstance().getRightMaster().set(ControlMode.Position, Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
+    }
+
+    @Override
+    protected boolean isFinished() {
+        return Drivetrain.getInstance().isClosedLoopErrorWithin(Global.PID_PRIMARY, Drivetrain.ALLOWABLE_ERROR);
     }
 }

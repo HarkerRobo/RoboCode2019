@@ -7,14 +7,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.HatchPusher;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
@@ -38,6 +36,7 @@ public class Robot extends TimedRobot {
     private Rollers rollers;
     private Wrist wrist;
     private Intake ballIntake;
+    private HatchPusher hatchPusher;
     private OI oi;
 
     /**
@@ -47,12 +46,14 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         drivetrain = Drivetrain.getInstance();
-        arm = Arm.getInstance();
-        elevator = Elevator.getInstance();
-        rollers = Rollers.getInstance();
-        wrist = Wrist.getInstance();
+        //arm = Arm.getInstance();
+        //elevator = Elevator.getInstance();
+        //rollers = Rollers.getInstance();
+        //wrist = Wrist.getInstance();
+        hatchPusher = HatchPusher.getInstance();
         oi = OI.getInstance();                
                 
+        drivetrain.talonInit();
     }
 
     /**
@@ -91,15 +92,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("limelight");
-        NetworkTableEntry tx = networkTable.getEntry("tx");
-        NetworkTableEntry ty = networkTable.getEntry("ty");
-        NetworkTableEntry ta = networkTable.getEntry("ta");
-        double x = tx.getDouble(0.0);
-        double y = ty.getDouble(0.0);
-        double area = ta.getDouble(0.0);
-
-        System.out.println(String.format("tx: %.2f ty: %.2f ta: %.2f", x, y, area));
+        System.out.println(Drivetrain.getInstance().isProximitySensorTriggered());
+        Wrist.getInstance().updateLEDIfProximitySensorTriggered();
     }
 
     /**

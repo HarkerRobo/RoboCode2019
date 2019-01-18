@@ -4,9 +4,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.elevator.MoveElevatorManual;
+import frc.robot.commands.elevator.MoveElevatorPosition;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -24,21 +26,30 @@ public class Elevator extends Subsystem {
     
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_LIMIT = 0;
-    private static final int CONT_CURRENT_TIME = 0;
+    private static final int PEAK_CURRENT_TIME = 0;
     private static final boolean INVERTED_MASTER = false;
     private static final boolean INVERTED_VICT_ONE = false;
     private static final boolean INVERTED_VICT_TWO = false;
-    
-    private static final int POSITION_SLOT_INDEX = 0;
 
     public static final int REVERSE_SOFT_LIMIT= 0;
     public static final int POSITION_PID = 0;
+    public static final double INTAKE_POSITION = 0.0;
+    public static final double LOW_SCORING_POSITION = 60.0;
+    public static final double MEDIUM_SCORING_POSITION = 120.0;
+    public static final double HIGH_SCORING_POSITION = 180.0;
     public static final int MAX_SPEED = 0;
     public static final int SLOW_DOWN_PERCENT = 0;
     public static final int FFGRAV = 0;
     public static final int MAX_OUTPUT_FACTOR = 1;
     public static final double MIN_LESS_OUTPUT_FACTOR = 0;
     public static final double MIN_MORE_OUTPUT_FACTOR = -0.5;
+
+    public static final int POSITION_SLOT_INDEX = 0;
+    public static final int MOTIONMAGIC_SLOT_INDEX = 1;
+
+    public static final int PEAK_ACCELERATION = 0;
+    public static final int ZERO_CURRENT_SPIKE = 0;
+    private static final int CRUISE_VELOCITY = 0;
 
     private Elevator() {
         elTalon = new HSTalon(CAN_IDs.EL_MASTER);
@@ -65,13 +76,26 @@ public class Elevator extends Subsystem {
         elTalon.setNeutralMode(NeutralMode.Brake);
         elTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
         elTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-        elTalon.configPeakCurrentDuration(CONT_CURRENT_TIME);
+        elTalon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
         elTalon.setInverted(INVERTED_MASTER);
         victorOne.setInverted(INVERTED_VICT_ONE);
         victorTwo.setInverted(INVERTED_VICT_TWO);
+
+        Elevator.getInstance().getMaster().config_kF(POSITION_SLOT_INDEX, MoveElevatorPosition.kF);
+        Elevator.getInstance().getMaster().config_kP(POSITION_SLOT_INDEX, MoveElevatorPosition.kP);
+        Elevator.getInstance().getMaster().config_kI(POSITION_SLOT_INDEX, MoveElevatorPosition.kI);
+        Elevator.getInstance().getMaster().config_kD(POSITION_SLOT_INDEX, MoveElevatorPosition.kD);
+        Elevator.getInstance().getMaster().configMotionAcceleration(Elevator.PEAK_ACCELERATION);
+        Elevator.getInstance().getMaster().configMotionCruiseVelocity(Elevator.CRUISE_VELOCITY);
     }
 
     public void moveElevatorVelocity(double speed) {
+        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+    
+        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+    
+        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+    
         elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     }
     public HSTalon getMaster() {

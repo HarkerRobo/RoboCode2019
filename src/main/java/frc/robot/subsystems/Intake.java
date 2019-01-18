@@ -36,6 +36,8 @@ public class Intake extends Subsystem {
     private final static boolean MASTER_INVERTED = false;
     private final static NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
 
+    public final static double DEFAULT_INTAKE_MAGNITUDE = 1.0;
+
     public HSTalon getTalon() {
         return intakeTalon;
     }
