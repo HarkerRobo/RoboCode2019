@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
@@ -19,6 +18,7 @@ import harkerrobolib.wrappers.HSTalon;
  * @author Rohan Rashingkar
  * @author Anirudh Kotamraju
  * @author Angela Jia
+ * @author Arnav Gupta
  * @since 1/7/19
  */
 public class Drivetrain extends HSDrivetrain {
@@ -26,7 +26,9 @@ public class Drivetrain extends HSDrivetrain {
     private static HSPigeon pigeon;
 
     private static boolean LEFT_MASTER_INVERTED = false;
-    private static boolean RIGHT_MASTER_INVERTED = false;
+    private static boolean RIGHT_MASTER_INVERTED = true;
+    private static boolean LEFT_FOLLOWER_INVERTED = false;
+    private static boolean RIGHT_FOLLOWER_INVERTED = true;
 
     private static int TALON_PEAK_LIMIT = 20;
     private static int TALON_PEAK_TIME = 750;
@@ -50,14 +52,14 @@ public class Drivetrain extends HSDrivetrain {
 
 
     /**
-     * Creates new instance of Drivetrain
+     * Creates new instance of Drivetrain.
      */
     private Drivetrain() { 
         super(new HSTalon(CAN_IDs.DT_LEFT_MASTER), 
                 new HSTalon(CAN_IDs.DT_RIGHT_MASTER), 
-                new VictorSPX (CAN_IDs.DT_LEFT_FOLLOWER),
-                new VictorSPX (CAN_IDs.DT_RIGHT_FOLLOWER),
-                new HSPigeon(CAN_IDs.PIGEON));
+                new HSTalon (CAN_IDs.DT_LEFT_FOLLOWER),
+                new HSTalon (   CAN_IDs.DT_RIGHT_FOLLOWER));
+                //new HSPigeon(CAN_IDs.PIGEON));
         //Update IDs
     }
 
@@ -81,10 +83,10 @@ public class Drivetrain extends HSDrivetrain {
     }
 
     /**
-     * A method to initialize the Talons for the start of the match
+     * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
-        invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED);
+        invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
         setNeutralMode(NeutralMode.Brake);
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
         configClosedLoopConstants(Drivetrain.POSITION_SLOT_INDEX, 
@@ -104,5 +106,9 @@ public class Drivetrain extends HSDrivetrain {
     }
     public HSPigeon getPigeon() {
         return pigeon;
+    }
+
+    public boolean isProximitySensorTriggered () {
+        return getLeftMaster().getSensorCollection().isFwdLimitSwitchClosed();
     }
 }
