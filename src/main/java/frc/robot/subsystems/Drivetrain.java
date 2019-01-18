@@ -52,13 +52,13 @@ public class Drivetrain extends HSDrivetrain {
 
 
     /**
-     * Creates new instance of Drivetrain
+     * Creates new instance of Drivetrain.
      */
     private Drivetrain() { 
         super(new HSTalon(CAN_IDs.DT_LEFT_MASTER), 
                 new HSTalon(CAN_IDs.DT_RIGHT_MASTER), 
                 new HSTalon (CAN_IDs.DT_LEFT_FOLLOWER),
-                new HSTalon (CAN_IDs.DT_RIGHT_FOLLOWER));
+                new HSTalon (   CAN_IDs.DT_RIGHT_FOLLOWER));
                 //new HSPigeon(CAN_IDs.PIGEON));
         //Update IDs
     }
@@ -83,7 +83,7 @@ public class Drivetrain extends HSDrivetrain {
     }
 
     /**
-     * A method to initialize the Talons for the start of the match
+     * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
         invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);

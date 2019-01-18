@@ -36,6 +36,8 @@ public class Rollers extends Subsystem {
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int PEAK_TIME = 0;
 
+    public static final double DEFAULT_ROLLER_MAGNITUDE = 8;
+
     private static Rollers instance;
     private HSTalon rTalonTop;
     private HSTalon rTalonBottom;

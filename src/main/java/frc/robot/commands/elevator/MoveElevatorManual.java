@@ -29,11 +29,11 @@ public class MoveElevatorManual extends IndefiniteCommand {
     @Override
     public void execute() {
         OI oi = OI.getInstance();
-        double speed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
-        Elevator.getInstance().getMaster().set(ControlMode.PercentOutput, speed);
-        if(Math.abs(speed) > oi.DRIVER_DEADBAND)
+        double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
+        Elevator.getInstance().getMaster().set(ControlMode.PercentOutput, desiredSpeed);
+        if(Math.abs(desiredSpeed) > 0)
         {
-            boolean isDown = speed < 0;
+            boolean isDown = desiredSpeed < 0;
             int position = Elevator.getInstance().getMaster().getSelectedSensorPosition(Global.PID_PRIMARY);
             boolean reverseBeyondLimit = position
                                          <= Elevator.REVERSE_SOFT_LIMIT;
@@ -44,11 +44,11 @@ public class MoveElevatorManual extends IndefiniteCommand {
             {
                 outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, Elevator.MAX_OUTPUT_FACTOR, Elevator.MIN_LESS_OUTPUT_FACTOR);
             }
-            else if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED >= Elevator.SLOW_DOWN_PERCENT) {
+            else if(isDown && reverseBeyondLimit) {
                 outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, Elevator.MAX_OUTPUT_FACTOR, Elevator.MIN_MORE_OUTPUT_FACTOR);
             }
-            speed *= outputFactor;
-            Elevator.getInstance().moveElevatorVelocity(speed);
+            desiredSpeed *= outputFactor;
+            Elevator.getInstance().moveElevatorVelocity(desiredSpeed);
         }
         else {
             Elevator.getInstance().moveElevatorVelocity(0);

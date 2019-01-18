@@ -15,7 +15,6 @@ import frc.robot.RobotMap.CAN_IDs;
  * @since 1/11/19
  */
 public class Arm extends Subsystem {
-    
     public enum ArmDirection {        
         UP (DoubleSolenoid.Value.kForward), DOWN (DoubleSolenoid.Value.kReverse);
         private DoubleSolenoid.Value state;
@@ -27,13 +26,12 @@ public class Arm extends Subsystem {
             return state;
         }  
     }
-
     private static Arm instance;
+
+    private static final boolean INITIAL_COMPRESSOR_STATE = true;
 
     private DoubleSolenoid solenoid;
     private Compressor compressor;
-
-    private static final boolean INITIAL_COMPRESSOR_STATE = true;
     
     private Arm() {
         solenoid = new DoubleSolenoid(CAN_IDs.ARM_FORWARD_CHANNEL, CAN_IDs.ARM_REVERSE_CHANNEL);
