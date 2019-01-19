@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.wrist.MoveWristManual;
+import frc.robot.commands.wrist.MoveWristPosition;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -76,12 +77,6 @@ public class Wrist extends Subsystem {
     //enabled color of the LED
     private static final Color ENABLED_COLOR = Color.GREEN;
 
-    //Position Constants
-    public static final double KP = 0.0;
-    public static final double KI = 0.0;
-    public static final double KD = 0.0;
-    public static final double KF = 0.0;
-
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
         wristFollower = new VictorSPX(CAN_IDs.WRIST_FOLLOWER);
@@ -98,15 +93,10 @@ public class Wrist extends Subsystem {
 
         wristMaster.setInverted(MASTER_INVERTED);
         wristFollower.setInverted(FOLLOWER_INVERTED);
-
+        
         wristMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         wristMaster.configPeakCurrentDuration(PEAK_TIME);
         wristMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-
-        wristMaster.config_kP(Wrist.POSITION_SLOT, KP);
-        wristMaster.config_kI(Wrist.POSITION_SLOT, KI);
-        wristMaster.config_kD(Wrist.POSITION_SLOT, KD);
-        wristMaster.config_kF(Wrist.POSITION_SLOT, KF);
     }
 
     public HSTalon getMasterTalon () {

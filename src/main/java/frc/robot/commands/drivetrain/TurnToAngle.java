@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
+import harkerrobolib.util.Gains;
 
 /**
  * Turn to specified angle.
@@ -20,6 +21,14 @@ import frc.robot.subsystems.Drivetrain;
 public class TurnToAngle extends Command {
 
     private double angle;
+    
+	public static final double LEFT_KP = 0;
+	public static final double LEFT_KI = 0;
+	public static final double LEFT_KD = 0;
+	
+	public static final double RIGHT_KD = 0;
+	public static final double RIGHT_KI = 0;
+	public static final double RIGHT_KP = 0;
 
     public TurnToAngle(int angle) {
         requires(Drivetrain.getInstance());
@@ -47,6 +56,16 @@ public class TurnToAngle extends Command {
         
         Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_PIGEON_PHASE);
         Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_PIGEON_PHASE);
+        
+        Drivetrain.getInstance().configClosedLoopConstants(Drivetrain.ANGLE_SLOT_INDEX, 
+                new Gains()
+                            .kP(LEFT_KP)
+                            .kI(LEFT_KI)
+                            .kD(LEFT_KD), 
+                new Gains()
+                            .kP(RIGHT_KP)
+                            .kI(RIGHT_KI)
+                            .kD(RIGHT_KD)); // kF will be set to zero if not specified
     }
 
     @Override

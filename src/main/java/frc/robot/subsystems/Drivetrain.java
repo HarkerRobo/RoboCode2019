@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.drivetrain.DriveToPosition;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import harkerrobolib.subsystems.HSDrivetrain;
 import harkerrobolib.util.Gains;
@@ -38,16 +39,6 @@ public class Drivetrain extends HSDrivetrain {
     public static final int ALLOWABLE_ERROR = 0;
     public static final int POSITION_SLOT_INDEX = 0;
     public static final int ANGLE_SLOT_INDEX = 1;
-    public static final double POSITION_LEFT_KP = 0;
-    public static final double POSITION_LEFT_KI = 0;
-    public static final double POSITION_LEFT_KD = 0;
-    public static final double POSITION_RIGHT_KP = 0;
-    public static final double POSITION_RIGHT_KI = 0;
-    public static final double POSITION_RIGHT_KD = 0;
-
-    public static final boolean LEFT_SENSOR_PHASE = true;
-    public static final boolean RIGHT_SENSOR_PHASE = true;
-
     public static final boolean LEFT_PIGEON_PHASE = true;
     public static final boolean RIGHT_PIGEON_PHASE = true;
 
@@ -90,15 +81,6 @@ public class Drivetrain extends HSDrivetrain {
         invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
         setNeutralMode(NeutralMode.Brake);
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
-        configClosedLoopConstants(Drivetrain.POSITION_SLOT_INDEX, 
-                                    new Gains()
-                                                .kP(Drivetrain.POSITION_LEFT_KP)
-                                                .kI(Drivetrain.POSITION_LEFT_KI)
-                                                .kD(Drivetrain.POSITION_LEFT_KD), 
-                                    new Gains()
-                                                .kP(Drivetrain.POSITION_RIGHT_KP)
-                                                .kI(Drivetrain.POSITION_RIGHT_KI)
-                                                .kD(Drivetrain.POSITION_RIGHT_KD)); // kF will be set to zero if not specified
     }
 
     public void arcadeDrivePercentOutput(double speed, double turn) {

@@ -18,6 +18,11 @@ import frc.robot.subsystems.Wrist;
  */
 public class MoveWristPosition extends Command {
     private double position;
+    
+	public static final double KF = 0.0;
+	public static final double KD = 0.0;
+	public static final double KI = 0.0;
+	public static final double KP = 0.0;
 
     public MoveWristPosition (double position) {
         requires (Wrist.getInstance());
@@ -28,7 +33,13 @@ public class MoveWristPosition extends Command {
     public void initialize() {
         Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.POSITION_SLOT, Global.PID_PRIMARY);
         Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);        
+        Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);     
+        
+
+        Wrist.getInstance().getMasterTalon().config_kP(Wrist.POSITION_SLOT, MoveWristPosition.KP);
+        Wrist.getInstance().getMasterTalon().config_kI(Wrist.POSITION_SLOT, MoveWristPosition.KI);
+        Wrist.getInstance().getMasterTalon().config_kD(Wrist.POSITION_SLOT, MoveWristPosition.KD);
+        Wrist.getInstance().getMasterTalon().config_kF(Wrist.POSITION_SLOT, MoveWristPosition.KF);
     }
     
     @Override
