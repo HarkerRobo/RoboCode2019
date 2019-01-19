@@ -87,6 +87,7 @@ public class Elevator extends Subsystem {
         elTalon.setInverted(INVERTED_MASTER);
         victorOne.setInverted(INVERTED_VICT_ONE);
         victorTwo.setInverted(INVERTED_VICT_TWO);
+        setUpPositionPID();
         setUpMotionMagic();
     }
 
@@ -98,6 +99,13 @@ public class Elevator extends Subsystem {
         elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     
         elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+    }
+
+    public void setUpPositionPID() {
+        getMaster().configClosedLoopConstants(POSITION_PID_SLOT_INDEX, new Gains().kP(MoveElevatorPosition.POSITION_PID_kP)
+                                                                                  .kI(MoveElevatorPosition.POSITION_PID_kI)
+                                                                                  .kD(MoveElevatorPosition.POSITION_PID_kD)
+                                                                                  .kF(MoveElevatorPosition.POSITION_PID_kF));
     }
 
     public void setUpMotionMagic() {
