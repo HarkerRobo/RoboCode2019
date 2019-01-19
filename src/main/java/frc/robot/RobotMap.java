@@ -22,7 +22,6 @@ public class RobotMap {
         public static final int PCM = 0;
     }
 
-    //why is it that if it's not static we can't make the led channel constants
     public static class Global {
         public static final int PID_PRIMARY = 0;
         public static final int PID_AUXILIARY = 1;
