@@ -1,6 +1,5 @@
 package frc.robot;
 
-import frc.robot.commands.SpinIntakeAndRollers;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
@@ -9,7 +8,6 @@ import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.HatchPusher;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import frc.robot.subsystems.Wrist;
@@ -18,6 +16,8 @@ import harkerrobolib.wrappers.HSDPadButton;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
+import frc.robot.commands.SpinIntakeAndRollers;
+import frc.robot.subsystems.HatchPusher;
 
 /**
  * Contains both driver and operator gamepads.

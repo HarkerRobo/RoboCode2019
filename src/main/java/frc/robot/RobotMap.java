@@ -1,11 +1,14 @@
 package frc.robot;
 
+import com.ctre.phoenix.CANifier.LEDChannel;
+
 /**
  * Stores all non subsystem-specific constants and CAN IDs.
  * 
  * @since 1/7/19
  */
 public class RobotMap {
+    private  int x = 0;
 
     public class CAN_IDs {
         public static final int DT_LEFT_MASTER = 2, DT_RIGHT_MASTER = 1,
@@ -22,11 +25,16 @@ public class RobotMap {
         public static final int PCM = 0;
     }
 
-    public class Global {
+    //why is it that if it's not static we can't make the led channel constants
+    public static class Global {
         public static final int PID_PRIMARY = 0;
         public static final int PID_AUXILIARY = 1;
         public static final int REMOTE_SLOT_0 = 0;
         public static final int REMOTE_SLOT_1 = 1;
+
+        public static final LEDChannel RED_CHANNEL= LEDChannel.LEDChannelA;
+        public static final LEDChannel GREEN_CHANNEL = LEDChannel.LEDChannelB;
+        public static final LEDChannel BLUE_CHANNEL = LEDChannel.LEDChannelC;
     }
     
 }

@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.Global;
 import frc.robot.commands.wrist.MoveWristManual;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -70,10 +71,6 @@ public class Wrist extends Subsystem {
 
     public static final boolean SENSOR_PHASE = false;
 
-    private static final LEDChannel RED_CHANNEL = LEDChannel.LEDChannelA;
-    private static final LEDChannel GREEN_CHANNEL = LEDChannel.LEDChannelB;
-    private static final LEDChannel BLUE_CHANNEL = LEDChannel.LEDChannelC;
-
     //default color of the LED
     private static final Color DEFAULT_COLOR = Color.RED;
 
@@ -126,12 +123,12 @@ public class Wrist extends Subsystem {
     }
 
     /**
-     * Sets the output color of the LED
+     * Sets the output color of the LED.
      */
     public void setLEDOutput(Color color) {
-        canifier.setLEDOutput(color.getRed() / 255.0, RED_CHANNEL);
-        canifier.setLEDOutput(color.getGreen() / 255.0, GREEN_CHANNEL);
-        canifier.setLEDOutput(color.getBlue() / 255.0, BLUE_CHANNEL);
+        canifier.setLEDOutput(color.getRed() / 255.0, Global.RED_CHANNEL);
+        canifier.setLEDOutput(color.getGreen() / 255.0, Global.GREEN_CHANNEL);
+        canifier.setLEDOutput(color.getBlue() / 255.0, Global.BLUE_CHANNEL);
     }
 
     public void updateLEDIfProximitySensorTriggered() {
