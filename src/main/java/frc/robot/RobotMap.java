@@ -8,8 +8,6 @@ import com.ctre.phoenix.CANifier.LEDChannel;
  * @since 1/7/19
  */
 public class RobotMap {
-    private  int x = 0;
-
     public class CAN_IDs {
         public static final int DT_LEFT_MASTER = 2, DT_RIGHT_MASTER = 1,
                                 DT_LEFT_FOLLOWER = 4, DT_RIGHT_FOLLOWER = 3;
