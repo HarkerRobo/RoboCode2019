@@ -12,13 +12,12 @@ public class RobotMap {
 
     public class CAN_IDs {
         public static final int DT_LEFT_MASTER = 2, DT_RIGHT_MASTER = 1,
-                                DT_LEFT_FOLLOWER = 4, DT_RIGHT_FOLLOWER = 3,
-                                EL_MASTER = 0, EL_VICTOR_ONE = 0, EL_VICTOR_TWO = 0,
-                                WRIST_MASTER = 0, WRIST_FOLLOWER = 0,
-                                BALL_INTAKE_MASTER = 0,
-                                ARM_MASTER = 0;
-        public static final int RO_TOP = 0; 
-        public static final int RO_BOTTOM = 0;
+                                DT_LEFT_FOLLOWER = 4, DT_RIGHT_FOLLOWER = 3;
+        public static final int EL_MASTER = 0, EL_VICTOR_ONE = 0, EL_VICTOR_TWO = 0;
+        public static final int WRIST_MASTER = 0, WRIST_FOLLOWER = 0;
+        public static final int BALL_INTAKE_MASTER = 0;
+        public static final int ARM_MASTER = 0;
+        public static final int RO_TOP = 0, RO_BOTTOM = 0;
         public static final int ARM_FORWARD_CHANNEL = 0, ARM_REVERSE_CHANNEL = 1;
         public static final int HATCH_FORWARD_CHANNEL = 2, HATCH_REVERSE_CHANNEL = 5;
         public static final int PIGEON = 0;
