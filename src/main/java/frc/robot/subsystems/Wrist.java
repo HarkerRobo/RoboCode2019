@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import java.awt.Color;
 
 import com.ctre.phoenix.CANifier;
-import com.ctre.phoenix.CANifier.LEDChannel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;

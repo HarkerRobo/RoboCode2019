@@ -8,7 +8,7 @@ import frc.robot.subsystems.Intake.IntakeDirection;
  * Intakes the ball into the robot.
  * 
  * @author Anirudh Kotamraju
- * @since 1/11/2019
+ * @since 1/11/19
  */
 public class SpinIntakeTimed extends TimedCommand {
     private double magnitude;

@@ -12,7 +12,7 @@ import frc.robot.RobotMap.CAN_IDs;
  * @author Finn Frankis
  * @author Austin Wang
  * @author Anirudh Kotamraju
- * @since January 14, 2019
+ * @since 1/14/19
  */
 public class HatchPusher extends Subsystem {
     public enum PushDirection {

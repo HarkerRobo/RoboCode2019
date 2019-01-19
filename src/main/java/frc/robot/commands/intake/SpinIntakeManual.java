@@ -12,7 +12,7 @@ import harkerrobolib.util.MathUtil;
  * @author Dawson Chen
  * @author Shahzeb Lakhani
  * @author Anirudh Kotamraju
- * @since 1/11/2019
+ * @since 1/11/19
  */
 
 public class SpinIntakeManual extends IndefiniteCommand {

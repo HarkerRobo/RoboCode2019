@@ -10,7 +10,7 @@ import harkerrobolib.auto.ParallelCommandGroup;
  * Spins the Intake and Rollers Indefinitely
  * 
  * @author Chirag Kaushik
- * @since January 17, 2019
+ * @since 1/17/19
  */
 public class SpinIntakeAndRollers extends ParallelCommandGroup {
     public SpinIntakeAndRollers() {

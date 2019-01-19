@@ -7,6 +7,8 @@ import frc.robot.subsystems.Arm;
 /**
  * Toggles the arm's position to the state it currently is not.
  * 
+ * @author Angela Jia
+ * @author Chirag Kaushik
  * @since 1/11/19
  */
 public class ToggleArmPosition extends InstantCommand {
