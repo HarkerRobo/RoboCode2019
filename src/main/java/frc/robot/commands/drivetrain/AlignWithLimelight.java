@@ -3,13 +3,12 @@ package frc.robot.commands.drivetrain;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
 import frc.robot.util.PIDOutputGetter;
+import frc.robot.util.PIDSourceCustomGet;
 
 /**
  * Drives towards a target using the Limelight camera.
@@ -32,11 +31,8 @@ public class AlignWithLimelight extends Command {
     public static final double FORWARD_KI = 0.0;
     public static final double FOWARD_KD = 3;    
 
-    public static final double TX_SETPOINT = 0.0;
-    public double taSetpoint = 3.0;    
-    
     public static final double TURN_ALLOWABLE_ERROR = 0.5; //0.054
-    public static final double FORWARD_ALLOWABLE_PERCENT = 0.01; //0.01
+    public static final double FORWARD_ALLOWABLE_ERROR = 2; //0.01
 
     public PIDOutputGetter turnOutput;
     public PIDOutputGetter forwardOutput;
@@ -44,59 +40,36 @@ public class AlignWithLimelight extends Command {
     private PIDController turnController;
     private PIDController forwardController;
 
+    private double thorSetpoint;
+    private double txSetpoint;
 
-    public AlignWithLimelight(double desiredA) {
+
+    public AlignWithLimelight(double thorSetpoint, double txSetpoint) {
         requires(Drivetrain.getInstance());
-        this.taSetpoint = desiredA;
+        this.txSetpoint = txSetpoint;
+        this.thorSetpoint = thorSetpoint;
         limelight = Limelight.getInstance();
-        turnOutput = new PIDOutputGetter();
-        forwardOutput = new PIDOutputGetter();
     }
 
     @Override
     public void initialize() {
-        turnController = new PIDController(TURN_KP, TURN_KI, TURN_KD, TURN_KF, new PIDSource() {
-            private PIDSourceType sourceType = PIDSourceType.kDisplacement;         
-            @Override
-            public void setPIDSourceType(PIDSourceType pidSource) {
-                sourceType = pidSource;
-            }
+        turnController = new PIDController(
+            TURN_KP, TURN_KI, TURN_KD, TURN_KF, 
+            new PIDSourceCustomGet(() -> Limelight.getInstance().getTx(), PIDSourceType.kDisplacement), 
+            turnOutput
+        );
         
-            @Override
-            public PIDSourceType getPIDSourceType() {
-                return sourceType;
-            }
-            
-            @Override
-            public double pidGet() {
-                return Limelight.getInstance().getTx();
-            }    
-        }, turnOutput);
-        
-        forwardController = new PIDController(FOWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, new PIDSource() {
-            private PIDSourceType sourceType = PIDSourceType.kDisplacement;
-            
-            @Override
-            public void setPIDSourceType(PIDSourceType pidSource) {
-                sourceType = pidSource;
-            }
-        
-            @Override
-            public PIDSourceType getPIDSourceType() {
-                return sourceType;
-            }
-            
-            @Override
-            public double pidGet() {
-                return Limelight.getInstance().getTa();
-            }                            
-        }, forwardOutput);
+        forwardController = new PIDController(
+            FOWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
+            new PIDSourceCustomGet(() -> Limelight.getInstance().getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, PIDSourceType.kDisplacement),
+            forwardOutput
+        );
         
         turnController.enable();
         forwardController.enable();
 
-        turnController.setSetpoint(TX_SETPOINT);
-        forwardController.setSetpoint(taSetpoint);
+        turnController.setSetpoint(txSetpoint);
+        forwardController.setSetpoint(thorSetpoint);
     }
 
     public void execute () {
