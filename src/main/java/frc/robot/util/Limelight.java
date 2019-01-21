@@ -13,7 +13,7 @@ public class Limelight {
     private static Limelight instance;
 
     public static final String LIMELIGHT_TABLE_KEY = "limelight";
-    public static final NetworkTable table = NetworkTableInstance.getDefault().getTable(LIMELIGHT_TABLE_KEY);
+    public final NetworkTable table = NetworkTableInstance.getDefault().getTable(LIMELIGHT_TABLE_KEY);
     
     public static final String TV_KEY = "tv";
     public static final String TX_KEY = "tx";
@@ -22,6 +22,9 @@ public class Limelight {
     public static final String MODE_KEY = "camMode";
     public static final String SNAP_KEY = "snapshot";
 
+    public static final double CAMERA_ANGLE = 0;
+    public static final double CAMERA_HEIGHT = 0.604; //metres
+    public static final double TAPE_HEIGHT = 0.71; //metres
 
     public static final int VISION_MODE = 0;
     public static final int DRIVER_MODE = 1;
@@ -38,20 +41,28 @@ public class Limelight {
         table.getEntry(SNAP_KEY).setNumber(NO_SNAPSHOT);
     }
 
-    public static boolean isTargetVisible() {
+    public boolean isTargetVisible() {
         return Math.abs(table.getEntry(TV_KEY).getDouble(0.0) - 1.0) < 1e-5;
     }
 
-    public static double getTx() {
+    public double getTx() {
         return table.getEntry(TX_KEY).getDouble(0.0);
     }
 
-    public static double getTy() {
+    public double getTy() {
         return table.getEntry(TY_KEY).getDouble(0.0);
     }
 
-    public static double getTa() {
+    public double getTa() {
         return table.getEntry(TA_KEY).getDouble(0.0);
+    }
+
+    public double getDistance() { 
+        return getDistance(TAPE_HEIGHT);
+    }
+
+    public double getDistance(double targetHeight) {
+        return (targetHeight - CAMERA_HEIGHT) / Math.tan((CAMERA_ANGLE + getTy())*Math.PI/180.0);
     }
 
     public static Limelight getInstance() {

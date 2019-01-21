@@ -9,6 +9,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -16,6 +18,8 @@ import frc.robot.subsystems.HatchPusher;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.Limelight;
+import frc.robot.vision.GripPipeline;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -37,6 +41,7 @@ public class Robot extends TimedRobot {
     private Wrist wrist;
     private Intake ballIntake;
     private HatchPusher hatchPusher;
+    private Limelight limelight;
     private OI oi;
 
     /**
@@ -51,7 +56,8 @@ public class Robot extends TimedRobot {
         //rollers = Rollers.getInstance();
         //wrist = Wrist.getInstance();
         hatchPusher = HatchPusher.getInstance();
-        oi = OI.getInstance();                
+        oi = OI.getInstance();        
+        limelight = Limelight.getInstance();        
                 
         drivetrain.talonInit();
     }
@@ -92,8 +98,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        System.out.println(Drivetrain.getInstance().isProximitySensorTriggered());
-        Wrist.getInstance().updateLEDIfProximitySensorTriggered();
+        // System.out.println(Drivetrain.getInstance().isProximitySensorTriggered());
+        // Wrist.getInstance().updateLEDIfProximitySensorTriggered();
+        //SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
+        
+        new GripPipeline().process();
+        //System.out.printf("ty: %f, distance: %f\n", Limelight.getInstance().getTy(), Limelight.getInstance().getDistance());
     }
 
     /**

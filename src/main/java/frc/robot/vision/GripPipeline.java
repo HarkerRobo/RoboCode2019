@@ -30,10 +30,12 @@ public class GripPipeline {
         double blurRadius = 20.0;
 
         Mat currentFrame = new Mat();
-        VideoCapture data = new VideoCapture("http://10.10.72.11:5802");
-        data.read(currentFrame);
+        VideoCapture data = new VideoCapture("10.10.72.11:5800");
+		data.read(currentFrame);
+		
+		//System.out.println(currentFrame.get(0, 0));
 
-		blur(currentFrame, blurType, blurRadius, blurOutput);
+		//blur(currentFrame, blurType, blurRadius, blurOutput);
 	}
 
 	/**

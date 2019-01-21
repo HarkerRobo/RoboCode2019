@@ -3,6 +3,7 @@ package frc.robot;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
+import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.hatchpanelintake.SetHatchPusherDirection;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
@@ -105,6 +106,8 @@ public class OI {
         
         operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(SpinRollersIndefinite.magnitude1,RollerDirection.OUT));
         operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(SpinRollersIndefinite.magnitude2,RollerDirection.OUT));
+    
+        driverGamepad.getButtonStart().whenPressed(new ZeroElevator());
     }  
 
     public HSGamepad getDriverGamepad() {
