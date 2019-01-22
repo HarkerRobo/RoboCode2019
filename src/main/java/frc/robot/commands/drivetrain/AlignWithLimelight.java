@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
 import frc.robot.util.PIDOutputGetter;
@@ -21,18 +22,18 @@ import frc.robot.util.PIDSourceCustomGet;
 public class AlignWithLimelight extends Command {
     private Limelight limelight;
 
-    public static final double TURN_KP = 0.1;
+    public static final double TURN_KP = .07;
     public static final double TURN_KI = 0.0;
     public static final double TURN_KD = 0.0;
     public static final double TURN_KF = 0;
     
     public static final double FORWARD_KF = 0;
-    public static final double FOWARD_KP = 1;
-    public static final double FORWARD_KI = 0.0;
-    public static final double FOWARD_KD = 3;    
+    public static final double FORWARD_KP = 0.07;
+    public static final double FORWARD_KI = 0;//0.001;
+    public static final double FOWARD_KD = 0.04;    
 
     public static final double TURN_ALLOWABLE_ERROR = 0.5; //0.054
-    public static final double FORWARD_ALLOWABLE_ERROR = 2; //0.01
+    public static final double FORWARD_ALLOWABLE_ERROR = 1.5; //0.01
 
     public PIDOutputGetter turnOutput;
     public PIDOutputGetter forwardOutput;
@@ -47,8 +48,10 @@ public class AlignWithLimelight extends Command {
     public AlignWithLimelight(double thorSetpoint, double txSetpoint) {
         requires(Drivetrain.getInstance());
         this.txSetpoint = txSetpoint;
-        this.thorSetpoint = thorSetpoint;
+        this.thorSetpoint = Limelight.THOR_LINEARIZATION_FUNCTION.apply(thorSetpoint);
         limelight = Limelight.getInstance();
+        turnOutput = new PIDOutputGetter();
+        forwardOutput = new PIDOutputGetter();
     }
 
     @Override
@@ -60,8 +63,9 @@ public class AlignWithLimelight extends Command {
         );
         
         forwardController = new PIDController(
-            FOWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
-            new PIDSourceCustomGet(() -> Limelight.getInstance().getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, PIDSourceType.kDisplacement),
+            FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
+            new PIDSourceCustomGet(() -> Limelight.getInstance().getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, 
+                                    PIDSourceType.kDisplacement),
             forwardOutput
         );
         
@@ -74,7 +78,8 @@ public class AlignWithLimelight extends Command {
 
     public void execute () {
         // System.out.println("turn: " + turnOutput.getOutput());
-        // System.out.println("forward: " + forwardOutput.getOutput());
+        System.out.println("forward: " + forwardOutput.getOutput() + " error: " + forwardController.getError() + " thor: " + Limelight.getInstance().getThor() + " thor lin:" + Limelight.THOR_LINEARIZATION_FUNCTION.apply(Limelight.getInstance().getThor()));
+        SmartDashboard.putNumber("erroR", forwardController.getError());
         // try {
             
         // } catch (Exception e) {
@@ -82,8 +87,8 @@ public class AlignWithLimelight extends Command {
         //     e.printStackTrace();
         // }
 
-        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, (forwardOutput.getOutput()));// + turnOutput.getOutput()));
-        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, (forwardOutput.getOutput()));// - turnOutput.getOutput()));
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, (forwardOutput.getOutput() + turnOutput.getOutput()));// + turnOutput.getOutput()));
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, (forwardOutput.getOutput() - turnOutput.getOutput()));// - turnOutput.getOutput()));
     }
     
     @Override
@@ -102,6 +107,6 @@ public class AlignWithLimelight extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(forwardController.getError() / forwardController.getSetpoint()) <= FORWARD_ALLOWABLE_PERCENT;// && turnController.getError() <= TURN_ALLOWABLE_ERROR;
+        return false; //Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR;// && Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR;
     }
 }

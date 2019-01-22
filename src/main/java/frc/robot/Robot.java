@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.Global;
+import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.drivetrain.AlignWithLimelight;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -20,6 +22,7 @@ import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
 import frc.robot.vision.GripPipeline;
+import harkerrobolib.auto.SequentialCommandGroup;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -67,6 +70,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
+        new SequentialCommandGroup(
+            new SetArmPosition(Arm.ArmDirection.DOWN),
+            new AlignWithLimelight(50, 0)
+        ).start();
     }
 
     /**
@@ -98,12 +105,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        // System.out.println(Drivetrain.getInstance().isProximitySensorTriggered());
-        // Wrist.getInstance().updateLEDIfProximitySensorTriggered();
-        //SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
-        
-        new GripPipeline().process();
-        //System.out.printf("ty: %f, distance: %f\n", Limelight.getInstance().getTy(), Limelight.getInstance().getDistance());
     }
 
     /**

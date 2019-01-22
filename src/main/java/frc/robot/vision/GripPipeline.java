@@ -1,6 +1,12 @@
 package frc.robot.vision;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+
+import javax.imageio.ImageIO;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,6 +15,11 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.RobotMap.Global;
 
 /**
  * GripPipeline class.
@@ -20,33 +31,42 @@ import org.opencv.videoio.VideoCapture;
  */
 public class GripPipeline {
 
-    // Outputs
-    private Mat blurOutput = new Mat();
+	// Outputs
+	private Mat blurOutput = new Mat();
 
-    static {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    }
+	static {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+	}
 
-    /**
-     * This is the primary method that runs the entire pipeline and updates the
-     * outputs.
-     */
-    public void process() {
-        String url = "http://10.10.72.11:5802";
-        BlurType blurType = BlurType.get("Box Blur");
-        double blurRadius = 20.0;
+	/**
+	 * This is the primary method that runs the entire pipeline and updates the
+	 * outputs.
+	 */
+	public void process() {
+        // String url;
+        // BlurType blurType = BlurType.get("Box Blur");
+        // double blurRadius = 20.0;
 
-        Mat currentFrame = new Mat();
-        
-        VideoCapture data = new VideoCapture(url);
-        data.read(currentFrame);
+        // Mat currentFrame = new Mat();
+		
+		NetworkTable table =  NetworkTableInstance.getDefault().getTable("limelight");
+		System.out.println(table.getEntry("thor").getDouble(0.0));
+		/*double[] nullArray = null;
+		//System.out.println(table.getEntry("centerX").getDoubleArray(nullArray));
+		for (NetworkTableEntry entry : NetworkTableInstance.getDefault().getEntries("", 0)) {
+			System.out.print(entry.getName() + ", ");
+		}
+		System.out.println();*/
 
-        try {
-            Document doc = Jsoup.connect(url).get();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        // //VideoCapture data = new VideoCapture(url);
+        // data.read(currentFrame);
+
+        // try {
+        //     Document doc = Jsoup.connect(url).get();
+        // } catch (IOException e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
+        // }
 
 		//blur(currentFrame, blurType, blurRadius, blurOutput);
 	}
