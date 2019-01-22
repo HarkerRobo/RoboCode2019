@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelight;
+import frc.robot.commands.drivetrain.AlignWithLimelightIndefinite;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -72,7 +73,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         new SequentialCommandGroup(
             new SetArmPosition(Arm.ArmDirection.DOWN),
-            new AlignWithLimelight(50, 0)
+            new AlignWithLimelightIndefinite(50, 0)
         ).start();
     }
 
