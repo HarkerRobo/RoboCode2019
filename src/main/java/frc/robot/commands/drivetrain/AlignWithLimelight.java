@@ -22,9 +22,9 @@ import frc.robot.util.PIDSourceCustomGet;
 public class AlignWithLimelight extends Command {
     private Limelight limelight;
 
-    public static final double TURN_KP = .07;
+    public static final double TURN_KP = .09;
     public static final double TURN_KI = 0.0;
-    public static final double TURN_KD = 0.0;
+    public static final double TURN_KD = 0.14;
     public static final double TURN_KF = 0;
     
     public static final double FORWARD_KF = 0;
@@ -32,7 +32,7 @@ public class AlignWithLimelight extends Command {
     public static final double FORWARD_KI = 0;//0.001;
     public static final double FOWARD_KD = 0.04;    
 
-    public static final double TURN_ALLOWABLE_ERROR = 0.5; //0.054
+    public static final double TURN_ALLOWABLE_ERROR = 0.4; //0.054
     public static final double FORWARD_ALLOWABLE_ERROR = 1.5; //0.01
 
     public PIDOutputGetter turnOutput;
@@ -78,7 +78,8 @@ public class AlignWithLimelight extends Command {
 
     public void execute () {
         // System.out.println("turn: " + turnOutput.getOutput());
-        System.out.println("forward: " + forwardOutput.getOutput() + " error: " + forwardController.getError() + " thor: " + Limelight.getInstance().getThor() + " thor lin:" + Limelight.THOR_LINEARIZATION_FUNCTION.apply(Limelight.getInstance().getThor()));
+        //System.out.println("forward: " + forwardOutput.getOutput() + " error: " + forwardController.getError() + " thor: " + Limelight.getInstance().getThor() + " thor lin:" + Limelight.THOR_LINEARIZATION_FUNCTION.apply(Limelight.getInstance().getThor()));
+        System.out.println("forward: " + turnOutput.getOutput() + " error: " + turnController.getError() + " tx: " + Limelight.getInstance().getTx());
         SmartDashboard.putNumber("erroR", forwardController.getError());
         // try {
             
@@ -107,6 +108,6 @@ public class AlignWithLimelight extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; //Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR;// && Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR;
+        return Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR;// && Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR;
     }
 }
