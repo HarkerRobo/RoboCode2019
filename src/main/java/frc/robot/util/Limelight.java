@@ -54,7 +54,8 @@ public class Limelight {
     /**
      * Determines whether a target has been latched onto.
      * 
-     * @return true if a target is visible; false otherwise
+     * @return true if a target is visible; otherwise,
+     *         false
      */
     public boolean isTargetVisible() {
         return Math.abs(table.getEntry(TV_KEY).getDouble(0.0) - 1.0) < 1e-5;
@@ -146,7 +147,8 @@ public class Limelight {
     }
 
     /**
-     * Gets the singleton instance of the limelight class
+     * Gets the singleton instance of the limelight class.
+     * 
      * @return the instance of the limelight class
      */
     public static Limelight getInstance() {

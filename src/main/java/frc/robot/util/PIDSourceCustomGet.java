@@ -26,9 +26,7 @@ public class PIDSourceCustomGet implements PIDSource {
      * @param sourceType the PID source type (displacement or rate)
      */    
     public PIDSourceCustomGet(Supplier<Double> pidGet, PIDSourceType sourceType) {
-        this.pidGet = pidGet;
-        this.linearizationFunction = (value) -> (value);
-        this.sourceType = sourceType;
+        this(pidGet, (value) -> (value), sourceType);
     }
 
     /**
