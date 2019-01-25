@@ -9,10 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.RobotMap.Global;
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.drivetrain.AlignWithLimelight;
 import frc.robot.commands.drivetrain.AlignWithLimelightIndefinite;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -22,7 +19,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
-import frc.robot.vision.GripPipeline;
 import harkerrobolib.auto.SequentialCommandGroup;
 
 /**
@@ -33,7 +29,8 @@ import harkerrobolib.auto.SequentialCommandGroup;
  * @author Jatin Kohli
  * @author Chirag Kaushik
  * @author Angela Jia
- * 
+ * @author Dawson Chen
+ * @author Shahzeb Lakhani
  * @since 1/6/19
  */
 public class Robot extends TimedRobot {
