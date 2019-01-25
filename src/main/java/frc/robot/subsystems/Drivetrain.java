@@ -95,4 +95,5 @@ public class Drivetrain extends HSDrivetrain {
     public boolean isProximitySensorTriggered () {
         return getLeftMaster().getSensorCollection().isFwdLimitSwitchClosed();
     }
+    
 }
