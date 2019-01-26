@@ -53,7 +53,7 @@ public class Drivetrain extends HSDrivetrain {
                 new VictorSPX (   CAN_IDs.DT_LEFT_FOLLOWER),
                 new VictorSPX (   CAN_IDs.DT_RIGHT_FOLLOWER));
                 //new HSPigeon(CAN_IDs.PIGEON));
-        //Update IDs
+        
     }
 
     /**
@@ -79,9 +79,13 @@ public class Drivetrain extends HSDrivetrain {
      * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
-        invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
+        resetTalonInverts();
         setNeutralMode(NeutralMode.Brake);
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
+    }
+
+    public void resetTalonInverts() {
+        invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
 
     public void arcadeDrivePercentOutput(double speed, double turn) {

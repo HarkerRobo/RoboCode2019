@@ -1,10 +1,10 @@
 package frc.robot.commands.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
@@ -23,18 +23,18 @@ import harkerrobolib.commands.IndefiniteCommand;
 public class AlignWithLimelightIndefinite extends IndefiniteCommand {
     private Limelight limelight;
 
-    public static final double TURN_KP = .09;
-    public static final double TURN_KI = 0.0;
-    public static final double TURN_KD = 0.14;
+    public static final double TURN_KP = .07; //0.09
+    public static final double TURN_KI = 0.001;
+    public static final double TURN_KD = 0.3;
     public static final double TURN_KF = 0;
     
     public static final double FORWARD_KF = 0;
-    public static final double FORWARD_KP = 0.07;
+    public static final double FORWARD_KP = 0.045;
     public static final double FORWARD_KI = 0;//0.001;
-    public static final double FOWARD_KD = 0.04;    
+    public static final double FOWARD_KD = 0.16;    
 
-    public static final double TURN_ALLOWABLE_ERROR = 0.4; //0.054
-    public static final double FORWARD_ALLOWABLE_ERROR = 1.5; //0.01
+    public static final double TURN_ALLOWABLE_ERROR = 0.054;
+    public static final double FORWARD_ALLOWABLE_ERROR = 0.05; 
 
     public PIDOutputGetter turnOutput;
     public PIDOutputGetter forwardOutput;
@@ -45,6 +45,10 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
     private double thorSetpoint;
     private double txSetpoint;
 
+    private static boolean LEFT_MASTER_INVERTED = true;
+    private static boolean RIGHT_MASTER_INVERTED = false;
+    private static boolean LEFT_FOLLOWER_INVERTED = true;
+    private static boolean RIGHT_FOLLOWER_INVERTED = false;
 
     public AlignWithLimelightIndefinite(double thorSetpoint, double txSetpoint) {
         requires(Drivetrain.getInstance());
@@ -59,29 +63,34 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
     public void initialize() {
         turnController = new PIDController(
             TURN_KP, TURN_KI, TURN_KD, TURN_KF, 
-            new PIDSourceCustomGet(() -> Limelight.getInstance().getTx(), PIDSourceType.kDisplacement), 
+            new PIDSourceCustomGet(() -> limelight.getTx(), PIDSourceType.kDisplacement), 
             turnOutput
         );
         
-        forwardController = new PIDController(
-            FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
-            new PIDSourceCustomGet(() -> Limelight.getInstance().getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, 
-                                    PIDSourceType.kDisplacement),
-            forwardOutput
-        );
+         forwardController = new PIDController(
+             FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
+             new PIDSourceCustomGet(() -> limelight.getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, 
+                                     PIDSourceType.kDisplacement),
+             forwardOutput
+         );
         
         turnController.enable();
         forwardController.enable();
 
         turnController.setSetpoint(txSetpoint);
         forwardController.setSetpoint(thorSetpoint);
+
+        Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
 
     public void execute () {
         double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
         double turnOutputVal = Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR ? 0 : turnOutput.getOutput();
 
-        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, forwardOutputVal + turnOutputVal);
-        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, forwardOutputVal - turnOutputVal);// - turnOutput.getOutput()));
+        SmartDashboard.putNumber("Turn Error", turnController.getError());
+        SmartDashboard.putNumber("Forward Error", forwardController.getError());
+
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, forwardOutputVal - turnOutputVal);
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, forwardOutputVal + turnOutputVal);
     }
 }

@@ -24,7 +24,7 @@ public class ReachTarget extends AutoMode {
     // public Command getRightCommands(Location endLoc) {
         
     // }
-
+    @Override
     public Command getLeftCommands(Location endLoc){
         return new SequentialCommandGroup(
             new DriveWithVelocityTimed(FLYING_TIME, FLYING_VELOCITY),
@@ -33,7 +33,8 @@ public class ReachTarget extends AutoMode {
             new  DriveToPosition(BACK_UP_DISTANCE)
         );                              
     }    
- 
+    
+    @Override
     public Command getRightCommands(Location endLoc){
         return new SequentialCommandGroup(
             new DriveWithVelocityTimed(FLYING_TIME, FLYING_VELOCITY),
