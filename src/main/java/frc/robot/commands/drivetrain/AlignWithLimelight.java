@@ -17,26 +17,32 @@ import frc.robot.util.PIDSourceCustomGet;
  * @author Jatin Kohli
  * @author Chirag Kaushik
  * @author Finn Frankis
+ * @author Angela Jia
  * @since 1/12/19
  */
 public class AlignWithLimelight extends Command {
     private Limelight limelight;
 
-    public static final double TURN_KP = .07; //0.09
-    public static final double TURN_KI = 0.001;
-    public static final double TURN_KD = 0.3;
-    public static final double TURN_KF = 0;
+    private static final double TURN_KP = .07; //0.09
+    private static final double TURN_KI = 0.001;
+    private static final double TURN_KD = 0.3;
+    private static final double TURN_KF = 0;
     
-    public static final double FORWARD_KF = 0;
-    public static final double FORWARD_KP = 0.045;
-    public static final double FORWARD_KI = 0;//0.001;
-    public static final double FOWARD_KD = 0.16;    
+    private static final double FORWARD_KF = 0;
+    private static final double FORWARD_KP = 0.045;
+    private static final double FORWARD_KI = 0;//0.001;
+    private static final double FOWARD_KD = 0.2;   
 
     public static final double TURN_ALLOWABLE_ERROR = 0.054;
-    public static final double FORWARD_ALLOWABLE_ERROR = 0.05; 
+    public static final double FORWARD_ALLOWABLE_ERROR = 0.05;
 
-    public PIDOutputGetter turnOutput;
-    public PIDOutputGetter forwardOutput;
+    private static final double POS_TX_SETPOINT = 1.0; 
+    private static final double MAX_ALLOWABLE_TX = 7.5;   
+
+    private static final double THOR_SWITCH_POINT = 50.0;
+
+    private PIDOutputGetter turnOutput;
+    private PIDOutputGetter forwardOutput;
 
     private PIDController turnController;
     private PIDController forwardController;
@@ -49,33 +55,37 @@ public class AlignWithLimelight extends Command {
     private static boolean LEFT_FOLLOWER_INVERTED = true;
     private static boolean RIGHT_FOLLOWER_INVERTED = false;
 
-    public AlignWithLimelight(double thorSetpoint, double txSetpoint) {
+    public AlignWithLimelight(double thorSetpoint, double txSetpoint, double angleSetpoint) {
         requires(Drivetrain.getInstance());
+
         this.txSetpoint = txSetpoint;
         this.thorSetpoint = Limelight.THOR_LINEARIZATION_FUNCTION.apply(thorSetpoint);
+
         limelight = Limelight.getInstance();
+
         turnOutput = new PIDOutputGetter();
         forwardOutput = new PIDOutputGetter();
     }
 
     @Override
     public void initialize() {
+
         turnController = new PIDController(
             TURN_KP, TURN_KI, TURN_KD, TURN_KF, 
             new PIDSourceCustomGet(() -> limelight.getTx(), PIDSourceType.kDisplacement), 
             turnOutput
         );
         
-         forwardController = new PIDController(
-             FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
-             new PIDSourceCustomGet(() -> limelight.getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, 
-                                     PIDSourceType.kDisplacement),
-             forwardOutput
-         );
+        forwardController = new PIDController(
+            FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
+            new PIDSourceCustomGet(() -> limelight.getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, 
+                                    PIDSourceType.kDisplacement),
+            forwardOutput
+        );
         
         turnController.enable();
         forwardController.enable();
-
+    
         turnController.setSetpoint(txSetpoint);
         forwardController.setSetpoint(thorSetpoint);
 
@@ -83,14 +93,26 @@ public class AlignWithLimelight extends Command {
     }
 
     public void execute () {
+        boolean isTxPositive = limelight.getTx() >= 0;
+        boolean hasReachedThorSwitchpoint = limelight.getThor() >= THOR_SWITCH_POINT;   
+        boolean isTxWithinAllowableRange = MAX_ALLOWABLE_TX < limelight.getTx();     
+
         double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
-        double turnOutputVal = Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR ? 0 : turnOutput.getOutput();
+        double turnOutputVal;
+
+        turnController.setSetpoint(
+            isTxPositive || hasReachedThorSwitchpoint ? txSetpoint : POS_TX_SETPOINT
+        );
+
+        turnOutputVal = isTxPositive && isTxWithinAllowableRange &&(Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR || 
+                                    !hasReachedThorSwitchpoint)
+                                    ? 0 : turnOutput.getOutput();
 
         SmartDashboard.putNumber("Turn Error", turnController.getError());
         SmartDashboard.putNumber("Forward Error", forwardController.getError());
 
-        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, forwardOutputVal - turnOutputVal);
-        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, forwardOutputVal + turnOutputVal);
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, forwardOutputVal - turnOutputVal /*- angleOutputVal*/);
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, forwardOutputVal + turnOutputVal /*+ angleOutputVal*/);
     }
     
     @Override
@@ -109,6 +131,8 @@ public class AlignWithLimelight extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR && Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR;
+        return Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR && 
+                Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR; 
+                //Math.abs(angleController.getError()) <= ANGLE_ALLOWABLE_ERROR ;
     }
 }

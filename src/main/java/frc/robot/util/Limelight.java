@@ -146,6 +146,22 @@ public class Limelight {
         return table.getEntry(TVERT_KEY).getDouble(0.0);
     }
 
+    public double getRawContourTx(int contourId) {
+        return table.getEntry(TX_KEY + contourId).getDouble(0.0);
+    }
+
+    public double getRawContourTy(int contourId) {
+        return table.getEntry(TY_KEY + contourId).getDouble(0.0);
+    }
+
+    public double getRawContourTa(int contourId) {
+        return table.getEntry(TA_KEY + contourId).getDouble(0.0);
+    }
+
+    public double getRawContourTs(int contourId) {
+        return table.getEntry(TS_KEY + contourId).getDouble(0.0);
+    }
+
     /**
      * Gets the singleton instance of the limelight class.
      * 

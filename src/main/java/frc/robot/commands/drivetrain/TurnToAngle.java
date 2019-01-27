@@ -30,9 +30,9 @@ public class TurnToAngle extends Command {
 	public static final double RIGHT_KI = 0;
 	public static final double RIGHT_KP = 0;
 
-    public TurnToAngle(int angle) {
+    public TurnToAngle(double pigeonHeadingOnehatch) {
         requires(Drivetrain.getInstance());
-        this.angle = angle;
+        this.angle = pigeonHeadingOnehatch;
     }
 
     @Override

@@ -9,8 +9,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.drivetrain.AlignWithLimelight;
 import frc.robot.commands.drivetrain.AlignWithLimelightIndefinite;
+import frc.robot.commands.drivetrain.DriveWithVelocityTimed;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -56,7 +59,7 @@ public class Robot extends TimedRobot {
         //elevator = Elevator.getInstance();
         //rollers = Rollers.getInstance();
         //wrist = Wrist.getInstance();
-        hatchPusher = HatchPusher.getInstance();
+        //hatchPusher = HatchPusher.getInstance();
         oi = OI.getInstance();        
         limelight = Limelight.getInstance();        
                 
@@ -68,10 +71,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        new SequentialCommandGroup(
-            new SetArmPosition(Arm.ArmDirection.DOWN),
-            new AlignWithLimelightIndefinite(50, 0)
-        ).start();
+         new SequentialCommandGroup(
+             new AlignWithLimelight(198, 0, 4)
+            //  new DriveWithVelocityTimed(2, -0.3)
+         ).start();
     }
 
     /**
@@ -103,6 +106,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        // System.out.printf(
+        //     "tx0: %f ty0: %f ta0: %f ts0: %f", 
+        //     limelight.getRawContourTx(0),
+        //     limelight.getRawContourTy(0),
+        //     limelight.getRawContourTa(0),
+        //     limelight.getRawContourTs(0)
+        // );
+        // System.out.println("fused heading: " + drivetrain.getPigeon().getFusedHeading());
+        System.out.println("Thor: " + limelight.getThor());
     }
 
     /**
@@ -110,6 +122,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+
     }
 
     /**

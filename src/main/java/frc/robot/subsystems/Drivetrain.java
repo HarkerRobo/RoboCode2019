@@ -26,7 +26,6 @@ import harkerrobolib.wrappers.HSTalon;
  */
 public class Drivetrain extends HSDrivetrain {
     private static Drivetrain instance;
-    private static HSPigeon pigeon;
 
     private static boolean LEFT_MASTER_INVERTED = false;
     private static boolean RIGHT_MASTER_INVERTED = true;
@@ -51,8 +50,8 @@ public class Drivetrain extends HSDrivetrain {
         super(new HSTalon(CAN_IDs.DT_LEFT_MASTER), 
                 new HSTalon(CAN_IDs.DT_RIGHT_MASTER),
                 new VictorSPX (   CAN_IDs.DT_LEFT_FOLLOWER),
-                new VictorSPX (   CAN_IDs.DT_RIGHT_FOLLOWER));
-                //new HSPigeon(CAN_IDs.PIGEON));
+                new VictorSPX (   CAN_IDs.DT_RIGHT_FOLLOWER),
+                new HSPigeon(CAN_IDs.PIGEON));
         
     }
 
@@ -91,9 +90,6 @@ public class Drivetrain extends HSDrivetrain {
     public void arcadeDrivePercentOutput(double speed, double turn) {
         getLeftMaster().set(ControlMode.PercentOutput, speed + turn);
         getRightMaster().set(ControlMode.PercentOutput, speed - turn);
-    }
-    public HSPigeon getPigeon() {
-        return pigeon;
     }
 
     public boolean isProximitySensorTriggered () {

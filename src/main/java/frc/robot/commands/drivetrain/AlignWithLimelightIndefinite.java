@@ -38,9 +38,11 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
 
     public PIDOutputGetter turnOutput;
     public PIDOutputGetter forwardOutput;
+    public PIDOutputGetter angleOutput;
 
     private PIDController turnController;
     private PIDController forwardController;
+    private PIDController angleController;
 
     private double thorSetpoint;
     private double txSetpoint;
@@ -54,9 +56,12 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
         requires(Drivetrain.getInstance());
         this.txSetpoint = txSetpoint;
         this.thorSetpoint = Limelight.THOR_LINEARIZATION_FUNCTION.apply(thorSetpoint);
+        
         limelight = Limelight.getInstance();
+
         turnOutput = new PIDOutputGetter();
         forwardOutput = new PIDOutputGetter();
+        angleOutput = new PIDOutputGetter();
     }
 
     @Override
