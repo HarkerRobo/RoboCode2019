@@ -52,7 +52,6 @@ public class Drivetrain extends HSDrivetrain {
                 new VictorSPX (   CAN_IDs.DT_LEFT_FOLLOWER),
                 new VictorSPX (   CAN_IDs.DT_RIGHT_FOLLOWER),
                 new HSPigeon(CAN_IDs.PIGEON));
-        
     }
 
     /**
@@ -78,6 +77,7 @@ public class Drivetrain extends HSDrivetrain {
      * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
+        resetMasters();
         resetTalonInverts();
         setNeutralMode(NeutralMode.Brake);
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
