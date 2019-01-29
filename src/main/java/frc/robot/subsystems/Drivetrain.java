@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.drivetrain.DriveToPosition;
+import frc.robot.commands.drivetrain.DriveWithVelocityDual;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import harkerrobolib.subsystems.HSDrivetrain;
 import harkerrobolib.util.Gains;
@@ -27,10 +28,10 @@ import harkerrobolib.wrappers.HSTalon;
 public class Drivetrain extends HSDrivetrain {
     private static Drivetrain instance;
 
-    private static boolean LEFT_MASTER_INVERTED = false;
-    private static boolean RIGHT_MASTER_INVERTED = true;
-    private static boolean LEFT_FOLLOWER_INVERTED = false;
-    private static boolean RIGHT_FOLLOWER_INVERTED = true;
+    private static boolean LEFT_MASTER_INVERTED = !false;
+    private static boolean RIGHT_MASTER_INVERTED = !true;
+    private static boolean LEFT_FOLLOWER_INVERTED = !false;
+    private static boolean RIGHT_FOLLOWER_INVERTED = !true;
 
     private static int TALON_PEAK_LIMIT = 20;
     private static int TALON_PEAK_TIME = 750;
@@ -59,7 +60,7 @@ public class Drivetrain extends HSDrivetrain {
      */
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new DriveWithVelocityManual());
+        setDefaultCommand(new DriveWithVelocityDual(0));
     }
 
     /**

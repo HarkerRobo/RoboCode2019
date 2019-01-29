@@ -31,11 +31,6 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
 
         Drivetrain.getInstance().arcadeDrivePercentOutput(leftDriverY, leftDriverX);
     }       
-    
-    @Override
-    public void end() {
-        Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0);
-    }
 
     @Override
     public void interrupted() {

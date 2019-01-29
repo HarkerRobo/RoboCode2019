@@ -23,10 +23,10 @@ import frc.robot.util.PIDSourceCustomGet;
 public class AlignWithLimelight extends Command {
     private Limelight limelight;
 
-    private static final double TURN_KP = .07; //0.09
-    private static final double TURN_KI = 0.001;
-    private static final double TURN_KD = 0.3;
-    private static final double TURN_KF = 0;
+    public static final double TURN_KP = .07; //0.09
+    public static final double TURN_KI = 0.001;
+    public static final double TURN_KD = 0.3;
+    public static final double TURN_KF = 0;
     
     private static final double FORWARD_KF = 0;
     private static final double FORWARD_KP = 0.045;
@@ -40,6 +40,7 @@ public class AlignWithLimelight extends Command {
     private static final double MAX_ALLOWABLE_TX = 7.5;   
 
     private static final double THOR_SWITCH_POINT = 50.0;
+    //private static int targetHeading; 
 
     private PIDOutputGetter turnOutput;
     private PIDOutputGetter forwardOutput;
@@ -49,6 +50,8 @@ public class AlignWithLimelight extends Command {
 
     private double thorSetpoint;
     private double txSetpoint;
+
+    //private static boolean isRobotRightOfTarget;
 
     private static boolean LEFT_MASTER_INVERTED = true;
     private static boolean RIGHT_MASTER_INVERTED = false;
@@ -82,7 +85,12 @@ public class AlignWithLimelight extends Command {
                                     PIDSourceType.kDisplacement),
             forwardOutput
         );
-        
+     
+    //    targetHeading = (int)Drivetrain.getInstance().getPigeon().getFusedHeading() % 360;
+    //    if (targetHeading < 0 ) targetHeading += 360;
+    //    targetHeading = Math.round(targetHeading / 90.0) * 90;
+    //    isRobotRightOfTarget = Drivetrain.getInstance().getPigeon().getFusedHeading() > targetHeading;
+
         turnController.enable();
         forwardController.enable();
     
@@ -93,26 +101,26 @@ public class AlignWithLimelight extends Command {
     }
 
     public void execute () {
-        boolean isTxPositive = limelight.getTx() >= 0;
-        boolean hasReachedThorSwitchpoint = limelight.getThor() >= THOR_SWITCH_POINT;   
-        boolean isTxWithinAllowableRange = MAX_ALLOWABLE_TX < limelight.getTx();     
+        // boolean isTxPositive = limelight.getTx() >= 0;
+        // boolean hasReachedThorSwitchpoint = limelight.getThor() >= THOR_SWITCH_POINT;   
+        // boolean isTxWithinAllowableRange = MAX_ALLOWABLE_TX < limelight.getTx();     
 
-        double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
-        double turnOutputVal;
+        // double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
+        double turnOutputVal = turnOutput.getOutput();
 
-        turnController.setSetpoint(
-            isTxPositive || hasReachedThorSwitchpoint ? txSetpoint : POS_TX_SETPOINT
-        );
+        // turnController.setSetpoint(
+        //     isTxPositive || hasReachedThorSwitchpoint ? txSetpoint : POS_TX_SETPOINT
+        // );
 
-        turnOutputVal = isTxPositive && isTxWithinAllowableRange &&(Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR || 
-                                    !hasReachedThorSwitchpoint)
-                                    ? 0 : turnOutput.getOutput();
+        // turnOutputVal = isTxPositive && isTxWithinAllowableRange &&(Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR || 
+        //                             !hasReachedThorSwitchpoint)
+        //                             ? 0 : turnOutput.getOutput();
 
         SmartDashboard.putNumber("Turn Error", turnController.getError());
         SmartDashboard.putNumber("Forward Error", forwardController.getError());
 
-        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, forwardOutputVal - turnOutputVal /*- angleOutputVal*/);
-        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, forwardOutputVal + turnOutputVal /*+ angleOutputVal*/);
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, /*forwardOutputVal*/ - turnOutputVal /*- angleOutputVal*/);
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, /*forwardOutputVal +*/ turnOutputVal /*+ angleOutputVal*/);
     }
     
     @Override
@@ -131,8 +139,8 @@ public class AlignWithLimelight extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR && 
-                Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR; 
+        return false;/* Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR && 
+                Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR; */
                 //Math.abs(angleController.getError()) <= ANGLE_ALLOWABLE_ERROR ;
     }
 }
