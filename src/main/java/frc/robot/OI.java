@@ -1,10 +1,10 @@
 package frc.robot;
 
+import frc.robot.commands.SpinIntakeAndRollers;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
 import frc.robot.commands.elevator.ZeroElevator;
-import frc.robot.commands.hatchpanelintake.SetHatchPusherDirection;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm.ArmDirection;
@@ -17,8 +17,6 @@ import harkerrobolib.wrappers.HSDPadButton;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
-import frc.robot.commands.SpinIntakeAndRollers;
-import frc.robot.subsystems.HatchPusher;
 
 /**
  * Contains both driver and operator gamepads.
@@ -84,8 +82,8 @@ public class OI {
         HSDPadButton driverDownDPad = new HSDPadButton(driverGamepad, DPAD_DOWN_ANGLE);
         HSDPadButton driverRightDPad = new HSDPadButton(driverGamepad, DPAD_RIGHT_ANGLE);
 
-        driverUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
-        driverDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+        // driverUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.ExtenderDirection.OUT));
+        // driverDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.ExtenderDirection.IN));
 
         //operator bumpers                 
         operatorGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.UP));
@@ -99,8 +97,8 @@ public class OI {
         //done
 
         //operator dpad
-        operatorUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
-        operatorDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+        // operatorUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.ExtenderDirection.OUT));
+        // operatorDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.ExtenderDirection.IN));
         
         //operator buttons
         

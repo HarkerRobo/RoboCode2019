@@ -17,7 +17,8 @@ public class RobotMap {
         public static final int ARM_MASTER = 0;
         public static final int RO_TOP = 0, RO_BOTTOM = 0;
         public static final int ARM_FORWARD_CHANNEL = 0, ARM_REVERSE_CHANNEL = 1;
-        public static final int HATCH_FORWARD_CHANNEL = 2, HATCH_REVERSE_CHANNEL = 5;
+        public static final int EXTENDER_FORWARD_CHANNEL = 2, EXTENDER_REVERSE_CHANNEL = 5,
+                                FLOWER_FORWARD_CHANNEL = 0, FLOWER_REVERSE_CHANNEL = 0;
         public static final int PIGEON = 1;
         public static final int PCM = 0;
     }
@@ -27,7 +28,7 @@ public class RobotMap {
         public static final int PID_AUXILIARY = 1;
         public static final int REMOTE_SLOT_0 = 0;
         public static final int REMOTE_SLOT_1 = 1;
-
+        
         public static final LEDChannel RED_CHANNEL= LEDChannel.LEDChannelA;
         public static final LEDChannel GREEN_CHANNEL = LEDChannel.LEDChannelB;
         public static final LEDChannel BLUE_CHANNEL = LEDChannel.LEDChannelC;

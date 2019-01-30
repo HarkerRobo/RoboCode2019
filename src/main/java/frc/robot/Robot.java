@@ -9,15 +9,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelight;
-import frc.robot.commands.drivetrain.AlignWithLimelightIndefinite;
-import frc.robot.commands.drivetrain.DriveWithVelocityTimed;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.HatchPusher;
+import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
@@ -44,7 +40,7 @@ public class Robot extends TimedRobot {
     private Rollers rollers;
     private Wrist wrist;
     private Intake ballIntake;
-    private HatchPusher hatchPusher;
+    private HatchLatcher hatchLatcher;
     private Limelight limelight;
     private OI oi;
 
@@ -59,7 +55,7 @@ public class Robot extends TimedRobot {
         //elevator = Elevator.getInstance();
         //rollers = Rollers.getInstance();
         //wrist = Wrist.getInstance();
-        //hatchPusher = HatchPusher.getInstance();
+        //hatchLatcher = HatchLatcher.getInstance();
         oi = OI.getInstance();        
         limelight = Limelight.getInstance();        
                 
