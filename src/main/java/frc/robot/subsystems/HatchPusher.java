@@ -12,9 +12,13 @@ import frc.robot.RobotMap.CAN_IDs;
  * @author Finn Frankis
  * @author Austin Wang
  * @author Anirudh Kotamraju
+ * @author Shahzeb Lakhani
+ * @author Angela Jia
+ * @author Aimee Wang
  * @since 1/14/19
  */
 public class HatchPusher extends Subsystem {
+
     public enum PushDirection {
         IN(DoubleSolenoid.Value.kReverse), OUT(DoubleSolenoid.Value.kForward);
         private DoubleSolenoid.Value value;
@@ -28,6 +32,7 @@ public class HatchPusher extends Subsystem {
 
     private static HatchPusher instance;
     private DoubleSolenoid doubleSolenoid;
+    private DoubleSolenoid doubleSolenoid2;
     private Compressor compressor;
     private static boolean COMPRESSOR_INITAL_STATE = true;
 
