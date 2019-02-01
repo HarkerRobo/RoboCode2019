@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import frc.robot.commands.StartCompressor;
 import frc.robot.commands.drivetrain.AlignWithLimelight;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -58,7 +59,7 @@ public class Robot extends TimedRobot {
         //hatchLatcher = HatchLatcher.getInstance();
         oi = OI.getInstance();        
         limelight = Limelight.getInstance();        
-                
+       
         drivetrain.talonInit();
     }
 
@@ -71,6 +72,7 @@ public class Robot extends TimedRobot {
              new AlignWithLimelight(198, 0, 4)
             //  new DriveWithVelocityTimed(2, -0.3)
          ).start();
+         new StartCompressor().start();
     }
 
     /**
@@ -86,6 +88,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+        new StartCompressor().start();      
     }
 
     /**

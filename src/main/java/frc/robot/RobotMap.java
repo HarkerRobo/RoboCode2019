@@ -28,6 +28,7 @@ public class RobotMap {
         public static final int PID_AUXILIARY = 1;
         public static final int REMOTE_SLOT_0 = 0;
         public static final int REMOTE_SLOT_1 = 1;
+        public static final double WAIT_TIME = 0;
         
         public static final LEDChannel RED_CHANNEL= LEDChannel.LEDChannelA;
         public static final LEDChannel GREEN_CHANNEL = LEDChannel.LEDChannelB;
