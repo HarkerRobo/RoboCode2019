@@ -11,12 +11,13 @@ import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
  */
 public class SetExtenderManual extends InstantCommand {
     private ExtenderDirection direction;
-    public SetExtenderManual(ExtenderDirection direction){
+    
+    public SetExtenderManual(ExtenderDirection direction) {
         requires(HatchLatcher.getInstance());
         
         this.direction = direction;                
     }
-    public void initialize(){
+    public void initialize() {
         HatchLatcher.getInstance().setExtenderState(direction);
     }    
 }

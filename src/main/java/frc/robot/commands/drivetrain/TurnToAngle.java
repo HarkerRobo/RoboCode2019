@@ -35,11 +35,17 @@ public class TurnToAngle extends Command {
         this.angle = pigeonHeadingOnehatch;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
     protected boolean isFinished() {
         return false;
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
     protected void initialize() {
         Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.ANGLE_SLOT_INDEX, Global.PID_PRIMARY);
@@ -68,6 +74,9 @@ public class TurnToAngle extends Command {
                             .kD(RIGHT_KD)); // kF will be set to zero if not specified
     }
 
+    /**
+     * {@InheritDoc}
+     */
     @Override
     protected void execute() {
         Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position, angle);
