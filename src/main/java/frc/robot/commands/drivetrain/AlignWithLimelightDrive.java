@@ -1,23 +1,28 @@
 package frc.robot.commands.drivetrain;
 
-import harkerrobolib.commands.IndefiniteCommand;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
-import frc.robot.Robot;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
 import frc.robot.util.PIDOutputGetter;
 import frc.robot.util.PIDSourceCustomGet;
 import harkerrobolib.util.MathUtil;
 
-public class DriveWithVelocityDual extends IndefiniteCommand {
-
+/**
+ * Drives towards a target using the Limelight camera.
+ * 
+ * @author Jatin Kohli
+ * @author Chirag Kaushik
+ * @author Finn Frankis
+ * @author Angela Jia
+ * @since 1/12/19
+ */
+public class AlignWithLimelightDrive extends Command {
     private Limelight limelight;
 
     public static final double TURN_KP = .07; //0.09
@@ -37,6 +42,7 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
     private static final double MAX_ALLOWABLE_TX = 7.5;   
 
     private static final double THOR_SWITCH_POINT = 50.0;
+    //private static int targetHeading; 
 
     private PIDOutputGetter turnOutput;
     private PIDOutputGetter forwardOutput;
@@ -47,12 +53,14 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
     private double thorSetpoint;
     private double txSetpoint;
 
-    private static boolean LEFT_MASTER_INVERTED = false;
-    private static boolean RIGHT_MASTER_INVERTED = true;
-    private static boolean LEFT_FOLLOWER_INVERTED = false;
-    private static boolean RIGHT_FOLLOWER_INVERTED = true;
+    //private static boolean isRobotRightOfTarget;
 
-    public DriveWithVelocityDual(double thorSetpoint, double txSetpoint, double angleSetpoint) {
+    private static boolean LEFT_MASTER_INVERTED = true;
+    private static boolean RIGHT_MASTER_INVERTED = false;
+    private static boolean LEFT_FOLLOWER_INVERTED = true;
+    private static boolean RIGHT_FOLLOWER_INVERTED = false;
+
+    public AlignWithLimelightDrive(double thorSetpoint, double txSetpoint, double angleSetpoint) {
         requires(Drivetrain.getInstance());
 
         this.txSetpoint = txSetpoint;
@@ -95,27 +103,30 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
     }
 
     public void execute () {
-        double leftDriverX;
+        // boolean isTxPositive = limelight.getTx() >= 0;
+        // boolean hasReachedThorSwitchpoint = limelight.getThor() >= THOR_SWITCH_POINT;   
+        // boolean isTxWithinAllowableRange = MAX_ALLOWABLE_TX < limelight.getTx();     
+
+        // double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
         double turnOutputVal = turnOutput.getOutput();
-        System.out.println("Before getting"+Robot.getTime());
-        boolean shouldAlign = OI.getInstance().getDriverGamepad().getButtonBumperLeftState();
-        System.out.println("After getting" + Robot.getTime());
-        SmartDashboard.putNumber("Output", Drivetrain.getInstance().getLeftMaster().getMotorOutputPercent());
-        SmartDashboard.putNumber("Output Val", turnOutputVal);
 
-        if(shouldAlign){
-            leftDriverX= turnOutputVal;
-        }else{
-            leftDriverX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
-        }
+        // turnController.setSetpoint(
+        //     isTxPositive || hasReachedThorSwitchpoint ? txSetpoint : POS_TX_SETPOINT
+        // );
 
-       
-         double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
+        // turnOutputVal = isTxPositive && isTxWithinAllowableRange &&(Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR || 
+        //                             !hasReachedThorSwitchpoint)
+        //                             ? 0 : turnOutput.getOutput();
 
-        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, leftDriverY + leftDriverX /*turnOutputVal*/);
-        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, leftDriverY - leftDriverX /*turnOutputVal*/);
+        SmartDashboard.putNumber("Turn Error", turnController.getError());
+        SmartDashboard.putNumber("Forward Error", forwardController.getError());
+
+        double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
+
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, /*forwardOutputVal*/ leftDriverY - turnOutputVal /*- angleOutputVal*/);
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, /*forwardOutputVal +*/ leftDriverY + turnOutputVal /*+ angleOutputVal*/);
     }
-
+    
     @Override
     public void end() {
         Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0);
@@ -128,5 +139,12 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
     public void interrupted() {
         System.out.println("Interrupted");
         end();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;/* Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR && 
+                Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR; */
+                //Math.abs(angleController.getError()) <= ANGLE_ALLOWABLE_ERROR ;
     }
 }
