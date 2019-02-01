@@ -22,25 +22,33 @@ public class HatchLatcher extends Subsystem {
     public enum ExtenderDirection {
         IN(DoubleSolenoid.Value.kReverse), OUT(DoubleSolenoid.Value.kForward);
         private DoubleSolenoid.Value value;
+
         private ExtenderDirection(DoubleSolenoid.Value value) {
             this.value = value;
         }
+
         public DoubleSolenoid.Value getValue() {
             return value;
         }
 
-        public static ExtenderDirection convertDirection (DoubleSolenoid.Value value) {
+        public static ExtenderDirection convertDirection(DoubleSolenoid.Value value) {
             return value == IN.getValue() ? IN : OUT;
         }
     }
+
     public enum FlowerDirection {
-        OPEN(DoubleSolenoid.Value.kReverse), CLOSE(DoubleSolenoid.Value.kForward);
+        OPEN(DoubleSolenoid.Value.kReverse), CLOSED(DoubleSolenoid.Value.kForward);
         private DoubleSolenoid.Value value;
+
         private FlowerDirection(DoubleSolenoid.Value value) {
             this.value = value;
         }
+
         public DoubleSolenoid.Value getValue() {
             return value;
+        }
+        public static FlowerDirection convertDirection(DoubleSolenoid.Value value) {
+            return value == OPEN.getValue() ? OPEN : CLOSED;
         }
     }
 
@@ -49,9 +57,7 @@ public class HatchLatcher extends Subsystem {
     private DoubleSolenoid flower;
     private Compressor compressor;
     private static boolean COMPRESSOR_INITAL_STATE = true;
-    
-    
-    
+
     private HatchLatcher() {
         compressor = new Compressor(CAN_IDs.PCM);
         extender = new DoubleSolenoid(CAN_IDs.EXTENDER_FORWARD_CHANNEL, CAN_IDs.EXTENDER_REVERSE_CHANNEL);
@@ -64,10 +70,10 @@ public class HatchLatcher extends Subsystem {
     }
 
     public DoubleSolenoid.Value getExtenderState() {
-        return extender.get();        
+        return extender.get();
     }
 
-    public void setExtenderState(ExtenderDirection state){
+    public void setExtenderState(ExtenderDirection state) {
         extender.set(state.getValue());
     }
 
@@ -75,20 +81,19 @@ public class HatchLatcher extends Subsystem {
         return flower.get();
     }
 
-    public void setFlowerState(FlowerDirection state) {
-        flower.set(state.getValue());
+    public void setFlowerState(FlowerDirection flowerDirection) {
+        flower.set(flowerDirection.getValue());
     }
-       
+
     public Compressor getCompressor() {
         return compressor;
     }
-   
+
     public static HatchLatcher getInstance() {
-        if(instance == null){
-           instance = new HatchLatcher();                                                                                        
+        if (instance == null) {
+            instance = new HatchLatcher();
         }
         return instance;
     }
-    
 
 }
