@@ -8,8 +8,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import frc.robot.commands.drivetrain.AlignWithLimelight;
+import frc.robot.commands.drivetrain.DriveWithVelocityDual;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -43,7 +44,7 @@ public class Robot extends TimedRobot {
     private HatchLatcher hatchLatcher;
     private Limelight limelight;
     private OI oi;
-
+    private static double startTime;
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -68,9 +69,11 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
          new SequentialCommandGroup(
-             new AlignWithLimelight(198, 0, 4)
+         //    new AlignWithLimelight(198, 0, 4)
+             new DriveWithVelocityDual(198, 0, 4)
             //  new DriveWithVelocityTimed(2, -0.3)
          ).start();
+         startTime = Timer.getFPGATimestamp();
     }
 
     /**
@@ -86,6 +89,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+        startTime = Timer.getFPGATimestamp();
     }
 
     /**
@@ -110,7 +114,6 @@ public class Robot extends TimedRobot {
         //     limelight.getRawContourTs(0)
         // );
         // System.out.println("fused heading: " + drivetrain.getPigeon().getFusedHeading());
-        System.out.println("Thor: " + limelight.getThor());
     }
 
     /**
@@ -167,5 +170,9 @@ public class Robot extends TimedRobot {
      */
     public Intake getBallIntake() {
         return ballIntake;
+    }
+
+    public static int getTime() {
+        return (int) ((Timer.getFPGATimestamp() - startTime) * 1000);
     }
 }

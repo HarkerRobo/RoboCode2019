@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.commands.SpinIntakeAndRollers;
 import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.drivetrain.AlignWithLimelight;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
 import frc.robot.commands.elevator.ZeroElevator;
@@ -54,7 +55,8 @@ public class OI {
         //driver bumpers
         driverGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.DOWN));
         driverGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.UP));
-    
+        driverGamepad.getButtonBumperLeft().whileActive(new AlignWithLimelight(198, 0, 4));
+        
         //driver buttons
         driverGamepad.getButtonA().whenPressed(new ParallelCommandGroup(
             new MoveElevatorPosition(Elevator.INTAKE_POSITION),

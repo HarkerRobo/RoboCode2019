@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.drivetrain.AlignWithLimelight;
 import frc.robot.commands.drivetrain.DriveToPosition;
 import frc.robot.commands.drivetrain.DriveWithVelocityDual;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
@@ -60,7 +61,7 @@ public class Drivetrain extends HSDrivetrain {
      */
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new DriveWithVelocityDual(0));
+//        setDefaultCommand(new AlignWithLimelight(198, 0, 4));
     }
 
     /**
