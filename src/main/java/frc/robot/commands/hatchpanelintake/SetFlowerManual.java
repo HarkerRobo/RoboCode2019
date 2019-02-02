@@ -19,6 +19,7 @@ public class SetFlowerManual extends InstantCommand {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize(){
         HatchLatcher.getInstance().setFlowerState(direction);        
     }

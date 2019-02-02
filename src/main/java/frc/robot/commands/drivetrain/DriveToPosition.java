@@ -24,9 +24,6 @@ public class DriveToPosition extends Command {
 	private int leftError;
 	private int rightError;
 	
-	public static final boolean RIGHT_SENSOR_PHASE = true;
-	public static final boolean LEFT_SENSOR_PHASE = true;
-	
 	public static final double LEFT_KD = 0;
 	public static final double LEFT_KI = 0;
 	public static final double LEFT_KP = 0;
@@ -59,8 +56,8 @@ public class DriveToPosition extends Command {
 		Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
 				Global.PID_PRIMARY);
 
-		Drivetrain.getInstance().getLeftMaster().setSensorPhase(LEFT_SENSOR_PHASE);
-		Drivetrain.getInstance().getRightMaster().setSensorPhase(RIGHT_SENSOR_PHASE);
+		Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
+		Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
 
         Drivetrain.getInstance().configClosedLoopConstants(Drivetrain.POSITION_SLOT_INDEX, 
                 new Gains()

@@ -51,6 +51,7 @@ public class HatchLatcher extends Subsystem {
             return value == OPEN.getValue() ? OPEN : CLOSED;
         }
     }
+    public static final double EXTENDER_EXTEND_TIME = 1.0;
 
     private static HatchLatcher instance;
     private DoubleSolenoid extender;
@@ -69,16 +70,16 @@ public class HatchLatcher extends Subsystem {
     public void initDefaultCommand() {
     }
 
-    public DoubleSolenoid.Value getExtenderState() {
-        return extender.get();
+    public ExtenderDirection getExtenderState() {
+        return ExtenderDirection.convertDirection(extender.get());
     }
 
     public void setExtenderState(ExtenderDirection state) {
         extender.set(state.getValue());
     }
 
-    public DoubleSolenoid.Value getFlowerState() {
-        return flower.get();
+    public FlowerDirection getFlowerState() {
+        return FlowerDirection.convertDirection(flower.get());
     }
 
     public void setFlowerState(FlowerDirection flowerDirection) {

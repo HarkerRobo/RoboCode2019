@@ -21,6 +21,7 @@ public class SetExtenderManual extends InstantCommand {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void initialize() {
         HatchLatcher.getInstance().setExtenderState(direction);
     }    

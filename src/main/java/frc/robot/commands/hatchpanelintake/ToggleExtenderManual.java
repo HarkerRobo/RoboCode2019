@@ -2,8 +2,6 @@ package frc.robot.commands.hatchpanelintake;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.subsystems.HatchLatcher;
-import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
-import frc.robot.util.PneumaticsUtil;
 
 /**
  * Toggles extender direction.
@@ -17,11 +15,12 @@ public class ToggleExtenderManual extends InstantCommand {
     public ToggleExtenderManual(){
         requires(HatchLatcher.getInstance());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void initialize(){
-        HatchLatcher.getInstance().setExtenderState(ExtenderDirection.convertDirection(
-                                                        PneumaticsUtil.switchSolenoidValue(
-                                                            HatchLatcher.getInstance().getExtenderState())
-                                                            )
-                                                            );
+        HatchLatcher.getInstance().setExtenderState(HatchLatcher.getInstance().getExtenderState());
     }
 }

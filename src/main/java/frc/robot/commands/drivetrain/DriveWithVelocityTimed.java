@@ -13,6 +13,9 @@ public class DriveWithVelocityTimed extends TimedCommand{
         this.velocity = velocity;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void execute(){
         Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput,velocity);
         Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput,velocity);
