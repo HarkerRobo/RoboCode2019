@@ -7,14 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.SetCompressor;
-import frc.robot.commands.SetCompressor.CompressorState;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -47,7 +42,6 @@ public class Robot extends TimedRobot {
     private static HatchLatcher hatchLatcher;
     private static Limelight limelight;
     private static OI oi;
-    private static Compressor compressor;
 
     private static double startTime;
     /**
@@ -67,8 +61,6 @@ public class Robot extends TimedRobot {
        
         drivetrain.talonInit();
         drivetrain.getPigeon().setFusedHeading(0);
-
-        compressor = new Compressor(CAN_IDs.PCM);
     }
 
     /**
@@ -76,8 +68,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        new CommandGroup().start();
-         new SetCompressor(CompressorState.ON).start();
          startTime = Timer.getFPGATimestamp();
     }
 
@@ -94,7 +84,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        new SetCompressor(CompressorState.ON).start();
         startTime = Timer.getFPGATimestamp();
     }
 
@@ -195,9 +184,5 @@ public class Robot extends TimedRobot {
      */
     public static int getTime() {
         return (int) ((Timer.getFPGATimestamp() - startTime) * 1000);
-    }
-
-    public static Compressor getCompressor() {
-        return compressor;
     }
 }
