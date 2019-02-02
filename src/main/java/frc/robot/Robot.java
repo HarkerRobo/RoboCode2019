@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -18,6 +20,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
+import harkerrobolib.wrappers.HSTalon;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -43,6 +46,8 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
     private static OI oi;
 
+    private static HSTalon talon = new HSTalon(1);
+
     private static double startTime;
     /**
      * This function is run when the robot is first started up and should be used
@@ -57,7 +62,7 @@ public class Robot extends TimedRobot {
         //wrist = Wrist.getInstance();
         //hatchLatcher = HatchLatcher.getInstance();
         oi = OI.getInstance();        
-        limelight = Limelight.getInstance();        
+        //limelight = Limelight.getInstance();        
        
         drivetrain.talonInit();
         drivetrain.getPigeon().setFusedHeading(0);
@@ -92,7 +97,9 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        
         Scheduler.getInstance().run();
+        talon.set(ControlMode.PercentOutput, 0.1);
     }
 
     /**
