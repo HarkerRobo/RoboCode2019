@@ -1,21 +1,28 @@
 package frc.robot.commands.drivetrain;
 
-import harkerrobolib.commands.IndefiniteCommand;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
 import frc.robot.util.PIDOutputGetter;
 import frc.robot.util.PIDSourceCustomGet;
+import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
+/**
+ * Represents a driver-assisted mode where the driver has full forward-backward control
+ * and turn is assisted by the limelight tx loop.
+ * 
+ * @author Finn Frankis
+ * @author Angela Jia
+ * 
+ * @since 1/31/19
+ */
 public class DriveWithVelocityDual extends IndefiniteCommand {
 
     private Limelight limelight;
