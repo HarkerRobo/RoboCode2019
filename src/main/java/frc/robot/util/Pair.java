@@ -7,19 +7,19 @@ package frc.robot.util;
  * @since 2/2/19
  */
 public class Pair <K, V> {
-    private K firstEntry;
-    private V secondEntry;
+    private K first;
+    private V second;
 
-    public Pair (K firstEntry, V secondEntry) {
-        this.firstEntry = firstEntry;
-        this.secondEntry = secondEntry;
+    public Pair (K first, V second) {
+        this.first = first;
+        this.second = second;
     }
 
-    public K getFirstEntry () {
-        return firstEntry;
+    public K getFirst () {
+        return first;
     }
 
-    public V getSecondEntry () {
-        return secondEntry;
+    public V getSecond () {
+        return second;
     }
 }
