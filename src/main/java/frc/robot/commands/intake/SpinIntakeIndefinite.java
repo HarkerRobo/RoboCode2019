@@ -20,16 +20,25 @@ public class SpinIntakeIndefinite extends IndefiniteCommand {
         this.direction = direction;
     }    
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         Intake.getInstance().setTalonOutput(magnitude, direction);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void end() {
         Intake.getInstance().setTalonOutput(0.0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void interrupted() {
         Intake.getInstance().setTalonOutput(0.0);

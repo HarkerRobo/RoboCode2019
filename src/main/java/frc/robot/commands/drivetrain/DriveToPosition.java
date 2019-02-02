@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.util.Conversions;
-import harkerrobolib.util.Gains;
 import harkerrobolib.util.Conversions.PositionUnit;
+import harkerrobolib.util.Gains;
 
 /**
  * Drives forward to desired position.
@@ -44,6 +44,9 @@ public class DriveToPosition extends Command {
 		requires(Drivetrain.getInstance());
 	}
 
+	/**
+     * {@inheritDoc}
+     */
 	protected void initialize() {
 		Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
 		Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
@@ -70,6 +73,9 @@ public class DriveToPosition extends Command {
                             .kD(RIGHT_KD)); // kF will be set to zero if not specified
 	}
 
+	/**
+     * {@inheritDoc}
+     */
 	protected void execute() {
 		Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position,
 				Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
@@ -77,6 +83,9 @@ public class DriveToPosition extends Command {
 				Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
 	}
 
+	/**
+     * {@inheritDoc}
+     */
 	@Override
 	protected boolean isFinished() {
 		return Drivetrain.getInstance().isClosedLoopErrorWithin(Global.PID_PRIMARY, Drivetrain.ALLOWABLE_ERROR);

@@ -15,6 +15,10 @@ public class SetFlowerManual extends InstantCommand {
         requires(HatchLatcher.getInstance());
         this.direction = direction;
     }
+
+    /**
+     * {@inheritDoc}
+     */
     public void initialize(){
         HatchLatcher.getInstance().setFlowerState(direction);        
     }

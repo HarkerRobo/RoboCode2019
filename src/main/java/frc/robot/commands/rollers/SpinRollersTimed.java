@@ -20,18 +20,27 @@ public class SpinRollersTimed extends TimedCommand
         this.direction = direction;       
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute()
     {
         Rollers.getInstance().moveRollers(magnitude, direction);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void end()
     {
         Rollers.getInstance().stopRollers();                        
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void interrupted()
     {

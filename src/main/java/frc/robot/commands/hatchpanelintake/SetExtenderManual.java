@@ -17,6 +17,10 @@ public class SetExtenderManual extends InstantCommand {
         
         this.direction = direction;                
     }
+
+    /**
+     * {@inheritDoc}
+     */
     public void initialize() {
         HatchLatcher.getInstance().setExtenderState(direction);
     }    

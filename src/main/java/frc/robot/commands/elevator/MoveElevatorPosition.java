@@ -39,6 +39,9 @@ public class MoveElevatorPosition extends Command
         this.setpoint = setpoint;
     } 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize()
     {
@@ -47,12 +50,19 @@ public class MoveElevatorPosition extends Command
         Elevator.getInstance().getMaster().setSensorPhase(SENSOR_PHASE);
     }
          
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void execute()
     {
         Elevator.getInstance().getMaster().set(ControlMode.Position, setpoint);    
             
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
 	protected boolean isFinished() {
 		return Math.abs(Elevator.getInstance().getMaster().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;

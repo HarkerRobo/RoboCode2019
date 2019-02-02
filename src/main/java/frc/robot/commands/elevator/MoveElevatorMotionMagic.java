@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
-import harkerrobolib.util.Gains;
 
 /**
  * Moves the elevator to a specified setpoint
@@ -38,11 +37,17 @@ public class MoveElevatorMotionMagic extends Command {
         this.setpoint = setpoint;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean isFinished() {
         return Math.abs(Elevator.getInstance().getMaster().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void initialize() {
         Elevator.getInstance().getMaster().selectProfileSlot(Elevator.MOTION_MAGIC_SLOT_INDEX, Global.PID_PRIMARY);
@@ -50,6 +55,9 @@ public class MoveElevatorMotionMagic extends Command {
         Elevator.getInstance().getMaster().setSensorPhase(MOTION_MAGIC_SENSOR_PHASE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void execute() {
         Elevator.getInstance().getMaster().set(ControlMode.MotionMagic, setpoint);  

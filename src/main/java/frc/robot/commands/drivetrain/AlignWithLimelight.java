@@ -70,6 +70,9 @@ public class AlignWithLimelight extends Command {
         forwardOutput = new PIDOutputGetter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
 
@@ -100,6 +103,9 @@ public class AlignWithLimelight extends Command {
         Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void execute () {
         // boolean isTxPositive = limelight.getTx() >= 0;
         // boolean hasReachedThorSwitchpoint = limelight.getThor() >= THOR_SWITCH_POINT;   
@@ -123,6 +129,9 @@ public class AlignWithLimelight extends Command {
         Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, /*forwardOutputVal +*/ turnOutputVal /*+ angleOutputVal*/);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void end() {
         Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0);
@@ -131,12 +140,18 @@ public class AlignWithLimelight extends Command {
         Drivetrain.getInstance().resetTalonInverts();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void interrupted() {
         System.out.println("Interrupted");
         end();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isFinished() {
         return false;/* Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR && 

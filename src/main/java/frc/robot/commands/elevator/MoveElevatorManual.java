@@ -21,11 +21,17 @@ public class MoveElevatorManual extends IndefiniteCommand {
         requires(Elevator.getInstance());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         OI oi = OI.getInstance();

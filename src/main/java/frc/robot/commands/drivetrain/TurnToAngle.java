@@ -36,7 +36,7 @@ public class TurnToAngle extends Command {
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected boolean isFinished() {
@@ -44,7 +44,7 @@ public class TurnToAngle extends Command {
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected void initialize() {
@@ -75,7 +75,7 @@ public class TurnToAngle extends Command {
     }
 
     /**
-     * {@InheritDoc}
+     * {@inheritDoc}
      */
     @Override
     protected void execute() {

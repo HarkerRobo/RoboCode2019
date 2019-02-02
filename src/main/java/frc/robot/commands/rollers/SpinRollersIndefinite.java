@@ -21,16 +21,25 @@ public class SpinRollersIndefinite extends IndefiniteCommand {
         this.magnitude = magnitude;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         Rollers.getInstance().moveRollers(magnitude, direction);
     }    
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void end() {
         Rollers.getInstance().stopRollers();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void interrupted() {
         Rollers.getInstance().stopRollers();

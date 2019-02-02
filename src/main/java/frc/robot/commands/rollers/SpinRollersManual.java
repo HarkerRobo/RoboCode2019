@@ -18,9 +18,11 @@ public class SpinRollersManual extends IndefiniteCommand {
 	public SpinRollersManual() {
 		requires(Rollers.getInstance());
     }	
+
     /**
      * The driver controller will take priority and spin the roller according to the amount that the right
      * and left triggers are pressed.
+     * {@inheritDoc}
      */
     @Override
 	public void execute() {

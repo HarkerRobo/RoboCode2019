@@ -71,6 +71,9 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
         forwardOutput = new PIDOutputGetter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
 
@@ -101,6 +104,9 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
         Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void execute () {
         double leftDriverX;
         double turnOutputVal = turnOutput.getOutput();
@@ -123,6 +129,9 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
         Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, leftDriverY - leftDriverX /*turnOutputVal*/);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void end() {
         Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0);
@@ -131,6 +140,9 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
         Drivetrain.getInstance().resetTalonInverts();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void interrupted() {
         System.out.println("Interrupted");

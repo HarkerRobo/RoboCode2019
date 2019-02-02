@@ -29,6 +29,9 @@ public class MoveWristPosition extends Command {
         this.position = position;                
     }            
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.POSITION_SLOT, Global.PID_PRIMARY);
@@ -42,11 +45,17 @@ public class MoveWristPosition extends Command {
         Wrist.getInstance().getMasterTalon().config_kF(Wrist.POSITION_SLOT, MoveWristPosition.KF);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         Wrist.getInstance().getMasterTalon().set(ControlMode.Position, position);
     }        
         
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean isFinished() {
         return Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;

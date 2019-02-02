@@ -19,11 +19,17 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
         requires(Drivetrain.getInstance());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         Drivetrain.getInstance().setBoth(ControlMode.PercentOutput, 0.0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void execute() {
         double leftDriverX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
@@ -32,6 +38,9 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
         Drivetrain.getInstance().arcadeDrivePercentOutput(leftDriverY, leftDriverX);
     }       
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void interrupted() {
         Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0.0);

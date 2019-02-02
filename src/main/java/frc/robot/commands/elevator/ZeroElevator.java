@@ -23,19 +23,34 @@ public class ZeroElevator extends Command {
         requires(Elevator.getInstance());        
     }
 
+    /**
+     * {@inheritDoc}
+     */
 	@Override
 	protected boolean isFinished() {
 		return Elevator.getInstance().getMaster().getOutputCurrent() >= Elevator.ZERO_CURRENT_SPIKE;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void initialize() {
         Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void execute() {
         Elevator.getInstance().getMaster().set(ControlMode.PercentOutput, ZERO_DOWN_SPEED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void end() {
         Elevator.getInstance().getMaster().setSelectedSensorPosition(ZERO_POSITION, Global.PID_PRIMARY);
     }

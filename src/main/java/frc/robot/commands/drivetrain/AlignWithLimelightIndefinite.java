@@ -1,7 +1,6 @@
 package frc.robot.commands.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -64,6 +63,9 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
         angleOutput = new PIDOutputGetter();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         turnController = new PIDController(
@@ -88,6 +90,9 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
         Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void execute () {
         double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
         double turnOutputVal = Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR ? 0 : turnOutput.getOutput();

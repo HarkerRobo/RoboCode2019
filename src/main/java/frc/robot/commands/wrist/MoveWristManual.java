@@ -20,10 +20,18 @@ public class MoveWristManual extends IndefiniteCommand {
         requires (Wrist.getInstance());
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void initialize () {
         Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void execute() {
         double leftOperatorTrigger = OI.getInstance().getOperatorGamepad().getLeftTrigger();
         double rightOperatorTrigger = OI.getInstance().getOperatorGamepad().getRightTrigger();
