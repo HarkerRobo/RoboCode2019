@@ -7,13 +7,14 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import frc.robot.commands.StartCompressor;
-import frc.robot.commands.drivetrain.DriveWithVelocityDual;
+import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.SetCompressor;
+import frc.robot.commands.SetCompressor.CompressorState;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -22,7 +23,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
-import harkerrobolib.auto.SequentialCommandGroup;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -38,15 +38,17 @@ import harkerrobolib.auto.SequentialCommandGroup;
  */
 public class Robot extends TimedRobot {
 
-    private Drivetrain drivetrain;    
-    private Arm arm;
-    private Elevator elevator;
-    private Rollers rollers;
-    private Wrist wrist;
-    private Intake ballIntake;
-    private HatchLatcher hatchLatcher;
-    private Limelight limelight;
-    private OI oi;
+    private static Drivetrain drivetrain;    
+    private static Arm arm;
+    private static Elevator elevator;
+    private static Rollers rollers;
+    private static Wrist wrist;
+    private static Intake ballIntake;
+    private static HatchLatcher hatchLatcher;
+    private static Limelight limelight;
+    private static OI oi;
+    private static Compressor compressor;
+
     private static double startTime;
     /**
      * This function is run when the robot is first started up and should be used
@@ -65,6 +67,8 @@ public class Robot extends TimedRobot {
        
         drivetrain.talonInit();
         drivetrain.getPigeon().setFusedHeading(0);
+
+        compressor = new Compressor(CAN_IDs.PCM);
     }
 
     /**
@@ -72,12 +76,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-         new SequentialCommandGroup(
-         //    new AlignWithLimelight(198, 0, 4)
-             new DriveWithVelocityDual(198, 0, 4)
-            //  new DriveWithVelocityTimed(2, -0.3)
-         ).start();
-         new StartCompressor().start();
+        new CommandGroup().start();
+         new SetCompressor(CompressorState.ON).start();
          startTime = Timer.getFPGATimestamp();
     }
 
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        new StartCompressor().start();
+        new SetCompressor(CompressorState.ON).start();
         startTime = Timer.getFPGATimestamp();
     }
 
@@ -144,15 +144,15 @@ public class Robot extends TimedRobot {
      * Gets the instance of the drivetrain on the robot.
      * @return the drivetrain
      */
-    public Drivetrain getDrivetrain() {
+    public static Drivetrain getDrivetrain() {
         return drivetrain;
     }
 
-        /**
+    /**
      * Gets the instance of the elevator on the robot.
      * @return the elevator
      */
-    public Elevator getElevator() {
+    public static Elevator getElevator() {
         return elevator;
     }
     
@@ -160,7 +160,7 @@ public class Robot extends TimedRobot {
      * Gets the instance of the wrist on the robot.
      * @return the wrist
      */
-    public Wrist getWrist() {
+    public static Wrist getWrist() {
         return wrist;
     }
 
@@ -168,7 +168,7 @@ public class Robot extends TimedRobot {
      * Gets the instance of the rollers on the robot.
      * @return the rollers
      */
-    public Rollers getRollers() {
+    public static Rollers getRollers() {
         return rollers;
     }
 
@@ -176,7 +176,7 @@ public class Robot extends TimedRobot {
      * Gets the instance of the arm on the robot.
      * @return the arm
      */
-    public Arm getArm() {
+    public static Arm getArm() {
         return arm;
     }
 
@@ -184,11 +184,20 @@ public class Robot extends TimedRobot {
      * Gets the instance of the arm on the robot.
      * @return the arm
      */
-    public Intake getBallIntake() {
+    public static Intake getBallIntake() {
         return ballIntake;
     }
 
+    /**
+     * Gets the current time elapsed (in milliseconds) since the robot was last enabled, in either
+     * autonomous or teleop.
+     * @return the time elapsed
+     */
     public static int getTime() {
         return (int) ((Timer.getFPGATimestamp() - startTime) * 1000);
+    }
+
+    public static Compressor getCompressor() {
+        return compressor;
     }
 }
