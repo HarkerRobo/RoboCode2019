@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -62,6 +64,7 @@ public class Robot extends TimedRobot {
         limelight = Limelight.getInstance();        
        
         drivetrain.talonInit();
+        drivetrain.getPigeon().setFusedHeading(0);
     }
 
     /**
@@ -109,6 +112,16 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        // System.out.println("area0: " + Limelight.getInstance().getRawContourTa(0));  
+        // System.out.println("area1: " + Limelight.getInstance().getRawContourTa(1));  
+        // // System.out.println("are2: " + Limelight.getInstance().getRawContourTa(2));  
+        // System.out.println("tx0: " + Limelight.getInstance().getRawContourTx(0));
+        // System.out.println("tx1: " + Limelight.getInstance().getRawContourTx(1));
+        // // System.out.println("tx2: " + Limelight.getInstance().getRawContourTx(2));
+        // System.out.println("left area: " + Limelight.getInstance().getLeftArea());
+        // System.out.println("right area: " + Limelight.getInstance().getRightArea());
+        //System.out.println("right to left area ratio: " +Limelight.getInstance().getLeftArea()/Limelight.getInstance().getRightArea());
+        System.out.println("Heading: " + drivetrain.getPigeon().getFusedHeading());
         // System.out.printf(
         //     "tx0: %f ty0: %f ta0: %f ts0: %f", 
         //     limelight.getRawContourTx(0),

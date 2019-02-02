@@ -62,6 +62,7 @@ public class Drivetrain extends HSDrivetrain {
     @Override
     protected void initDefaultCommand() {
 //        setDefaultCommand(new AlignWithLimelight(198, 0, 4));
+        setDefaultCommand(new DriveWithVelocityManual());
     }
 
     /**

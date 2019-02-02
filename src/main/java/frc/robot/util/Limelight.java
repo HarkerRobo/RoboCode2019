@@ -30,6 +30,8 @@ public class Limelight {
     public static final String TVERT_KEY = "tvert";
     public static final String MODE_KEY = "camMode";
     public static final String SNAP_KEY = "snapshot";
+    public static final String CORNERX_KEY = "tcornx";
+    public static final String CORNERY_KEY = "tcorny";
 
     public static final int VISION_MODE = 0;
     public static final int DRIVER_MODE = 1;
@@ -68,6 +70,17 @@ public class Limelight {
      */
     public double getTx() {
         return table.getEntry(TX_KEY).getDouble(0.0);
+    }
+
+    /**
+     * Toggles the limelight between driver and vision mode
+     */
+    public void toggleCamMode()
+    {
+        if (table.getEntry(MODE_KEY).getDouble(0) == VISION_MODE)
+            table.getEntry(MODE_KEY).setNumber(DRIVER_MODE);
+        else
+            table.getEntry(MODE_KEY).setNumber(VISION_MODE);
     }
 
     /**
@@ -160,6 +173,24 @@ public class Limelight {
 
     public double getRawContourTs(int contourId) {
         return table.getEntry(TS_KEY + contourId).getDouble(0.0);
+    }
+
+    public double[] getCornersX() {
+        double[] nullArr = null;
+        return table.getEntry(CORNERX_KEY).getDoubleArray(nullArr);
+    }
+
+    public double[] getCornersY() {
+        double[] nullArr = null;
+        return table.getEntry(CORNERY_KEY).getDoubleArray(nullArr);
+    }
+
+    public double getLeftArea () {
+        return getRawContourTx(0) <  getRawContourTx(1) ? getRawContourTa(0) : getRawContourTa(1);
+    }
+
+    public double getRightArea() {
+        return getRawContourTx(0) >  getRawContourTx(1) ? getRawContourTa(0) : getRawContourTa(1);
     }
 
     /**

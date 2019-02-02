@@ -12,3 +12,4 @@ public class StartCompressor extends InstantCommand{
         compressor.setClosedLoopControl(START_BOOL);
         
     }
+}

@@ -42,18 +42,13 @@ public class AlignWithLimelightDrive extends Command {
     private static final double MAX_ALLOWABLE_TX = 7.5;   
 
     private static final double THOR_SWITCH_POINT = 50.0;
-    //private static int targetHeading; 
 
     private PIDOutputGetter turnOutput;
-    private PIDOutputGetter forwardOutput;
 
     private PIDController turnController;
-    private PIDController forwardController;
 
     private double thorSetpoint;
     private double txSetpoint;
-
-    //private static boolean isRobotRightOfTarget;
 
     private static boolean LEFT_MASTER_INVERTED = true;
     private static boolean RIGHT_MASTER_INVERTED = false;
@@ -69,7 +64,6 @@ public class AlignWithLimelightDrive extends Command {
         limelight = Limelight.getInstance();
 
         turnOutput = new PIDOutputGetter();
-        forwardOutput = new PIDOutputGetter();
     }
 
     @Override
@@ -80,13 +74,6 @@ public class AlignWithLimelightDrive extends Command {
             new PIDSourceCustomGet(() -> limelight.getTx(), PIDSourceType.kDisplacement), 
             turnOutput
         );
-        
-        forwardController = new PIDController(
-            FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
-            new PIDSourceCustomGet(() -> limelight.getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, 
-                                    PIDSourceType.kDisplacement),
-            forwardOutput
-        );
      
     //    targetHeading = (int)Drivetrain.getInstance().getPigeon().getFusedHeading() % 360;
     //    if (targetHeading < 0 ) targetHeading += 360;
@@ -94,10 +81,8 @@ public class AlignWithLimelightDrive extends Command {
     //    isRobotRightOfTarget = Drivetrain.getInstance().getPigeon().getFusedHeading() > targetHeading;
 
         turnController.enable();
-        forwardController.enable();
     
         turnController.setSetpoint(txSetpoint);
-        forwardController.setSetpoint(thorSetpoint);
 
         Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
@@ -119,9 +104,8 @@ public class AlignWithLimelightDrive extends Command {
         //                             ? 0 : turnOutput.getOutput();
 
         SmartDashboard.putNumber("Turn Error", turnController.getError());
-        SmartDashboard.putNumber("Forward Error", forwardController.getError());
 
-        double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
+        double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
 
         Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, /*forwardOutputVal*/ leftDriverY - turnOutputVal /*- angleOutputVal*/);
         Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, /*forwardOutputVal +*/ leftDriverY + turnOutputVal /*+ angleOutputVal*/);
@@ -131,7 +115,6 @@ public class AlignWithLimelightDrive extends Command {
     public void end() {
         Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0);
         turnController.disable();
-        forwardController.disable();
         Drivetrain.getInstance().resetTalonInverts();
     }
 
