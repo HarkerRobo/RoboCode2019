@@ -14,8 +14,10 @@ import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
+import frc.robot.util.Pair;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.ParallelCommandGroup;
+import harkerrobolib.util.MathUtil;
 import harkerrobolib.wrappers.HSDPadButton;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
@@ -119,6 +121,12 @@ public class OI {
 
     public HSGamepad getOperatorGamepad() {
         return operatorGamepad;
+    }
+
+    public Pair<Double, Double> getDriverLeftJoystick() {
+        double leftDriverX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
+        double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
+        return new Pair<Double, Double>(leftDriverX, leftDriverY);
     }
     
     public static OI getInstance() {

@@ -4,10 +4,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.drivetrain.DriveWithPercentManual;
+import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import frc.robot.util.Pair;
 import harkerrobolib.subsystems.HSDrivetrain;
+import harkerrobolib.util.Conversions;
+import harkerrobolib.util.Conversions.SpeedUnit;
 import harkerrobolib.wrappers.HSPigeon;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -26,12 +30,12 @@ import harkerrobolib.wrappers.HSTalon;
 public class Drivetrain extends HSDrivetrain {
     private static Drivetrain instance;
 
-    private final static boolean LEFT_MASTER_INVERTED = !false;
-    private final static boolean RIGHT_MASTER_INVERTED = !true;
-    private final static boolean LEFT_FOLLOWER_INVERTED = !false;
-    private final static boolean RIGHT_FOLLOWER_INVERTED = !true;
+    private final static boolean LEFT_MASTER_INVERTED = true;
+    private final static boolean RIGHT_MASTER_INVERTED = false;
+    private final static boolean LEFT_FOLLOWER_INVERTED = true;
+    private final static boolean RIGHT_FOLLOWER_INVERTED = false;
 
-    private final static double MAX_FORWARD_VELOCITY = 10;
+    private final static double MAX_FORWARD_VELOCITY = 14;
     private final static double MAX_TURN_VELOCITY = 4;
 
     private static int TALON_PEAK_LIMIT = 20;
@@ -44,8 +48,10 @@ public class Drivetrain extends HSDrivetrain {
     public static final int VELOCITY_SLOT_INDEX = 2;
     public static final boolean LEFT_PIGEON_PHASE = true;
     public static final boolean RIGHT_PIGEON_PHASE = true;
-    public static final boolean RIGHT_POSITION_PHASE = true;
-	public static final boolean LEFT_POSITION_PHASE = true;
+    public static final boolean RIGHT_POSITION_PHASE = false;
+    public static final boolean LEFT_POSITION_PHASE = false;
+    
+    public static final int WHEEL_DIAMETER = 4;
 
 
     /**
@@ -54,9 +60,9 @@ public class Drivetrain extends HSDrivetrain {
     private Drivetrain() { 
         super(new HSTalon(CAN_IDs.DT_LEFT_MASTER), 
                 new HSTalon(CAN_IDs.DT_RIGHT_MASTER),
-                new VictorSPX (   CAN_IDs.DT_LEFT_FOLLOWER),
-                new VictorSPX (   CAN_IDs.DT_RIGHT_FOLLOWER),
-                new HSPigeon(CAN_IDs.PIGEON));
+                new VictorSPX (CAN_IDs.DT_LEFT_FOLLOWER),
+               new VictorSPX (CAN_IDs.DT_RIGHT_FOLLOWER),
+               new HSPigeon(CAN_IDs.PIGEON));
     }
 
     /**
@@ -65,13 +71,14 @@ public class Drivetrain extends HSDrivetrain {
     @Override
     protected void initDefaultCommand() {
         //setDefaultCommand(new AlignWithLimelight(198, 0, 4));
-        setDefaultCommand(new DriveWithPercentManual());
+        setDefaultCommand(new DriveWithVelocityManual());
     }
     /**
      * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
-        resetMasters();
+        applyToMasters((talon) -> talon.configFactoryDefault());
+        followMasters();
         resetTalonInverts();
         setNeutralMode(NeutralMode.Brake);
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
@@ -86,11 +93,15 @@ public class Drivetrain extends HSDrivetrain {
     }
 
     public void arcadeDriveVelocity(double forwardPercent, double turnPercent) {
-        double forwardSpeed = forwardPercent * MAX_FORWARD_VELOCITY;
-        double turnSpeed = turnPercent * MAX_TURN_VELOCITY;
-        
-        getLeftMaster().set(ControlMode.Velocity, forwardSpeed + turnSpeed);
-        getRightMaster().set(ControlMode.Velocity, forwardSpeed - turnSpeed);
+        double forwardSpeed = Conversions.convertSpeed(SpeedUnit.FEET_PER_SECOND, forwardPercent * MAX_FORWARD_VELOCITY, SpeedUnit.ENCODER_UNITS);
+        double turnSpeed = Conversions.convertSpeed(SpeedUnit.FEET_PER_SECOND, turnPercent * MAX_TURN_VELOCITY, SpeedUnit.ENCODER_UNITS);
+
+        SmartDashboard.putNumber("left velocity", forwardSpeed);
+        SmartDashboard.putNumber("current percent", getLeftMaster().getMotorOutputPercent());
+        SmartDashboard.putNumber("current velocity", getLeftMaster().getSelectedSensorVelocity());
+
+        getLeftMaster().set(ControlMode.Velocity, forwardSpeed);// + turnSpeed);
+        getRightMaster().set(ControlMode.Velocity, forwardSpeed);// - turnSpeed);
     }
 
     /**
