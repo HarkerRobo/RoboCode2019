@@ -35,6 +35,7 @@ public class DriveWithPercentManual extends IndefiniteCommand {
         double leftDriverX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
         double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
 
+        
         Drivetrain.getInstance().arcadeDrivePercentOutput(leftDriverY, leftDriverX);
     }       
 

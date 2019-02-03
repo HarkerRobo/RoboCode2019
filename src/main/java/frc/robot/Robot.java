@@ -8,10 +8,12 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -20,6 +22,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
+import harkerrobolib.util.Conversions;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -46,8 +49,6 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
     private static OI oi;
 
-    private static HSTalon talon = new HSTalon(1);
-
     private static double startTime;
     /**
      * This function is run when the robot is first started up and should be used
@@ -65,7 +66,8 @@ public class Robot extends TimedRobot {
         //limelight = Limelight.getInstance();        
        
         drivetrain.talonInit();
-        drivetrain.getPigeon().setFusedHeading(0);
+        // drivetrain.getPigeon().setFusedHeading(0);
+        Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
     }
 
     /**
@@ -97,9 +99,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        
         Scheduler.getInstance().run();
-        talon.set(ControlMode.PercentOutput, 0.1);
     }
 
     /**
@@ -108,24 +108,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        // System.out.println("area0: " + Limelight.getInstance().getRawContourTa(0));  
-        // System.out.println("area1: " + Limelight.getInstance().getRawContourTa(1));  
-        // // System.out.println("are2: " + Limelight.getInstance().getRawContourTa(2));  
-        // System.out.println("tx0: " + Limelight.getInstance().getRawContourTx(0));
-        // System.out.println("tx1: " + Limelight.getInstance().getRawContourTx(1));
-        // // System.out.println("tx2: " + Limelight.getInstance().getRawContourTx(2));
-        // System.out.println("left area: " + Limelight.getInstance().getLeftArea());
-        // System.out.println("right area: " + Limelight.getInstance().getRightArea());
-        //System.out.println("right to left area ratio: " +Limelight.getInstance().getLeftArea()/Limelight.getInstance().getRightArea());
-        System.out.println("Heading: " + drivetrain.getPigeon().getFusedHeading());
-        // System.out.printf(
-        //     "tx0: %f ty0: %f ta0: %f ts0: %f", 
-        //     limelight.getRawContourTx(0),
-        //     limelight.getRawContourTy(0),
-        //     limelight.getRawContourTa(0),
-        //     limelight.getRawContourTs(0)
-        // );
-        // System.out.println("fused heading: " + drivetrain.getPigeon().getFusedHeading());
+        SmartDashboard.putNumber("joystick data Y", oi.getDriverGamepad().getLeftY());
+        SmartDashboard.putNumber("joystick data X", oi.getDriverGamepad().getLeftX());
     }
 
     /**

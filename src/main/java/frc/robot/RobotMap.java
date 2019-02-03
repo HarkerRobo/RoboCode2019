@@ -9,9 +9,9 @@ import com.ctre.phoenix.CANifier.LEDChannel;
  */
 public class RobotMap {
     public class CAN_IDs {
-        public static final int DT_LEFT_MASTER = 5, DT_RIGHT_MASTER = 2,
-                                DT_LEFT_FOLLOWER = 4, DT_RIGHT_FOLLOWER = 3;
-        public static final int EL_MASTER = 9, EL_VICTOR_ONE = 7, EL_VICTOR_TWO = 8;
+        public static final int DT_LEFT_MASTER = 4, DT_RIGHT_MASTER = 1,
+                                DT_LEFT_FOLLOWER = 4, DT_RIGHT_FOLLOWER = 1;
+        public static final int EL_MASTER = 0, EL_VICTOR_ONE = 0, EL_VICTOR_TWO = 0;
         public static final int WRIST_MASTER = 0, WRIST_FOLLOWER = 0;
         public static final int BALL_INTAKE_MASTER = 0;
         public static final int ARM_MASTER = 0;
