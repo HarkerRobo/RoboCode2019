@@ -14,15 +14,16 @@ import harkerrobolib.util.Gains;
  * Drives with velocity manually.
  * 
  * @author Chirag Kaushik
+ * @author Angela Jia
  * @since February 2, 2019
  */
 public class DriveWithVelocityManual extends IndefiniteCommand {
-    private static final double LEFT_KP = 0.0005;
+    private static final double LEFT_KP = 0.00005;
     private static final double LEFT_KI = 0.0;
     private static final double LEFT_KD = 0.0;
     private static final double LEFT_KF = 0;//0.0002;
 
-    private static final double RIGHT_KP = 0.0005;
+    private static final double RIGHT_KP = 0.00005;
     private static final double RIGHT_KI = 0.0;
     private static final double RIGHT_KD = 0.0;
     private static final double RIGHT_KF = 0;//0.0002;
@@ -55,6 +56,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
         Drivetrain.getInstance().arcadeDriveVelocity(leftDriverJoystick.getSecond(), leftDriverJoystick.getFirst());
         SmartDashboard.putNumber("Left reading", Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition());
         SmartDashboard.putNumber("Right reading", Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition());
+        SmartDashboard.putNumber("Error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(0));
 
     }
 }

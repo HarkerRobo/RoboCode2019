@@ -71,17 +71,24 @@ public class Drivetrain extends HSDrivetrain {
     @Override
     protected void initDefaultCommand() {
         //setDefaultCommand(new AlignWithLimelight(198, 0, 4));
-        setDefaultCommand(new DriveWithVelocityManual());
+        setDefaultCommand(new DriveWithPercentManual());
     }
     /**
      * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
-        applyToMasters((talon) -> talon.configFactoryDefault());
         followMasters();
         resetTalonInverts();
         setNeutralMode(NeutralMode.Brake);
+        // getLeftMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
+        // getRightMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
+        // getLeftMaster().configPeakCurrentDuration(TALON_PEAK_TIME, 10);
+        // getRightMaster().configPeakCurrentDuration(TALON_PEAK_TIME, 10);
+        // getLeftMaster().configPeakCurrentLimit(TALON_PEAK_LIMIT, 10);
+        // getRightMaster().configPeakCurrentLimit(TALON_PEAK_LIMIT, 10);
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
+        getLeftMaster().enableCurrentLimit(true);
+        getRightMaster().enableCurrentLimit(true);
     }
 
     public void resetTalonInverts() {
