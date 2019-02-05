@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.CANifier.LEDChannel;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 /**
  * Stores all non subsystem-specific constants and CAN IDs.
@@ -29,7 +30,7 @@ public class RobotMap {
         public static final int REMOTE_SLOT_0 = 0;
         public static final int REMOTE_SLOT_1 = 1;
         public static final double WAIT_TIME = 0;
-        
+        public static final NeutralMode DISABLED_NEUTRAL_MODE = NeutralMode.Coast;
         public static final LEDChannel RED_CHANNEL= LEDChannel.LEDChannelA;
         public static final LEDChannel GREEN_CHANNEL = LEDChannel.LEDChannelB;
         public static final LEDChannel BLUE_CHANNEL = LEDChannel.LEDChannelC;

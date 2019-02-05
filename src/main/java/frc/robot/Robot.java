@@ -8,12 +8,14 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -92,6 +94,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         startTime = Timer.getFPGATimestamp();
+        drivetrain.talonInit();
     }
 
     /**
@@ -100,7 +103,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        SmartDashboard.putNumber("Current", Drivetrain.getInstance().getLeftMaster().getOutputCurrent());
     }
 
     /**
@@ -109,8 +111,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putNumber("joystick data Y", oi.getDriverGamepad().getLeftY());
-        SmartDashboard.putNumber("joystick data X", oi.getDriverGamepad().getLeftX());
+        SmartDashboard.putNumber("Left Error", drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
+        SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
+
+        
     }
 
     /**
@@ -177,4 +181,10 @@ public class Robot extends TimedRobot {
     public static int getTime() {
         return (int) ((Timer.getFPGATimestamp() - startTime) * 1000);
     }
+    @Override
+    public void disabledInit() {
+        drivetrain.setNeutralMode(Global.DISABLED_NEUTRAL_MODE);
+    }
+    
 }
+

@@ -18,15 +18,15 @@ import harkerrobolib.util.Gains;
  * @since February 2, 2019
  */
 public class DriveWithVelocityManual extends IndefiniteCommand {
-    private static final double LEFT_KP = 0.00005;
+    private static final double LEFT_KP = 0.16;
     private static final double LEFT_KI = 0.0;
     private static final double LEFT_KD = 0.0;
-    private static final double LEFT_KF = 0;//0.0002;
+    private static final double LEFT_KF = 0.21;
 
-    private static final double RIGHT_KP = 0.00005;
+    private static final double RIGHT_KP = 0.16;
     private static final double RIGHT_KI = 0.0;
     private static final double RIGHT_KD = 0.0;
-    private static final double RIGHT_KF = 0;//0.0002;
+    private static final double RIGHT_KF = 0.21;
 
     public DriveWithVelocityManual() {
         requires(Drivetrain.getInstance());
@@ -52,11 +52,17 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     }
 
     public void execute() {
-        Pair<Double, Double> leftDriverJoystick = OI.getInstance().getDriverLeftJoystick();
-        Drivetrain.getInstance().arcadeDriveVelocity(leftDriverJoystick.getSecond(), leftDriverJoystick.getFirst());
+        Drivetrain.getInstance().arcadeDriveVelocity(OI.getInstance().getDriverGamepad().getLeftY(), OI.getInstance().getDriverGamepad().getLeftX());
+        // if(OI.getInstance().getDriverGamepad().getLeftY() > 0.5)
+        //     Drivetrain.getInstance().arcadeDriveVelocity(0.8, OI.getInstance().getDriverGamepad().getLeftX());
+        // else if(OI.getInstance().getDriverGamepad().getLeftY() < -0.5)
+        //     Drivetrain.getInstance().arcadeDriveVelocity(-0.8, OI.getInstance().getDriverGamepad().getLeftX());
+        // else
+        //     Drivetrain.getInstance().arcadeDriveVelocity(0, OI.getInstance().getDriverGamepad().getLeftX());
         SmartDashboard.putNumber("Left reading", Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition());
         SmartDashboard.putNumber("Right reading", Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition());
         SmartDashboard.putNumber("Error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(0));
+        //Drivetrain.getInstance().getLeftMaster().set(ControlMode.Velocity, )
 
     }
 }

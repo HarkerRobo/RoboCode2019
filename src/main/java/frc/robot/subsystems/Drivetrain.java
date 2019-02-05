@@ -71,7 +71,7 @@ public class Drivetrain extends HSDrivetrain {
     @Override
     protected void initDefaultCommand() {
         //setDefaultCommand(new AlignWithLimelight(198, 0, 4));
-        setDefaultCommand(new DriveWithPercentManual());
+        setDefaultCommand(new DriveWithVelocityManual());
     }
     /**
      * A method to initialize the Talons for the start of the match.
@@ -107,8 +107,9 @@ public class Drivetrain extends HSDrivetrain {
         SmartDashboard.putNumber("current percent", getLeftMaster().getMotorOutputPercent());
         SmartDashboard.putNumber("current velocity", getLeftMaster().getSelectedSensorVelocity());
 
-        getLeftMaster().set(ControlMode.Velocity, forwardSpeed);// + turnSpeed);
-        getRightMaster().set(ControlMode.Velocity, forwardSpeed);// - turnSpeed);
+        // SmartDashboard.putNumber("", getLeftMaster().);
+        getLeftMaster().set(ControlMode.Velocity, forwardSpeed + turnSpeed);
+        getRightMaster().set(ControlMode.Velocity, forwardSpeed - turnSpeed);
     }
 
     /**
