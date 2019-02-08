@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.wrist.MoveWristManual;
-import frc.robot.commands.wrist.MoveWristPosition;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -46,11 +45,14 @@ public class Wrist extends Subsystem {
     private static final int CONTINUOUS_CURRENT_LIMIT = 0;
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int PEAK_TIME = 500;
-    public static final double WRIST_ANGLE_SCORING = 0.0;
-    public static final double WRIST_ANGLE_INTAKE = 180.0;
+    public static final int ANGLE_SCORING_FRONT = 180;// TUNE
+    public static final int ANGLE_SCORING_BACK = 0;// TUNE
+    public static final int ANGLE_INTAKE = 180;
     public static final int ALLOWABLE_ERROR = 400;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 10000; // TUNE
+    public static final int SAFE_FORWARD_POSITION = 0;
+    public static final int SAFE_BACKWARD_POSITION = 10000;
     public static final int RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
     /**
      * The percentage distance from either the front or the back after which precautionary measures must be taken to limit max operable speed.
@@ -120,16 +122,27 @@ public class Wrist extends Subsystem {
         canifier.setLEDOutput(color.getBlue() / 255.0, Global.BLUE_CHANNEL);
     }
 
-    public void updateLEDIfProximitySensorTriggered() {
-        if(Drivetrain.getInstance().isProximitySensorTriggered())
-            setLEDOutput(ENABLED_COLOR);
-        else
-            setLEDOutput(DEFAULT_COLOR);
-    }
-
     public static Wrist getInstance() {
         if (wr == null) {wr = new Wrist();}
         return wr;
+    }
+
+    public  boolean isFurtherBack (int position) {
+        int currentPosition = getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
+        
+        return (currentPosition - position > ALLOWABLE_ERROR && currentPosition <= MAX_BACKWARD_POSITION || 
+        currentPosition - position < -ALLOWABLE_ERROR && currentPosition >= MAX_BACKWARD_POSITION);
+    }
+
+    public boolean isFurtherForward (int position) {
+        int currentPosition = getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY); 
+        
+        return (currentPosition - position < -ALLOWABLE_ERROR && currentPosition >= MAX_FORWARD_POSITION ||
+        currentPosition - position > ALLOWABLE_ERROR && currentPosition <= MAX_FORWARD_POSITION);
+    }
+
+    public boolean isAt (int position) {
+        return Math.abs(getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY) - position) == ALLOWABLE_ERROR;
     }
 
 }

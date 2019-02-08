@@ -1,21 +1,20 @@
 package frc.robot;
 
-import frc.robot.commands.SpinIntakeAndRollers;
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.drivetrain.AlignWithLimelight;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.ToggleLimelightDriverMode;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
 import frc.robot.commands.elevator.ZeroElevator;
+import frc.robot.commands.groups.SpinIntakeAndRollers;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
-import frc.robot.util.Pair;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.Pair;
 import harkerrobolib.auto.ParallelCommandGroup;
 import harkerrobolib.util.MathUtil;
 import harkerrobolib.wrappers.HSDPadButton;
@@ -65,19 +64,19 @@ public class OI {
         //driver buttons
         driverGamepad.getButtonA().whenPressed(new ParallelCommandGroup(
             new MoveElevatorPosition(Elevator.INTAKE_POSITION),
-            new MoveWristPosition(Wrist.WRIST_ANGLE_INTAKE)
+            new MoveWristPosition(Wrist.ANGLE_INTAKE)
         ));
 
         driverGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, RollerDirection.IN));
                  
         driverGamepad.getButtonX().whenPressed(new ParallelCommandGroup(
             new MoveElevatorMotionMagic(Elevator.LOW_SCORING_POSITION),
-            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)
+            new MoveWristPosition(Wrist.ANGLE_SCORING_FRONT)
         ));
 
         driverGamepad.getButtonY().whenPressed(new ParallelCommandGroup(
             new MoveElevatorPosition(Elevator.MEDIUM_SCORING_POSITION),
-            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)            
+            new MoveWristPosition(Wrist.ANGLE_SCORING_BACK)            
         ));
 
         driverGamepad.getButtonB().whenPressed(new SetArmPosition(ArmDirection.DOWN));

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.groups;
 
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.rollers.SpinRollersIndefinite;

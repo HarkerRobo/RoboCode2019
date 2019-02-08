@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.drivetrain.DriveWithPercentManual;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import frc.robot.util.Pair;
 import harkerrobolib.subsystems.HSDrivetrain;
@@ -124,9 +123,12 @@ public class Drivetrain extends HSDrivetrain {
         getRightMaster().set(ControlMode.PercentOutput, outputs.getSecond());
     }
 
-
-    public boolean isProximitySensorTriggered () {
+    public boolean hasHatchPanel() {
         return getLeftMaster().getSensorCollection().isFwdLimitSwitchClosed();
+    }
+
+    public boolean hasCargo() {
+        return getRightMaster().getSensorCollection().isFwdLimitSwitchClosed();
     }
     
     /**

@@ -29,8 +29,8 @@ public class MoveElevatorMotionMagic extends Command {
     public static final int MOTION_MAGIC_ACCELERATION = 0;
     public static final int CRUISE_VELOCITY = 0;
 
-    private static final boolean MOTION_MAGIC_SENSOR_PHASE = false;
-    private static final int ALLOWABLE_ERROR = 0;
+    public static final boolean MOTION_MAGIC_SENSOR_PHASE = false;
+    public static final int ALLOWABLE_ERROR = 10;
 
     public MoveElevatorMotionMagic(double setpoint) {
         requires(Elevator.getInstance());

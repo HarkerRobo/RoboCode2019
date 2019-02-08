@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.Global;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
@@ -25,7 +26,9 @@ public class Elevator extends Subsystem {
     private HSTalon elTalon;
     private VictorSPX victorOne;
     private VictorSPX victorTwo;
-    
+    public static final int MAX_NORM_PASSTHROUGH_POSITION = 10;
+    public static final int MAX_HATCH_PASSTHROUGH_POSITION = 0;
+
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_LIMIT = 0;
     private static final int PEAK_CURRENT_TIME = 0;
@@ -34,11 +37,14 @@ public class Elevator extends Subsystem {
     private static final boolean INVERTED_VICT_ONE = false;
     private static final boolean INVERTED_VICT_TWO = false;
 
-    public static final double INTAKE_POSITION = 0.0;
-    public static final double LOW_SCORING_POSITION = 60.0;
-    public static final double MEDIUM_SCORING_POSITION = 120.0;
-    public static final double HIGH_SCORING_POSITION = 180.0;
+    public static final int INTAKE_POSITION = 0;
+    public static final int LOW_SCORING_POSITION = 60;
+    public static final int MEDIUM_SCORING_POSITION = 120;
+    public static final int HIGH_SCORING_POSITION = 180;
 
+    public static final int LOW_MIDDLE_BOUNDARY = (LOW_SCORING_POSITION + MEDIUM_SCORING_POSITION)/2;
+    public static final int MIDDLE_HIGH_BOUNDARY = 100; //TUNE
+    
     public static final int FFGRAV = 0;
     public static final int ZERO_CURRENT_SPIKE = 0;
 
@@ -74,6 +80,7 @@ public class Elevator extends Subsystem {
             el = new Elevator();
         return el;
     }
+
 
     public void talonInit() {
         victorOne.follow(elTalon);
@@ -128,4 +135,27 @@ public class Elevator extends Subsystem {
     public VictorSPX getVictorTwo() {
         return victorTwo;
     }
+
+    /**
+     * Determines whether the elevator is below a given position, within the tolerance of an allowable error.
+     * Must have preconfigured the selected sensor as an encoder.
+     */
+    public boolean isBelow (int position) {
+        return getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position 
+                            < -MoveElevatorMotionMagic.ALLOWABLE_ERROR;
+    }
+
+    /**
+     * Determines whether the elevator is above a given position, within the tolerance of an allowable error.
+     * Must have preconfigured the selected sensor as an encoder.
+     */
+    public boolean isAbove (int position) {
+        return getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position 
+                            > MoveElevatorMotionMagic.ALLOWABLE_ERROR;                    
+    }
+
+    public boolean isAt (int position) {
+        return Math.abs(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position)
+                            <= MoveElevatorMotionMagic.ALLOWABLE_ERROR;
+    }    
 }
