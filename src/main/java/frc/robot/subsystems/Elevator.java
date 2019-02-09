@@ -43,7 +43,7 @@ public class Elevator extends Subsystem {
     public static final int HIGH_SCORING_POSITION = 180;
 
     public static final int LOW_MIDDLE_BOUNDARY = (LOW_SCORING_POSITION + MEDIUM_SCORING_POSITION)/2;
-    public static final int MIDDLE_HIGH_BOUNDARY = 100; //TUNE
+    public static final int RAIL_POSITION = 100; //TUNE
     
     public static final int FFGRAV = 0;
     public static final int ZERO_CURRENT_SPIKE = 0;

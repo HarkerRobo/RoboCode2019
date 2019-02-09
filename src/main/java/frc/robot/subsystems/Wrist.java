@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.wrist.MoveWristManual;
+import frc.robot.commands.wrist.MoveWristPosition;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -51,6 +53,7 @@ public class Wrist extends Subsystem {
     public static final int ALLOWABLE_ERROR = 400;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 10000; // TUNE
+    public static final int MID_POSITION = (MAX_FORWARD_POSITION + MAX_BACKWARD_POSITION)/2;
     public static final int SAFE_FORWARD_POSITION = 0;
     public static final int SAFE_BACKWARD_POSITION = 10000;
     public static final int RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
@@ -72,12 +75,6 @@ public class Wrist extends Subsystem {
     public static final int POSITION_SLOT = 0;
 
     public static final boolean SENSOR_PHASE = false;
-
-    //default color of the LED
-    private static final Color DEFAULT_COLOR = Color.RED;
-
-    //enabled color of the LED
-    private static final Color ENABLED_COLOR = Color.GREEN;
 
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
@@ -123,26 +120,82 @@ public class Wrist extends Subsystem {
     }
 
     public static Wrist getInstance() {
-        if (wr == null) {wr = new Wrist();}
+        if (wr == null) 
+            wr = new Wrist();
         return wr;
     }
 
-    public  boolean isFurtherBack (int position) {
-        int currentPosition = getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
-        
-        return (currentPosition - position > ALLOWABLE_ERROR && currentPosition <= MAX_BACKWARD_POSITION || 
-        currentPosition - position < -ALLOWABLE_ERROR && currentPosition >= MAX_BACKWARD_POSITION);
+    /**
+     * Determines if the current position is 
+     * behind the specified position.
+     * 
+     * @param position position that the current position is compared with
+     */
+    public boolean isFurtherBack (int position) {
+        return !isFurtherForward(position);
     }
 
+    public  boolean isFurtherBack (int currentPosition, int positionToCompare) {
+        return !isFurtherForward(currentPosition, positionToCompare);
+    }
+
+    /**
+     * Determines if the current position is 
+     * in front of the specified position.
+     * 
+     * @param position position that the current position is compared in relation to
+     */
     public boolean isFurtherForward (int position) {
-        int currentPosition = getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY); 
-        
-        return (currentPosition - position < -ALLOWABLE_ERROR && currentPosition >= MAX_FORWARD_POSITION ||
-        currentPosition - position > ALLOWABLE_ERROR && currentPosition <= MAX_FORWARD_POSITION);
+        return isFurtherForward (getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY), position);
+    }
+
+    public boolean isFurtherForward (int comparedPosition, int positionToCompare) {
+        return (comparedPosition - positionToCompare < -ALLOWABLE_ERROR && comparedPosition >= MAX_FORWARD_POSITION) ||
+            (comparedPosition - positionToCompare > ALLOWABLE_ERROR && comparedPosition <= MAX_FORWARD_POSITION);
     }
 
     public boolean isAt (int position) {
         return Math.abs(getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY) - position) == ALLOWABLE_ERROR;
     }
 
-}
+    public void setupPositionPID () {
+        Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.POSITION_SLOT, Global.PID_PRIMARY);
+        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
+        Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);     
+
+        Wrist.getInstance().getMasterTalon().config_kP(Wrist.POSITION_SLOT, MoveWristPosition.KP);
+        Wrist.getInstance().getMasterTalon().config_kI(Wrist.POSITION_SLOT, MoveWristPosition.KI);
+        Wrist.getInstance().getMasterTalon().config_kD(Wrist.POSITION_SLOT, MoveWristPosition.KD);
+        Wrist.getInstance().getMasterTalon().config_kF(Wrist.POSITION_SLOT, MoveWristPosition.KF);
+    }
+
+    /**
+     * Determines if the current position is 
+     * in the ambiguous region.
+     */
+    public boolean isAmbiguous() {
+        return !(isFurtherForward(SAFE_FORWARD_POSITION) || isFurtherBack(SAFE_BACKWARD_POSITION));
+    }
+
+    public boolean isForward() {
+        return isFurtherForward(SAFE_FORWARD_POSITION);
+    }
+
+    public boolean isForward(int position) {
+        return isFurtherForward(position, SAFE_FORWARD_POSITION);
+    }
+
+    public boolean isBackward(int position) {
+        return isFurtherBack(position, SAFE_BACKWARD_POSITION);
+    }
+
+    public boolean isBackward() {
+        return isFurtherBack(SAFE_BACKWARD_POSITION);
+    }
+
+    public boolean mustPassThrough(int desiredWristPosition) {
+        return Wrist.getInstance().isAmbiguous() || 
+                                        (Wrist.getInstance().isForward(desiredWristPosition) && Wrist.getInstance().isBackward() || 
+                                            Wrist.getInstance().isBackward(desiredWristPosition) && Wrist.getInstance().isForward());
+    }
+}   

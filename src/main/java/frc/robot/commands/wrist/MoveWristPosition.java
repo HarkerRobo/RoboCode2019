@@ -1,10 +1,8 @@
 package frc.robot.commands.wrist;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Wrist;
 
 /**
@@ -34,15 +32,7 @@ public class MoveWristPosition extends Command {
      */
     @Override
     public void initialize() {
-        Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.POSITION_SLOT, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);     
-        
-
-        Wrist.getInstance().getMasterTalon().config_kP(Wrist.POSITION_SLOT, MoveWristPosition.KP);
-        Wrist.getInstance().getMasterTalon().config_kI(Wrist.POSITION_SLOT, MoveWristPosition.KI);
-        Wrist.getInstance().getMasterTalon().config_kD(Wrist.POSITION_SLOT, MoveWristPosition.KD);
-        Wrist.getInstance().getMasterTalon().config_kF(Wrist.POSITION_SLOT, MoveWristPosition.KF);
+        Wrist.getInstance().setupPositionPID();
     }
     
     /**
@@ -60,4 +50,9 @@ public class MoveWristPosition extends Command {
     protected boolean isFinished() {
         return Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
     }  
+
+    public void clearRequirements()
+    {
+        super.clearRequirements();
+    }
 }

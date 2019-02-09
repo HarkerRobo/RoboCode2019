@@ -6,6 +6,8 @@ import frc.robot.commands.drivetrain.ToggleLimelightDriverMode;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
 import frc.robot.commands.elevator.ZeroElevator;
+import frc.robot.commands.groups.SetScoringPosition;
+import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.groups.SpinIntakeAndRollers;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
@@ -14,6 +16,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.Pair;
 import harkerrobolib.auto.ParallelCommandGroup;
 import harkerrobolib.util.MathUtil;
@@ -30,6 +33,7 @@ import harkerrobolib.wrappers.XboxGamepad;
 public class OI {
     private HSGamepad driverGamepad;
     private HSGamepad operatorGamepad;
+    private CustomOperatorGamepad customOperatorGamepad;
     private static OI instance;
 
     private static final int DRIVER_PORT = 0;
@@ -50,7 +54,7 @@ public class OI {
     private OI() {
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);
-
+        customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
         initBindings();
     }
     
@@ -112,6 +116,14 @@ public class OI {
         operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(SpinRollersIndefinite.magnitude2,RollerDirection.OUT));
     
         driverGamepad.getButtonStart().whenPressed(new ZeroElevator());
+
+        customOperatorGamepad.getBottomLeftButton().whenPressed(new SetScoringPosition(Location.B1));
+        customOperatorGamepad.getMiddleLeftButton().whenPressed(new SetScoringPosition(Location.B2));   
+        customOperatorGamepad.getTopLeftButton().whenPressed(new SetScoringPosition(Location.B3));  
+
+        customOperatorGamepad.getBottomRightButton().whenPressed(new SetScoringPosition(Location.F1));                              
+        customOperatorGamepad.getMiddleRightButton().whenPressed(new SetScoringPosition(Location.F2));
+        customOperatorGamepad.getTopRightButton().whenPressed(new SetScoringPosition(Location.F3));    
     }  
 
     public HSGamepad getDriverGamepad() {
