@@ -18,14 +18,17 @@ import harkerrobolib.wrappers.HSTalon;
  * Represents the elevator on the robot.
  * 
  * @author Angela Jia
+ * @author Finn Frankis
+ * @author Chirag Kaushik
  * @since 1/10/19
  */
 public class Elevator extends Subsystem {
-
     private static Elevator el; 
-    private HSTalon elTalon;
-    private VictorSPX victorOne;
-    private VictorSPX victorTwo;
+
+    private HSTalon talon;
+    private VictorSPX leftFrontVictor;
+    private VictorSPX leftBackVictor;
+    private VictorSPX rightVictor;
     public static final int MAX_NORM_PASSTHROUGH_POSITION = 10;
     public static final int MAX_HATCH_PASSTHROUGH_POSITION = 0;
 
@@ -34,8 +37,9 @@ public class Elevator extends Subsystem {
     private static final int PEAK_CURRENT_TIME = 0;
 
     private static final boolean INVERTED_MASTER = false;
-    private static final boolean INVERTED_VICT_ONE = false;
-    private static final boolean INVERTED_VICT_TWO = false;
+    private static final boolean INVERTED_VICT_LEFT_FRONT = false;
+    private static final boolean INVERTED_VICT_LEFT_BACK = false;
+    private static final boolean INVERTED_VICT_RIGHT = false;
 
     public static final int INTAKE_POSITION = 0;
     public static final int LOW_SCORING_POSITION = 60;
@@ -65,11 +69,13 @@ public class Elevator extends Subsystem {
     public static final int MOTION_MAGIC_SLOT_INDEX = 1;
 
     private Elevator() {
-        elTalon = new HSTalon(CAN_IDs.EL_MASTER);
-        victorOne = new VictorSPX(CAN_IDs.EL_VICTOR_ONE);
-        victorTwo = new VictorSPX(CAN_IDs.EL_VICTOR_TWO);
+        talon = new HSTalon(CAN_IDs.EL_MASTER);
+        leftFrontVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_FRONT);
+        leftBackVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_BACK);
+        rightVictor = new VictorSPX(CAN_IDs.EL_VICTOR_RIGHT);
     }
 
+    
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(new MoveElevatorManual());
@@ -83,29 +89,36 @@ public class Elevator extends Subsystem {
 
 
     public void talonInit() {
-        victorOne.follow(elTalon);
-        victorTwo.follow(elTalon);
-        victorOne.setNeutralMode(NeutralMode.Brake);
-        victorTwo.setNeutralMode(NeutralMode.Brake);
-        elTalon.setNeutralMode(NeutralMode.Brake);
-        elTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
-        elTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-        elTalon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
-        elTalon.setInverted(INVERTED_MASTER);
-        victorOne.setInverted(INVERTED_VICT_ONE);
-        victorTwo.setInverted(INVERTED_VICT_TWO);
+        leftFrontVictor.follow(talon);
+        leftBackVictor.follow(talon);
+        rightVictor.follow(talon);
+
+        talon.setNeutralMode(NeutralMode.Brake);
+        leftFrontVictor.setNeutralMode(NeutralMode.Brake);
+        leftBackVictor.setNeutralMode(NeutralMode.Brake);
+        rightVictor.setNeutralMode(NeutralMode.Brake);
+
+        talon.setInverted(INVERTED_MASTER);
+        leftFrontVictor.setInverted(INVERTED_VICT_LEFT_FRONT);
+        leftBackVictor.setInverted(INVERTED_VICT_LEFT_BACK);
+        rightVictor.setInverted(INVERTED_VICT_RIGHT);
+        
+        talon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
+        talon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+        talon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
+
         setUpPositionPID();
         setUpMotionMagic();
     }
 
     public void moveElevatorVelocity(double speed) {
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     }
 
     public void setUpPositionPID() {
@@ -125,15 +138,19 @@ public class Elevator extends Subsystem {
     }
     
     public HSTalon getMaster() {
-        return elTalon;
+        return talon;
     }
 
-    public VictorSPX getVictorOne() {
-        return victorOne;
+    public VictorSPX getLeftFrontVictor() {
+        return leftFrontVictor;
     }
 
-    public VictorSPX getVictorTwo() {
-        return victorTwo;
+    public VictorSPX getLeftBackVictor() {
+        return leftBackVictor;
+    }
+
+    public VictorSPX getRightVictor() {
+        return rightVictor;
     }
 
     /**

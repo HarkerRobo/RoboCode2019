@@ -8,13 +8,12 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -50,7 +49,7 @@ public class Robot extends TimedRobot {
     private static HatchLatcher hatchLatcher;
     private static Limelight limelight;
     private static OI oi;
-
+    private static HSTalon talon;
     private static double startTime;
     /**
      * This function is run when the robot is first started up and should be used
@@ -60,7 +59,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         drivetrain = Drivetrain.getInstance();
         //arm = Arm.getInstance();
-        //elevator = Elevator.getInstance();
+        elevator = Elevator.getInstance();
         //rollers = Rollers.getInstance();
         //wrist = Wrist.getInstance();
         //hatchLatcher = HatchLatcher.getInstance();
@@ -70,6 +69,7 @@ public class Robot extends TimedRobot {
         drivetrain.talonInit();
         // drivetrain.getPigeon().setFusedHeading(0);
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
+        talon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
     }
 
     /**
@@ -103,6 +103,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
     }
 
     /**
