@@ -14,7 +14,7 @@ public class RobotMap {
                                 DT_LEFT_FOLLOWER = 4, DT_RIGHT_FOLLOWER = 1;
         public static final int EL_MASTER = 3, EL_VICTOR_LEFT_FRONT = 6, EL_VICTOR_LEFT_BACK = 5, EL_VICTOR_RIGHT = 3;
         public static final int WRIST_MASTER = 0, WRIST_FOLLOWER = 0;
-        public static final int BALL_INTAKE_MASTER = 0;
+        public static final int BALL_INTAKE_MASTER = 1;
         public static final int ARM_MASTER = 0;
         public static final int RO_TOP = 0, RO_BOTTOM = 0;
         public static final int ARM_FORWARD_CHANNEL = 0, ARM_REVERSE_CHANNEL = 1;

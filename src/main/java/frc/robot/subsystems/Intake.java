@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.intake.SpinIntakeManual;
 import harkerrobolib.util.Constants;
 
@@ -53,7 +54,7 @@ public class Intake extends Subsystem {
         intakeSparkMax = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
     }
 
-    private void controllerInit() {
+    public void controllerInit() {
         intakeSparkMax.setInverted(CONTROLLER_INVERTED);
         intakeSparkMax.setSmartCurrentLimit(STALL_LIMIT, FREE_LIMIT);
         intakeSparkMax.setCANTimeout(Constants.DEFAULT_TIMEOUT);
@@ -69,5 +70,13 @@ public class Intake extends Subsystem {
     @Override    
     protected void initDefaultCommand() {
         setDefaultCommand(new SpinIntakeManual());
+    }
+
+    public double getEncoderPosition () {
+        return Intake.getInstance().getController().getEncoder().getPosition();
+    }
+
+    public double getEncoderVelocity () {
+        return Intake.getInstance().getController().getEncoder().getVelocity();
     }
 }

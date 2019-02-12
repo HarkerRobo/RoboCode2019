@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
     private static Elevator elevator;
     private static Rollers rollers;
     private static Wrist wrist;
-    private static Intake ballIntake;
+    private static Intake intake;
     private static HatchLatcher hatchLatcher;
     private static Limelight limelight;
     private static OI oi;
@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
         drivetrain = Drivetrain.getInstance();
         //arm = Arm.getInstance();
         elevator = Elevator.getInstance();
+        intake = Intake.getInstance();
         //rollers = Rollers.getInstance();
         //wrist = Wrist.getInstance();
         //hatchLatcher = HatchLatcher.getInstance();
@@ -72,10 +73,11 @@ public class Robot extends TimedRobot {
        
         drivetrain.talonInit();
         elevator.talonInit();
+        intake.controllerInit();
         // ballIntake.controllerInit();
         
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
-        talon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
+        talon = new HSTalon(0);
     }
 
     /**
@@ -109,7 +111,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
+        //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
     }
 
     /**
@@ -176,8 +178,8 @@ public class Robot extends TimedRobot {
      * Gets the instance of the arm on the robot.
      * @return the arm
      */
-    public static Intake getBallIntake() {
-        return ballIntake;
+    public static Intake getIntake() {
+        return intake;
     }
 
     /**
