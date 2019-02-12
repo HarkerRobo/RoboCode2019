@@ -63,8 +63,8 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         drivetrain = Drivetrain.getInstance();
         //arm = Arm.getInstance();
-        elevator = Elevator.getInstance();
-        intake = Intake.getInstance();
+        // elevator = Elevator.getInstance();
+        // intake = Intake.getInstance();
         //rollers = Rollers.getInstance();
         //wrist = Wrist.getInstance();
         //hatchLatcher = HatchLatcher.getInstance();
@@ -72,12 +72,12 @@ public class Robot extends TimedRobot {
         //limelight = Limelight.getInstance();        
        
         drivetrain.talonInit();
-        elevator.talonInit();
-        intake.controllerInit();
+        // elevator.talonInit();
+        // intake.controllerInit();
         // ballIntake.controllerInit();
         
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
-        talon = new HSTalon(0);
+        //talon = new HSTalon(0);
     }
 
     /**
@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Left Error", drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
         SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
 
-        
+        //System.out.println(limelight.getCamtranData());
     }
 
     /**

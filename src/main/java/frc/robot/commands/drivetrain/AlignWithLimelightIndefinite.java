@@ -22,29 +22,27 @@ import harkerrobolib.commands.IndefiniteCommand;
 public class AlignWithLimelightIndefinite extends IndefiniteCommand {
     private Limelight limelight;
 
-    public static final double TURN_KP = .07; //0.09
-    public static final double TURN_KI = 0.001;
-    public static final double TURN_KD = 0.3;
-    public static final double TURN_KF = 0;
+    public static final double TURN_KP = 0;//.07;
+    public static final double TURN_KI = 0;//0.001;
+    public static final double TURN_KD = 0;//0.3;
+    public static final double TURN_KF = 0;//0
     
-    public static final double FORWARD_KF = 0;
-    public static final double FORWARD_KP = 0.045;
-    public static final double FORWARD_KI = 0;//0.001;
-    public static final double FOWARD_KD = 0.16;    
+    public static final double FORWARD_KF = 0;//0;
+    public static final double FORWARD_KP = 0;//0.045;
+    public static final double FORWARD_KI = 0;//0;
+    public static final double FOWARD_KD = 0;//16;    
 
-    public static final double TURN_ALLOWABLE_ERROR = 0.054;
-    public static final double FORWARD_ALLOWABLE_ERROR = 0.05; 
+    public static final double TURN_ALLOWABLE_ERROR = 1;
+    public static final double FORWARD_ALLOWABLE_ERROR = 0.5; 
 
     public PIDOutputGetter turnOutput;
     public PIDOutputGetter forwardOutput;
-    public PIDOutputGetter angleOutput;
 
     private PIDController turnController;
     private PIDController forwardController;
-    private PIDController angleController;
 
-    private double thorSetpoint;
-    private double txSetpoint;
+    private double xSetpoint;
+    
 
     private static boolean LEFT_MASTER_INVERTED = true;
     private static boolean RIGHT_MASTER_INVERTED = false;
@@ -53,14 +51,11 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
 
     public AlignWithLimelightIndefinite(double thorSetpoint, double txSetpoint) {
         requires(Drivetrain.getInstance());
-        this.txSetpoint = txSetpoint;
-        this.thorSetpoint = Limelight.THOR_LINEARIZATION_FUNCTION.apply(thorSetpoint);
         
         limelight = Limelight.getInstance();
 
         turnOutput = new PIDOutputGetter();
         forwardOutput = new PIDOutputGetter();
-        angleOutput = new PIDOutputGetter();
     }
 
     /**
@@ -84,8 +79,8 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
         turnController.enable();
         forwardController.enable();
 
-        turnController.setSetpoint(txSetpoint);
-        forwardController.setSetpoint(thorSetpoint);
+        // turnController.setSetpoint(txSetpoint);
+        // forwardController.setSetpoint(thorSetpoint);
 
         Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }

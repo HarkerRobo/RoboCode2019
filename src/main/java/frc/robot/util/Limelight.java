@@ -32,14 +32,14 @@ public class Limelight {
     public static final String SNAP_KEY = "snapshot";
     public static final String CORNERX_KEY = "tcornx";
     public static final String CORNERY_KEY = "tcorny";
+    public static final String CAMTRAN_KEY = "camtran";
 
     public static final int VISION_MODE = 0;
     public static final int DRIVER_MODE = 1;
 
     public static final int NO_SNAPSHOT = 0;
     public static final int SNAPSHOT = 1;
-
-    // 
+ 
     public static double THOR_EXPONENT = 0.62291;
     public static double THOR_COEFF = 1000;
     public static Function<Double, Double> THOR_LINEARIZATION_FUNCTION = (thor) -> (THOR_COEFF / Math.pow(thor, THOR_EXPONENT));
@@ -157,6 +157,79 @@ public class Limelight {
      */
     public double getTvert() {
         return table.getEntry(TVERT_KEY).getDouble(0.0);
+    }
+
+    /**
+     * Returns the values of the Limelight's compute 3D localization calculations.
+     * 
+     * @return The compute 3D values, in the specified order (x,y,z,pitch,yaw,roll).
+     *         These values place the target as the origin and represent the camera's
+     *         orientation relative to the target.
+     */
+    public double[] getCamtranData()
+    {
+        double[] nullArr = null;
+        return table.getEntry(CAMTRAN_KEY).getDoubleArray(nullArr);
+    }
+
+    /**
+     * Returns vertical distance from the target
+     * 
+     * @return The camera's vertical distance from the target.
+     */
+    public double getCamtranX()
+    {
+        return getCamtranData()[0];
+    }
+
+    /**
+     * Returns height difference between the the target
+     * 
+     * @return The camera's height relative to the target's height (automatically 0).
+     */
+    public double getCamtranY()
+    {
+        return getCamtranData()[1];
+    }
+
+    /**
+     * Returns horizontal distance from the target
+     * 
+     * @return The camera's horizontal distance from the target.
+     */
+    public double getCamtranZ()
+    {
+        return getCamtranData()[2];
+    }
+
+    /**
+     * Returns camera's pitch (forward/backward tilt) relative to the target
+     * 
+     * @return The camera's pitch relative to the target (automatically 0).
+     */
+    public double getCamtranPitch()
+    {
+        return getCamtranData()[3];
+    }
+
+    /**
+     * Returns camera's yaw (left/right rotation) relative to the target
+     * 
+     * @return The camera's pitch relative to the target (automatically 0).
+     */
+    public double getCamtranYaw()
+    {
+        return getCamtranData()[4];
+    }
+
+    /**
+     * Returns camera's yaw (left/right tilt) relative to the target
+     * 
+     * @return The camera's pitch relative to the target (automatically 0).
+     */
+    public double getCamtranRoll()
+    {
+        return getCamtranData()[5];
     }
 
     public double getRawContourTx(int contourId) {
