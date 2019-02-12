@@ -6,7 +6,7 @@ import frc.robot.util.Limelight;
 /**
  * Toggles the Limelight view mode between one for low-exposure vision processing and one for high-exposure human view. 
  */
-public class ToggleLimelightDriverMode extends InstantCommand
+public class ToggleLimelightViewMode extends InstantCommand
 {
     /**
      * {@inheritDoc}

@@ -2,6 +2,7 @@ package frc.robot.commands.intake;
 
 import frc.robot.OI;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeDirection;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
@@ -26,7 +27,9 @@ public class SpinIntakeManual extends IndefiniteCommand {
      */
     @Override
     public void execute() {
-        double operatorBallIntakeOutput = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getLeftY(), OI.OPERATOR_DEADBAND_JOYSTICK);
-        Intake.getInstance().setControllerOutput(operatorBallIntakeOutput);
+        double operatorBallIntakeOutput = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
+        if (Math.signum(operatorBallIntakeOutput) == IntakeDirection.IN.getSign())  { // only actuate if pulling cargo in
+            Intake.getInstance().setControllerOutput(operatorBallIntakeOutput);
+        }
     }
 }

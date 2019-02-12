@@ -33,7 +33,6 @@ public class LoadOrScoreHatch extends SequentialCommandGroup {
             HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.IN ? 
                 new WaitCommand(HatchLatcher.EXTENDER_EXTEND_TIME) : new WaitCommand(0.0),
             new SetFlowerManual(scoreState.getFlowerDirection())
-        );                  
-        requires(HatchLatcher.getInstance());                                                                
+        );                                                             
     }
 }

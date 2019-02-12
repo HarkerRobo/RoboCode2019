@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot.Side;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
-import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.commands.wrist.MoveWristPosition;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -84,7 +83,6 @@ public class Wrist extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new MoveWristManual());
     }
     
     public void talonInit () {

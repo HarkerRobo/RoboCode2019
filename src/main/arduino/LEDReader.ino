@@ -1,3 +1,8 @@
+/*
+* 
+* @author Finn Frankis
+* @author Chirag Kaushik
+*/
 const int INPUT_PIN_0 = 0;
 const int INPUT_PIN_1 = 1;
 const int INPUT_PIN_2 = 2;
