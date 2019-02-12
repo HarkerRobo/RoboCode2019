@@ -57,19 +57,6 @@ public class Passthrough extends Command
          }
 
         commandGroup.start();
-        // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-        // Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-
-        // boolean needsToPassThrough = Wrist.getInstance().mustPassThrough(desiredWristPosition);
-         
-        // commandGroup = new CommandGroupWrapper();
-
-        // if(needsToPassThrough && Elevator.getInstance().isBelow(Elevator.RAIL_POSITION)) {
-        //     commandGroup.sequential(new MoveElevatorPosition(safeElevatorHeight));
-        // }
-        // commandGroup.sequential(new MoveWristPosition(desiredWristPosition));    
-        // commandGroup.start();           
-        // TODO: ALWAYS GO TO BOTTOM
     }
 
     @Override

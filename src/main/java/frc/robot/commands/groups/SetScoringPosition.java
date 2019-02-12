@@ -50,7 +50,7 @@ public class SetScoringPosition extends Command {
                 }
                 else {
                     commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, desiredAngle));
-                    // /commandGroup.sequential (new MoveElevatorPosition());
+                    commandGroup.sequential (new MoveElevatorMotionMagic(desiredHeight));
                 }
             }
         } else { //same side
@@ -69,7 +69,7 @@ public class SetScoringPosition extends Command {
 				}
 			}
 		}
-		
+		commandGroup.start();
     }
 
     @Override
