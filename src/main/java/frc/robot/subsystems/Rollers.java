@@ -61,16 +61,24 @@ public class Rollers extends Subsystem {
     public void talonInit(){
         rTalonTop.setNeutralMode(NeutralMode.Coast);
         rTalonBottom.setNeutralMode(NeutralMode.Coast);
+
         rTalonTop.setInverted(TOP_INVERTED);
         rTalonBottom.setInverted(BOTTOM_INVERTED);
+
+        setupCurrentLimits();
+    }
+
+    public void setupCurrentLimits () {
         rTalonTop.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         rTalonBottom.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
+
         rTalonTop.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
         rTalonBottom.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+
         rTalonTop.configPeakCurrentDuration(PEAK_TIME);
         rTalonBottom.configPeakCurrentDuration(PEAK_TIME);
     }
-
+    
     public HSTalon getTopTalon(){
         return rTalonTop;        
     }
