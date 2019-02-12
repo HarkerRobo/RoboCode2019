@@ -32,8 +32,8 @@ public class SetScoringPosition extends Command {
 	@Override
     public void initialize () {
 		commandGroup = new CommandGroupWrapper();
-        Side currentSide = Wrist.getInstance().getCurrentSide();
-				Wrist.getInstance().getCurrentSide();
+		Side currentSide = Wrist.getInstance().getCurrentSide();
+		
         if (currentSide != desiredSide) { //opposite side
             if (currentSide == Side.FRONT) { //front -> back
                 if (Elevator.getInstance().isAbove(desiredHeight, Elevator.RAIL_POSITION)) {//desired height on back above rail
