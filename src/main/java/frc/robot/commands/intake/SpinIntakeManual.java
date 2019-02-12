@@ -27,6 +27,6 @@ public class SpinIntakeManual extends IndefiniteCommand {
     @Override
     public void execute() {
         double operatorBallIntakeOutput = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getLeftY(), OI.OPERATOR_DEADBAND_JOYSTICK);
-        Intake.getInstance().setTalonOutput(operatorBallIntakeOutput);
+        Intake.getInstance().setControllerOutput(operatorBallIntakeOutput);
     }
 }

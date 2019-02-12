@@ -71,7 +71,9 @@ public class Robot extends TimedRobot {
         //limelight = Limelight.getInstance();        
        
         drivetrain.talonInit();
-        // drivetrain.getPigeon().setFusedHeading(0);
+        elevator.talonInit();
+        // ballIntake.controllerInit();
+        
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
         talon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
     }

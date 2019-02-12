@@ -25,7 +25,7 @@ public class SpinIntakeIndefinite extends IndefiniteCommand {
      */
     @Override
     public void execute() {
-        Intake.getInstance().setTalonOutput(magnitude, direction);
+        Intake.getInstance().setControllerOutput(magnitude, direction);
     }
 
     /**
@@ -33,7 +33,7 @@ public class SpinIntakeIndefinite extends IndefiniteCommand {
      */
     @Override
     public void end() {
-        Intake.getInstance().setTalonOutput(0.0);
+        Intake.getInstance().setControllerOutput(0.0);
     }
 
     /**
@@ -41,6 +41,6 @@ public class SpinIntakeIndefinite extends IndefiniteCommand {
      */
     @Override
     public void interrupted() {
-        Intake.getInstance().setTalonOutput(0.0);
+        Intake.getInstance().setControllerOutput(0.0);
     }
 }

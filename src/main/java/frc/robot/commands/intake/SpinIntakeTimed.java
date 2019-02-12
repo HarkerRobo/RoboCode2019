@@ -15,7 +15,7 @@ public class SpinIntakeTimed extends TimedCommand {
     private IntakeDirection direction;
 
     /**
-     * Creates a new command that runs for a specific time
+     * Creates a new command that runs for a specific time.
      * @param time the time (in seconds) that the command should run for
      */
     public SpinIntakeTimed(double magnitude, double time, IntakeDirection direction) {
@@ -30,7 +30,7 @@ public class SpinIntakeTimed extends TimedCommand {
      */
     @Override
     public void execute(){
-        Intake.getInstance().setTalonOutput(magnitude,direction);
+        Intake.getInstance().setControllerOutput(magnitude,direction);
     }
 
     /**
@@ -38,7 +38,7 @@ public class SpinIntakeTimed extends TimedCommand {
      */
     @Override
     public void end(){
-        Intake.getInstance().setTalonOutput(0,IntakeDirection.STOP); 
+        Intake.getInstance().setControllerOutput(0,IntakeDirection.STOP); 
     }
 }
 

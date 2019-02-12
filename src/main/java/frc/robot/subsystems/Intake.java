@@ -1,16 +1,17 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.intake.SpinIntakeManual;
-import harkerrobolib.wrappers.HSTalon;
+import harkerrobolib.util.Constants;
 
 /**
  * Intakes the cargo into the robot.
  * 
+ * @author Finn Frankis
  * @author Anirudh Kotamraju
  * @since 1/11/19
  */
@@ -27,37 +28,35 @@ public class Intake extends Subsystem {
     }
 
     private static Intake instance;
-    private HSTalon intakeTalon;
+    private CANSparkMax intakeSparkMax;
 
-    private final static int PEAK_LIMIT = 20;
-    private final static int PEAK_TIME = 1;
-    private final static int CONTINUOUS_CURRENT = 15;
+    private final static int STALL_LIMIT = 20; // current limit (amps) when the robot is stopped
+    private final static int FREE_LIMIT = 15; // current limit (amps) when the robot is moving freely
 
-    private final static boolean MASTER_INVERTED = false;
-    private final static NeutralMode NEUTRAL_MODE = NeutralMode.Brake;
+    private final static boolean CONTROLLER_INVERTED = false;
 
     public final static double DEFAULT_INTAKE_MAGNITUDE = 1.0;
 
-    public HSTalon getTalon() {
-        return intakeTalon;
+    public CANSparkMax getController() {
+        return intakeSparkMax;
     }
 
-    public void setTalonOutput(double magnitude, IntakeDirection direction) {
-        getTalon().set(ControlMode.PercentOutput, magnitude * direction.getSign());
+    public void setControllerOutput(double magnitude, IntakeDirection direction) {
+        setControllerOutput (magnitude * direction.getSign());
     }
 
-    public void setTalonOutput(double percentOutput) {
-        getTalon().set(ControlMode.PercentOutput, percentOutput);
+    public void setControllerOutput(double percentOutput) {
+        getController().set(percentOutput);
     }
 
     private Intake() {
-        intakeTalon = new HSTalon(CAN_IDs.BALL_INTAKE_MASTER);
-        initTalons();
+        intakeSparkMax = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
     }
 
-    private void initTalons() {
-        intakeTalon.setInverted(MASTER_INVERTED);
-        intakeTalon.setNeutralMode(NEUTRAL_MODE);
+    private void controllerInit() {
+        intakeSparkMax.setInverted(CONTROLLER_INVERTED);
+        intakeSparkMax.setSmartCurrentLimit(STALL_LIMIT, FREE_LIMIT);
+        intakeSparkMax.setCANTimeout(Constants.DEFAULT_TIMEOUT);
     }
 
     public static Intake getInstance() {
@@ -67,16 +66,8 @@ public class Intake extends Subsystem {
         return instance;
     }
 
-    public void setCurrentLimits() {
-        intakeTalon.configPeakCurrentDuration(PEAK_TIME);
-        intakeTalon.configPeakCurrentLimit(PEAK_LIMIT);
-        intakeTalon.configContinuousCurrentLimit(CONTINUOUS_CURRENT);
-    }
-    
     @Override    
     protected void initDefaultCommand() {
         setDefaultCommand(new SpinIntakeManual());
     }
-
-    
 }
