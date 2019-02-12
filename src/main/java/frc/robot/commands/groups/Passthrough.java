@@ -1,6 +1,9 @@
 package frc.robot.commands.groups;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+import frc.robot.commands.elevator.MoveElevatorMotionMagic;
+import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.CommandGroupWrapper;
@@ -10,26 +13,50 @@ import harkerrobolib.auto.CommandGroupWrapper;
  * 
  * @author Finn Frankis
  * @author Angela Jia
+ * @author Chirag Kaushik
  * @since 2/8/19
  */
 public class Passthrough extends Command
 {    
-    private int desiredWristPosition;
-    private int safeElevatorHeight;
+    public enum PassthroughType {
+        LOW, HIGH
+    }
+    private PassthroughType type;
+
+    private int desiredWristPos;
+    private Robot.Side currentSide;
+    private Robot.Side desiredSide;
     private CommandGroupWrapper commandGroup;
 
-    public Passthrough () {
-        this (Wrist.SAFE_FORWARD_POSITION);
-    }
-    public Passthrough(int desiredWristPos) {    
-        requires(Wrist.getInstance());
-        requires(Elevator.getInstance());
-        
-        this.desiredWristPosition = desiredWristPos;
+    public Passthrough(PassthroughType type, Robot.Side currentSide, int desiredWristPos) {
+        this.desiredWristPos = desiredWristPos;
+        this.desiredSide = Wrist.getInstance().getSide(desiredWristPos);
+        this.currentSide = currentSide;
+        this.type = type;
     }
 
     @Override
     public void initialize() {
+        if (type == PassthroughType.HIGH) {
+            if ((currentSide == Robot.Side.BACK || currentSide == Robot.Side.AMBIGUOUS) 
+                && Elevator.getInstance().isBelow(Elevator.RAIL_POSITION)) {
+                commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, Wrist.MAX_FORWARD_POSITION));
+            }
+            commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.HIGH_SCORING_POSITION))
+                        .sequential(new MoveWristPosition(desiredWristPos));
+        }
+        else if (type == PassthroughType.LOW) {
+            if (currentSide != desiredSide) {
+                if ((currentSide == Robot.Side.BACK || currentSide == Robot.Side.AMBIGUOUS) && 
+                    Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
+                        commandGroup.sequential (new Passthrough (PassthroughType.HIGH, currentSide, Wrist.MAX_FORWARD_POSITION));
+                }
+                commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_LOW_PASSTHROUGH_POSITION));
+            }
+            commandGroup.sequential(new MoveWristPosition(desiredWristPos));
+         }
+
+        commandGroup.start();
         // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
         // Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
 
@@ -54,10 +81,5 @@ public class Passthrough extends Command
     public void interrupted()
     {
         commandGroup.cancel();
-    }
-
-    public void clearRequirements()
-    {
-        super.clearRequirements();
     }
 }

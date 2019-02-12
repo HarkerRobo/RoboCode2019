@@ -29,8 +29,7 @@ public class Elevator extends Subsystem {
     private VictorSPX leftFrontVictor;
     private VictorSPX leftBackVictor;
     private VictorSPX rightVictor;
-    public static final int MAX_NORM_PASSTHROUGH_POSITION = 10;
-    public static final int MAX_HATCH_PASSTHROUGH_POSITION = 0;
+    public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
 
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_LIMIT = 0;

@@ -175,7 +175,7 @@ public class Wrist extends Subsystem {
      * in the ambiguous region.
      */
     public boolean isAmbiguous() {
-        return !(isFurtherForward(SAFE_FORWARD_POSITION) || isFurtherBack(SAFE_BACKWARD_POSITION));
+        return !isFurtherForward(SAFE_FORWARD_POSITION) && !isFurtherBack(SAFE_BACKWARD_POSITION);
     }
 
     public boolean isForward() {
@@ -201,6 +201,7 @@ public class Wrist extends Subsystem {
     }
 
     public Side getCurrentSide() {
+        if (isAmbiguous()) {return Side.AMBIGUOUS;}
         return isForward() ? Side.FRONT : Side.BACK;
     }
 

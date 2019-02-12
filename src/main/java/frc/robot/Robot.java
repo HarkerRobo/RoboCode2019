@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
     private static double startTime;
 
     public enum Side {
-        FRONT, BACK;
+        FRONT, BACK, AMBIGUOUS;
     }
     /**
      * This function is run when the robot is first started up and should be used
