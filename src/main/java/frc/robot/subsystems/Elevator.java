@@ -171,6 +171,9 @@ public class Elevator extends Subsystem {
                             > MoveElevatorMotionMagic.ALLOWABLE_ERROR;                    
     }
 
+    public boolean isAbove(int comparedPosition, int comparisonPosition) {
+        return comparedPosition - comparisonPosition > MoveElevatorMotionMagic.ALLOWABLE_ERROR;
+    }
     public boolean isAt (int position) {
         return Math.abs(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position)
                             <= MoveElevatorMotionMagic.ALLOWABLE_ERROR;

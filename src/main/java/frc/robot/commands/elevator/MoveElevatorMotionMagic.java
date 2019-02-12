@@ -17,7 +17,7 @@ import frc.robot.subsystems.Elevator;
  */
 public class MoveElevatorMotionMagic extends Command {
 
-    private double setpoint;
+    private int setpoint;
     
      /**
      * Elevator motion magic constants
@@ -32,7 +32,7 @@ public class MoveElevatorMotionMagic extends Command {
     public static final boolean MOTION_MAGIC_SENSOR_PHASE = false;
     public static final int ALLOWABLE_ERROR = 10;
 
-    public MoveElevatorMotionMagic(double setpoint) {
+    public MoveElevatorMotionMagic(int setpoint) {
         requires(Elevator.getInstance());
         this.setpoint = setpoint;
     }

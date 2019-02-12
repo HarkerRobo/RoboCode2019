@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.Robot.Side;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.wrist.MoveWristManual;
@@ -197,5 +198,13 @@ public class Wrist extends Subsystem {
         return Wrist.getInstance().isAmbiguous() || 
                                         (Wrist.getInstance().isForward(desiredWristPosition) && Wrist.getInstance().isBackward() || 
                                             Wrist.getInstance().isBackward(desiredWristPosition) && Wrist.getInstance().isForward());
+    }
+
+    public Side getCurrentSide() {
+        return isForward() ? Side.FRONT : Side.BACK;
+    }
+
+    public Side getSide (int position) {
+        return isForward(position) ? Side.FRONT : Side.BACK;
     }
 }   

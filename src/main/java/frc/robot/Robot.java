@@ -51,6 +51,10 @@ public class Robot extends TimedRobot {
     private static OI oi;
     private static HSTalon talon;
     private static double startTime;
+
+    public enum Side {
+        FRONT, BACK;
+    }
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.

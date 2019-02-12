@@ -1,11 +1,6 @@
 package frc.robot.commands.groups;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap.Global;
-import frc.robot.commands.elevator.MoveElevatorPosition;
-import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.CommandGroupWrapper;
@@ -23,6 +18,9 @@ public class Passthrough extends Command
     private int safeElevatorHeight;
     private CommandGroupWrapper commandGroup;
 
+    public Passthrough () {
+        this (Wrist.SAFE_FORWARD_POSITION);
+    }
     public Passthrough(int desiredWristPos) {    
         requires(Wrist.getInstance());
         requires(Elevator.getInstance());
@@ -32,18 +30,19 @@ public class Passthrough extends Command
 
     @Override
     public void initialize() {
-        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
+        // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
+        // Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
 
-        boolean needsToPassThrough = Wrist.getInstance().mustPassThrough(desiredWristPosition);
+        // boolean needsToPassThrough = Wrist.getInstance().mustPassThrough(desiredWristPosition);
          
-        commandGroup = new CommandGroupWrapper();
+        // commandGroup = new CommandGroupWrapper();
 
-        if(needsToPassThrough && Elevator.getInstance().isBelow(Elevator.RAIL_POSITION)) {
-            commandGroup.sequential(new MoveElevatorPosition(safeElevatorHeight));
-        }
-        commandGroup.sequential(new MoveWristPosition(desiredWristPosition));    
-        commandGroup.start();           
+        // if(needsToPassThrough && Elevator.getInstance().isBelow(Elevator.RAIL_POSITION)) {
+        //     commandGroup.sequential(new MoveElevatorPosition(safeElevatorHeight));
+        // }
+        // commandGroup.sequential(new MoveWristPosition(desiredWristPosition));    
+        // commandGroup.start();           
+        // TODO: ALWAYS GO TO BOTTOM
     }
 
     @Override
