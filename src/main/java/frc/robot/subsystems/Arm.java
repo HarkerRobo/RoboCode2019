@@ -18,14 +18,14 @@ public class Arm extends Subsystem {
     public enum ArmDirection {        
         UP (DoubleSolenoid.Value.kForward), DOWN (DoubleSolenoid.Value.kReverse);
         private DoubleSolenoid.Value state;
-        private ArmDirection(DoubleSolenoid.Value state)
-        {
+        private ArmDirection(DoubleSolenoid.Value state) {
             this.state = state;
         }     
         public DoubleSolenoid.Value getState() {
             return state;
         }  
     }
+
     private static Arm instance;
 
     private static final boolean INITIAL_COMPRESSOR_STATE = true;
@@ -49,6 +49,10 @@ public class Arm extends Subsystem {
 
     public void setState(DoubleSolenoid.Value value) {
         solenoid.set(value);
+    }
+
+    public ArmDirection getDirection() {
+        return getState() == DoubleSolenoid.Value.kForward ? ArmDirection.UP : ArmDirection.DOWN;
     }
 
     public Compressor getCompressor() {

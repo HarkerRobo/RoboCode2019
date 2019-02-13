@@ -50,6 +50,9 @@ public class Wrist extends Subsystem {
     public static final int ANGLE_SCORING_FRONT = 180;// TUNE
     public static final int ANGLE_SCORING_BACK = 0;// TUNE
     public static final int ANGLE_INTAKE = 180;
+    public static final int HATCH_INTAKE_SCORING_ANGLE = 0;
+    public static final int CARGO_INTAKE_SCORING_ANGLE = 180;
+
     public static final int ALLOWABLE_ERROR = 400;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 10000; // TUNE

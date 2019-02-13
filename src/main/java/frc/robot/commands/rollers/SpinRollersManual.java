@@ -1,6 +1,8 @@
 package frc.robot.commands.rollers;
 
 import frc.robot.OI;
+import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
+import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import harkerrobolib.commands.IndefiniteCommand;
@@ -16,7 +18,7 @@ import harkerrobolib.util.MathUtil;
  */
 public class SpinRollersManual extends IndefiniteCommand {
 	public SpinRollersManual() {
-		requires(Rollers.getInstance());
+        requires(Rollers.getInstance());
     }	
 
     /**
@@ -27,7 +29,8 @@ public class SpinRollersManual extends IndefiniteCommand {
     @Override
 	public void execute() {
         double driverRightY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);      
-
+        if((int) Math.signum(driverRightY) == RollerDirection.IN.getSign() && Math.abs(driverRightY) > Rollers.HATCH_STOW_SPEED)
+            new LoadOrScoreHatch(ScoreState.LOAD);
         if (driverRightY > 0) // joystick up
             Rollers.getInstance().moveRollers(Math.abs(driverRightY), RollerDirection.OUT);
         else if (driverRightY < 0) // joystick down

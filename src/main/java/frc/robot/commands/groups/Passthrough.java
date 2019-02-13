@@ -48,7 +48,7 @@ public class Passthrough extends Command
         else if (type == PassthroughType.LOW) {
             if (currentSide != desiredSide) {
                 if ((currentSide == Robot.Side.BACK || currentSide == Robot.Side.AMBIGUOUS) && 
-                    Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
+                     Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
                         commandGroup.sequential (new Passthrough (PassthroughType.HIGH, currentSide, Wrist.MAX_FORWARD_POSITION));
                 }
                 commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_LOW_PASSTHROUGH_POSITION));

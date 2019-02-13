@@ -2,13 +2,16 @@ package frc.robot;
 
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.ToggleLimelightViewMode;
+import frc.robot.commands.groups.OuttakeBallOrHatch;
+import frc.robot.commands.groups.SetScoringPosition;
+import frc.robot.commands.groups.SetScoringPosition.Location;
+import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.util.CustomOperatorGamepad;
-import harkerrobolib.wrappers.HSDPadButton;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
 /**
- * Contains both driver and operator gamepads.
+ * Class that manages input and output from gamepads.
  * 
  * @since 1/7/19
  */
@@ -43,11 +46,17 @@ public class OI {
         driverGamepad.getButtonBumperLeft().whileActive(new AlignWithLimelightDrive(198, 0, 4));
         driverGamepad.getButtonBumperRight().whenPressed(new ToggleLimelightViewMode());
 
-        //driver dpad
-        HSDPadButton driverUpDPad = new HSDPadButton(driverGamepad, DPAD_UP_ANGLE);
-        HSDPadButton driverLeftDPad = new HSDPadButton(driverGamepad, DPAD_LEFT_ANGLE);
-        HSDPadButton driverDownDPad = new HSDPadButton(driverGamepad, DPAD_DOWN_ANGLE);
-        HSDPadButton driverRightDPad = new HSDPadButton(driverGamepad, DPAD_RIGHT_ANGLE);
+        customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
+        customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));
+        customOperatorGamepad.getForwardThreeButton().whenPressed(new SetScoringPosition(Location.F3));
+        customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
+        customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
+        customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
+
+        customOperatorGamepad.getZeroButton().whenPressed(new SetScoringPosition(Location.ZERO));
+        customOperatorGamepad.getOuttakeButton().whilePressed(new OuttakeBallOrHatch());
+        customOperatorGamepad.getIntakeHatchButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE));
+        customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());
     }  
 
     public HSGamepad getDriverGamepad() {

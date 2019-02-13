@@ -52,6 +52,7 @@ public class HatchLatcher extends Subsystem {
         }
     }
     public static final double EXTENDER_EXTEND_TIME = 1.0;
+    public static final double FLOWER_ACTUATION_TIME = 0.5;
 
     private static HatchLatcher instance;
     private DoubleSolenoid extender;

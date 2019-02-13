@@ -18,6 +18,29 @@ import harkerrobolib.auto.CommandGroupWrapper;
  * @since  2/11/19
  */
 public class SetScoringPosition extends Command {
+	public enum Location {
+        F1(Elevator.LOW_SCORING_POSITION, Wrist.ANGLE_SCORING_FRONT), 
+        F2(Elevator.MEDIUM_SCORING_POSITION, Wrist.ANGLE_SCORING_FRONT), 
+        F3(Elevator.HIGH_SCORING_POSITION, Wrist.ANGLE_SCORING_FRONT), 
+        B1(Elevator.LOW_SCORING_POSITION, Wrist.ANGLE_SCORING_BACK),
+        B2(Elevator.MEDIUM_SCORING_POSITION, Wrist.ANGLE_SCORING_BACK), 
+		B3(Elevator.HIGH_SCORING_POSITION, Wrist.ANGLE_SCORING_BACK),
+		ZERO(0, 0),
+		HATCH_INTAKE(Elevator.HATCH_INTAKE_SCORING_POSITION, Wrist.HATCH_INTAKE_SCORING_ANGLE),
+		CARGO_INTAKE(Elevator.CARGO_INTAKE_SCORING_POSITION, Wrist.CARGO_INTAKE_SCORING_ANGLE); 
+        
+        private int height;
+        private int angle;
+
+        private Location (int height, int angle) {
+            this.height = height;
+            this.angle = angle;
+        }
+
+        public int getHeight () {return height;}
+        public int getAngle () {return angle;}
+    }
+
 	private int desiredHeight;
 	private int desiredAngle;
 	private Side desiredSide;
@@ -28,6 +51,10 @@ public class SetScoringPosition extends Command {
 		this.desiredAngle = desiredAngle;
 		this.desiredSide = Wrist.getInstance().getSide(desiredAngle);
     }
+	
+	public SetScoringPosition(Location desiredLocation) {
+		this(desiredLocation.getHeight(), desiredLocation.getAngle());
+	}
 	
 	@Override
     public void initialize () {
