@@ -38,18 +38,18 @@ public class Passthrough extends Command
     @Override
     public void initialize() {
         if (type == PassthroughType.HIGH) {
-            if ((currentSide == Robot.Side.BACK || currentSide == Robot.Side.AMBIGUOUS) 
+            if ((currentSide == Robot.Side.FRONT || currentSide == Robot.Side.AMBIGUOUS) 
                 && Elevator.getInstance().isBelow(Elevator.RAIL_POSITION)) {
-                commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, Wrist.MAX_FORWARD_POSITION));
+                commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, Wrist.MAX_BACKWARD_POSITION));
             }
-            commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.HIGH_SCORING_POSITION))
+            commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_HIGH_PASSTHROUGH_POSITION))
                         .sequential(new MoveWristPosition(desiredWristPos));
         }
         else if (type == PassthroughType.LOW) {
             if (currentSide != desiredSide) {
-                if ((currentSide == Robot.Side.BACK || currentSide == Robot.Side.AMBIGUOUS) && 
+                if ((currentSide == Robot.Side.FRONT || currentSide == Robot.Side.AMBIGUOUS) && 
                      Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
-                        commandGroup.sequential (new Passthrough (PassthroughType.HIGH, currentSide, Wrist.MAX_FORWARD_POSITION));
+                        commandGroup.sequential (new Passthrough (PassthroughType.HIGH, currentSide, Wrist.MAX_BACKWARD_POSITION));
                 }
                 commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_LOW_PASSTHROUGH_POSITION));
             }

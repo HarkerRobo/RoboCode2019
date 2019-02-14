@@ -30,6 +30,7 @@ public class Elevator extends Subsystem {
     private VictorSPX leftBackVictor;
     private VictorSPX rightVictor;
     public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
+    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 1000; // tune
 
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int CONT_CURRENT_LIMIT = 0;
@@ -155,26 +156,33 @@ public class Elevator extends Subsystem {
     }
 
     /**
-     * Determines whether the elevator is below a given position, within the tolerance of an allowable error.
-     * Must have preconfigured the selected sensor as an encoder.
-     */
-    public boolean isBelow (int position) {
-        return getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position 
-                            < -MoveElevatorMotionMagic.ALLOWABLE_ERROR;
-    }
-
-    /**
      * Determines whether the elevator is above a given position, within the tolerance of an allowable error.
      * Must have preconfigured the selected sensor as an encoder.
      */
     public boolean isAbove (int position) {
-        return getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position 
-                            > MoveElevatorMotionMagic.ALLOWABLE_ERROR;                    
+        return isAbove(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY), position);            
     }
 
     public boolean isAbove(int comparedPosition, int comparisonPosition) {
         return comparedPosition - comparisonPosition > MoveElevatorMotionMagic.ALLOWABLE_ERROR;
     }
+
+    /**
+     * Determines whether the elevator is below a given position, within the tolerance of an allowable error.
+     * Must have preconfigured the selected sensor as an encoder.
+     */
+    public boolean isBelow (int position) {
+        return isBelow(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY), position);
+    }
+
+    /**
+     * Determines whether the elevator is below a given position, within the tolerance of an allowable error.
+     * Must have preconfigured the selected sensor as an encoder.
+     */
+    public boolean isBelow (int comparedPosition, int comparisonPosition) {
+        return comparedPosition - comparisonPosition < -MoveElevatorMotionMagic.ALLOWABLE_ERROR;
+    }
+
     public boolean isAt (int position) {
         return Math.abs(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position)
                             <= MoveElevatorMotionMagic.ALLOWABLE_ERROR;
