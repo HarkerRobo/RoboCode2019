@@ -5,6 +5,8 @@ import frc.robot.commands.drivetrain.ToggleLimelightViewMode;
 import frc.robot.commands.groups.OuttakeBallOrHatch;
 import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
+import frc.robot.commands.wrist.MoveWristMotionMagic;
+import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.util.CustomOperatorGamepad;
 import harkerrobolib.wrappers.HSGamepad;
@@ -43,20 +45,21 @@ public class OI {
     
     public void initBindings() {
         //driver bumpers
-        driverGamepad.getButtonBumperLeft().whileActive(new AlignWithLimelightDrive(198, 0, 4));
-        driverGamepad.getButtonBumperRight().whenPressed(new ToggleLimelightViewMode());
+        driverGamepad.getButtonY().whilePressed(new MoveWristPosition(1000));
+        // driverGamepad.getButtonBumperLeft().whileActive(new AlignWithLimelightDrive(198, 0, 4));
+        // driverGamepad.getButtonBumperRight().whenPressed(new ToggleLimelightViewMode());
 
-        customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
-        customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));
-        customOperatorGamepad.getForwardThreeButton().whenPressed(new SetScoringPosition(Location.F3));
-        customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
-        customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
-        customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
+        // customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
+        // customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));
+        // customOperatorGamepad.getForwardThreeButton().whenPressed(new SetScoringPosition(Location.F3));
+        // customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
+        // customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
+        // customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
-        customOperatorGamepad.getZeroButton().whenPressed(new SetScoringPosition(Location.ZERO));
-        customOperatorGamepad.getOuttakeButton().whilePressed(new OuttakeBallOrHatch());
-        customOperatorGamepad.getIntakeHatchButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE));
-        customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());
+        // customOperatorGamepad.getZeroButton().whenPressed(new SetScoringPosition(Location.ZERO));
+        // customOperatorGamepad.getOuttakeButton().whilePressed(new OuttakeBallOrHatch());
+        // customOperatorGamepad.getIntakeHatchButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE));
+        // customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());
     }  
 
     public HSGamepad getDriverGamepad() {

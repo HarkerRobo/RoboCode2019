@@ -3,7 +3,7 @@ package frc.robot.commands.groups;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.wrist.MoveWristPosition;
+import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.CommandGroupWrapper;
@@ -43,7 +43,7 @@ public class Passthrough extends Command
                 commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, Wrist.MAX_BACKWARD_POSITION));
             }
             commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_HIGH_PASSTHROUGH_POSITION))
-                        .sequential(new MoveWristPosition(desiredWristPos));
+                        .sequential(new MoveWristMotionMagic(desiredWristPos));
         }
         else if (type == PassthroughType.LOW) {
             if (currentSide != desiredSide) {
@@ -53,7 +53,7 @@ public class Passthrough extends Command
                 }
                 commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_LOW_PASSTHROUGH_POSITION));
             }
-            commandGroup.sequential(new MoveWristPosition(desiredWristPos));
+            commandGroup.sequential(new MoveWristMotionMagic(desiredWristPos));
          }
 
         commandGroup.start();

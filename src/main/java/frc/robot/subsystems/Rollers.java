@@ -32,9 +32,9 @@ public class Rollers extends Subsystem {
 
     private static final boolean TOP_INVERTED = false;
     private static final boolean BOTTOM_INVERTED = false;
-    private static final int CONTINUOUS_CURRENT_LIMIT = 0;
-    private static final int PEAK_CURRENT_LIMIT = 0;
-    private static final int PEAK_TIME = 0;
+    private static final int CONTINUOUS_CURRENT_LIMIT = 25;
+    private static final int PEAK_CURRENT_LIMIT = 15;
+    private static final int PEAK_TIME = 750;
 
     public static final double DEFAULT_ROLLER_MAGNITUDE = 8;
     public static final double HATCH_STOW_SPEED = 0.75;

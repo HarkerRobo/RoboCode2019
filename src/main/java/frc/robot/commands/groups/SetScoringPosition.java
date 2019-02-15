@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot.Side;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.groups.Passthrough.PassthroughType;
-import frc.robot.commands.wrist.MoveWristPosition;
+import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.CommandGroupWrapper;
@@ -88,7 +88,7 @@ public class SetScoringPosition extends Command {
 		} else { //same side
 			if (currentSide == Side.BACK) { //back -> back
 				commandGroup.sequential(new MoveElevatorMotionMagic(desiredHeight))
-							.sequential(new MoveWristPosition(desiredAngle));
+							.sequential(new MoveWristMotionMagic(desiredAngle));
 			} else { //front -> front
 				if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) && 
 				   Elevator.getInstance().isBelow(desiredHeight, Elevator.RAIL_POSITION)) { //front 3
@@ -100,7 +100,7 @@ public class SetScoringPosition extends Command {
 					
 					commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, desiredAngle))
 								.sequential(new Passthrough(PassthroughType.HIGH, currentSide, desiredAngle))
-								.sequential(new MoveWristPosition(desiredAngle));
+								.sequential(new MoveWristMotionMagic(desiredAngle));
 				}
 			}
 		}
