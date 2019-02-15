@@ -98,4 +98,7 @@ public class HatchLatcher extends Subsystem {
         return instance;
     }
 
+    public boolean hasHatch () {
+        return flower.get() == FlowerDirection.OPEN.getValue();
+    }
 }

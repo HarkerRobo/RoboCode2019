@@ -29,6 +29,7 @@ public class Elevator extends Subsystem {
     private VictorSPX leftFrontVictor;
     private VictorSPX leftBackVictor;
     private VictorSPX rightVictor;
+
     public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
     public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 1000; // tune
 
@@ -42,17 +43,22 @@ public class Elevator extends Subsystem {
     private static final boolean INVERTED_VICT_RIGHT = false;
 
     public static final int INTAKE_POSITION = 0;
-    public static final int LOW_SCORING_POSITION = 60;
-    public static final int MEDIUM_SCORING_POSITION = 120;
-    public static final int HIGH_SCORING_POSITION = 180;
-    public static final int HATCH_INTAKE_SCORING_POSITION = 0;
-    public static final int CARGO_INTAKE_SCORING_POSITION = 20;
-    public static final int LOW_MIDDLE_BOUNDARY = (LOW_SCORING_POSITION + MEDIUM_SCORING_POSITION)/2;
+    
+    public static final int HATCH_INTAKING_POSITION = 0;
+    public static final int CARGO_INTAKING_POSITION = 20;
+    
     public static final int RAIL_POSITION = 100; //TUNE
     public static final int BALL_INTAKE_HEIGHT = 100; //Tune
     
     public static final int FFGRAV = 0;
     public static final int ZERO_CURRENT_SPIKE = 0;
+
+    public static final int LOW_SCORING_POSITION_HATCH = 0; 
+    public static final int LOW_SCORING_POSITION_CARGO = 0; 
+    public static final int MEDIUM_SCORING_POSITION_HATCH = 0; 
+    public static final int MEDIUM_SCORING_POSITION_CARGO = 0; 
+    public static final int HIGH_SCORING_POSITION_HATCH = 0; 
+    public static final int HIGH_SCORING_POSITION_CARGO = 0; 
 
     /**
      * Constants used to ramp down past elevator soft limit
@@ -69,6 +75,7 @@ public class Elevator extends Subsystem {
      */
     public static final int POSITION_PID_SLOT_INDEX = 0;
     public static final int MOTION_MAGIC_SLOT_INDEX = 1;
+
 
     private Elevator() {
         talon = new HSTalon(CAN_IDs.EL_MASTER);
