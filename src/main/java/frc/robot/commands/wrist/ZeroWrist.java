@@ -40,7 +40,7 @@ public class ZeroWrist extends Command {
      */
 	@Override
 	protected boolean isFinished() {
-        if (startTime > Wrist.PEAK_TIME) {
+        if ((Robot.getTime() - startTime) > Wrist.PEAK_TIME) {
             currentVals.add(Wrist.getInstance().getMasterTalon().getOutputCurrent());
             if (currentVals.size() >= VALUES_TO_SAMPLE) {
                 currentVals.remove(0);
