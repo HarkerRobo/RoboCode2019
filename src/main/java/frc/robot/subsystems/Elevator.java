@@ -202,8 +202,4 @@ public class Elevator extends Subsystem {
         return Math.abs(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position)
                             <= MoveElevatorMotionMagic.ALLOWABLE_ERROR;
     }    
-
-    public boolean isReverseLimitSwitchTriggered () {
-        return rightTalon.getSensorCollection().isRevLimitSwitchClosed();
-    }
 }

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.util.Pair;
 
 /**
  * Represents the arm of the robot, 
@@ -17,43 +16,47 @@ import frc.robot.util.Pair;
  */
 public class Arm extends Subsystem {
     public enum ArmDirection {        
-        UP (DoubleSolenoid.Value.kForward, DoubleSolenoid.Value.kForward), DOWN (DoubleSolenoid.Value.kReverse, DoubleSolenoid.Value.kReverse);
-        private DoubleSolenoid.Value leftState;
-        private DoubleSolenoid.Value rightState;
-        private ArmDirection(DoubleSolenoid.Value leftState, DoubleSolenoid.Value rightState) {
-            this.leftState = leftState;
-            this.rightState = rightState;
-        }    
-        public Pair<DoubleSolenoid.Value, DoubleSolenoid.Value> getStates() {
-            return new Pair<DoubleSolenoid.Value , DoubleSolenoid.Value >(leftState, rightState);
+        UP (DoubleSolenoid.Value.kForward), DOWN (DoubleSolenoid.Value.kReverse);
+        private DoubleSolenoid.Value state;
+        private ArmDirection(DoubleSolenoid.Value state) {
+            this.state = state;
+        }     
+        public DoubleSolenoid.Value getState() {
+            return state;
         }  
-
-        public static ArmDirection convertDirection (Pair<DoubleSolenoid.Value, DoubleSolenoid.Value> states) {
-            return states.equals(UP.getStates()) ? UP : DOWN;
-        }
     }
 
     private static Arm instance;
 
-    private DoubleSolenoid leftSolenoid;
-    private DoubleSolenoid rightSolenoid;
+    private static final boolean INITIAL_COMPRESSOR_STATE = true;
+
+    private DoubleSolenoid solenoid;
+    private Compressor compressor;
     
     private Arm() {
-        leftSolenoid = new DoubleSolenoid(CAN_IDs.ARM_LEFT_FORWARD_CHANNEL, CAN_IDs.ARM_LEFT_REVERSE_CHANNEL);
-        rightSolenoid = new DoubleSolenoid(CAN_IDs.ARM_RIGHT_FORWARD_CHANNEL, CAN_IDs.ARM_RIGHT_REVERSE_CHANNEL);
+        solenoid = new DoubleSolenoid(CAN_IDs.ARM_FORWARD_CHANNEL, CAN_IDs.ARM_REVERSE_CHANNEL);
+        compressor = new Compressor(CAN_IDs.PCM);
+        compressor.setClosedLoopControl(INITIAL_COMPRESSOR_STATE);
     }
     
     public void initDefaultCommand() {
         //setDefaultCommand();
     }
 
-    public ArmDirection getStates() {
-        return ArmDirection.convertDirection(new Pair<DoubleSolenoid.Value, DoubleSolenoid.Value> (leftSolenoid.get(), rightSolenoid.get()));
+    public DoubleSolenoid.Value getState() {
+        return solenoid.get();
     }
 
-    public void setState(ArmDirection direction) {
-        leftSolenoid.set(direction.getStates().getFirst());
-        rightSolenoid.set(direction.getStates().getSecond());
+    public void setState(DoubleSolenoid.Value value) {
+        solenoid.set(value);
+    }
+
+    public ArmDirection getDirection() {
+        return getState() == DoubleSolenoid.Value.kForward ? ArmDirection.UP : ArmDirection.DOWN;
+    }
+
+    public Compressor getCompressor() {
+        return compressor;
     }
 
     public static Arm getInstance() {
