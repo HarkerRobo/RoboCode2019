@@ -2,9 +2,12 @@
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot.Side;
+import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.groups.Passthrough.PassthroughType;
 import frc.robot.commands.wrist.MoveWristPosition;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Wrist;
@@ -74,6 +77,7 @@ public class SetScoringPosition extends Command {
 	
 	@Override
     public void initialize () {
+		ArmDirection initialDirection = Arm.getInstance().getDirection();
 		commandGroup = new CommandGroupWrapper();
 		int desiredHeight = desiredLocation.getDesiredHeightAndAngle().getFirst();
 		int desiredAngle = desiredLocation.getDesiredHeightAndAngle().getSecond();
@@ -100,7 +104,7 @@ public class SetScoringPosition extends Command {
 				
 		// 	}
 		// } else
-		 if (currentSide != desiredSide) { //opposite side
+		if (currentSide != desiredSide) { //opposite side
             if (currentSide == Side.BACK) { //back -> front
                 if (Elevator.getInstance().isAbove(desiredHeight, Elevator.RAIL_POSITION)) { //desired height on back above rail
 					commandGroup.sequential(new Passthrough(PassthroughType.HIGH, currentSide, desiredAngle))
@@ -140,6 +144,7 @@ public class SetScoringPosition extends Command {
 				}
 			}
 		}
+		commandGroup.sequential(new SetArmPosition(initialDirection));
 		commandGroup.start();
     }
 

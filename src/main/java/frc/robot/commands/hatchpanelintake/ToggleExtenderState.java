@@ -13,9 +13,9 @@ import frc.robot.subsystems.HatchLatcher;
  * @author Shahzeb Lakhani
  * @since 1/29/19
  */
-public class ToggleExtenderManual extends InstantCommand {
+public class ToggleExtenderState extends InstantCommand {
 
-    public ToggleExtenderManual(){
+    public ToggleExtenderState(){
         requires(HatchLatcher.getInstance());
     }
 

@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.rollers.SpinRollersManual;
+import frc.robot.commands.rollers.SpinRollersIndefinite;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -36,7 +36,8 @@ public class Rollers extends Subsystem {
     private static final int PEAK_CURRENT_LIMIT = 0;
     private static final int PEAK_TIME = 0;
 
-    public static final double DEFAULT_ROLLER_MAGNITUDE = 8;
+    public static final double DEFAULT_ROLLER_MAGNITUDE = 0.5;
+    public static final double ROLLER_SHOOTING_SPEED = 0.8;
     public static final double HATCH_STOW_SPEED = 0.75;
 
     private static Rollers instance;
@@ -53,7 +54,7 @@ public class Rollers extends Subsystem {
 
     @Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new SpinRollersManual());
+		setDefaultCommand(new SpinRollersIndefinite(1, getRecommendedRollersOutput());
     }
     
     /**
@@ -96,6 +97,12 @@ public class Rollers extends Subsystem {
     public void moveRollers(double magnitude, RollerDirection direction) {
         rTalonTop.set(ControlMode.PercentOutput, magnitude * direction.getSign());
         rTalonBottom.set(ControlMode.PercentOutput, -1 * magnitude * direction.getSign());
+    }
+
+    public double getRecommendedRollersOutput() {
+        if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) 
+            return ROLLER_SHOOTING_SPEED;
+        return DEFAULT_ROLLER_MAGNITUDE;
     }
 
      /**

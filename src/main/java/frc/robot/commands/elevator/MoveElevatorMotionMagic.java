@@ -5,6 +5,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.RobotMap.Global;
+import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 
 /**
@@ -53,6 +56,10 @@ public class MoveElevatorMotionMagic extends Command {
         Elevator.getInstance().getMaster().selectProfileSlot(Elevator.MOTION_MAGIC_SLOT_INDEX, Global.PID_PRIMARY);
         Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
         Elevator.getInstance().getMaster().setSensorPhase(MOTION_MAGIC_SENSOR_PHASE);
+
+        if(Elevator.getInstance().isBelow(Elevator.SAFE_LOW_PASSTHROUGH_POSITION)  && Arm.getInstance().getDirection() == ArmDirection.UP) {
+                new SetArmPosition(ArmDirection.DOWN);
+        }
     }
 
     /**

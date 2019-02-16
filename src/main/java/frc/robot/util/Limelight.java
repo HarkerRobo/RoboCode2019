@@ -42,6 +42,7 @@ public class Limelight {
  
     public static double THOR_EXPONENT = 0.62291;
     public static double THOR_COEFF = 1000;
+    public static double TX_SETPOINT = 0;
     public static Function<Double, Double> THOR_LINEARIZATION_FUNCTION = (thor) -> (THOR_COEFF / Math.pow(thor, THOR_EXPONENT));
 
     /**

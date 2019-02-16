@@ -55,11 +55,11 @@ public class AlignWithLimelightDrive extends Command {
     private static boolean LEFT_FOLLOWER_INVERTED = true;
     private static boolean RIGHT_FOLLOWER_INVERTED = false;
 
-    public AlignWithLimelightDrive(double thorSetpoint, double txSetpoint, double angleSetpoint) {
+    public AlignWithLimelightDrive(double txSetpoint) {
         requires(Drivetrain.getInstance());
 
         this.txSetpoint = txSetpoint;
-        this.thorSetpoint = Limelight.THOR_LINEARIZATION_FUNCTION.apply(thorSetpoint);
+        //this.thorSetpoint = Limelight.THOR_LINEARIZATION_FUNCTION.apply(thorSetpoint);
 
         limelight = Limelight.getInstance();
 

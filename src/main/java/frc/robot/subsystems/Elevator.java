@@ -46,9 +46,9 @@ public class Elevator extends Subsystem {
     
     public static final int HATCH_INTAKING_POSITION = 0;
     public static final int CARGO_INTAKING_POSITION = 20;
-    
+
     public static final int RAIL_POSITION = 100; //TUNE
-    public static final int BALL_INTAKE_HEIGHT = 100; //Tune
+    public static final int BALL_INTAKING_HEIGHT = 100; //Tune
     
     public static final int FFGRAV = 0;
     public static final int ZERO_CURRENT_SPIKE = 0;

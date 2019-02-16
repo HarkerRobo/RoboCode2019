@@ -9,8 +9,8 @@ import frc.robot.subsystems.HatchLatcher;
  * @author Shahzeb Lakhani
  * @since 1/31/19
  */
-public class ToggleFlowerManual extends InstantCommand{
-    public ToggleFlowerManual() {
+public class ToggleFlowerState extends InstantCommand{
+    public ToggleFlowerState() {
         requires(HatchLatcher.getInstance());       
     }
 

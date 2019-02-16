@@ -4,14 +4,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import harkerrobolib.wrappers.HSJoystickButton;
 
 /**
- * Represents a custom operator controller with 6 buttons
- * arranged in a 2x3 grid, as shown below.
- * --------
- * | o  o |
- * | o  o | 
- * | o  o |
- * --------
- * 
  * @author Anirudh Kotamraju
  * @author Chirag Kaushik
  * @author Finn Frankis

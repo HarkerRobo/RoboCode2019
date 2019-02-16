@@ -6,6 +6,7 @@ import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.groups.Passthrough.PassthroughType;
 import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
 import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
+import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
@@ -22,16 +23,19 @@ import harkerrobolib.auto.CommandGroupWrapper;
 public class StowHatchAndCargoIntake extends CommandGroupWrapper {
 
     public StowHatchAndCargoIntake () {
-        parallel(new LoadOrScoreHatch(ScoreState.LOAD));
-        parallel(new CommandGroupWrapper().sequential(new ConditionalCommand(new Passthrough(PassthroughType.LOW, Robot.Side.FRONT, Wrist.SAFE_BACKWARD_POSITION)) {
-            @Override
-            public boolean condition() {
-                return Wrist.getInstance().getCurrentSide() == Robot.Side.FRONT && 
-                       Elevator.getInstance().isAbove(Elevator.BALL_INTAKE_HEIGHT) &&
-                       Arm.getInstance().getDirection() == ArmDirection.DOWN;
-            }
-            })
-            .sequential(new SetArmPosition(ArmDirection.UP))
+        sequential(new CommandGroupWrapper()
+            .parallel(new LoadOrScoreHatch(ScoreState.LOAD))
+            .parallel(new CommandGroupWrapper().sequential(new ConditionalCommand(new Passthrough(PassthroughType.LOW, Robot.Side.FRONT, Wrist.SAFE_BACKWARD_POSITION)) {
+                @Override
+                public boolean condition() {
+                    return Wrist.getInstance().getCurrentSide() == Robot.Side.FRONT && 
+                           Elevator.getInstance().isAbove(Elevator.BALL_INTAKING_HEIGHT) &&
+                           Arm.getInstance().getDirection() == ArmDirection.DOWN;
+                }
+                })
+                .sequential(new SetArmPosition(ArmDirection.UP))
+            )
         );
+        sequential(new MoveWristPosition(Wrist.MID_POSITION));
     }
 }

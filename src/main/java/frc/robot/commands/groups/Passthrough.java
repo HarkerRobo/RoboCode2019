@@ -2,14 +2,16 @@ package frc.robot.commands.groups;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.wrist.MoveWristPosition;
+import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.CommandGroupWrapper;
 
 /**
- * Moves the wrist from one side of the elevator to the other safely.Elevator
+ * Moves the wrist from one side of the elevator to the other safely.
  * 
  * @author Finn Frankis
  * @author Angela Jia
@@ -46,6 +48,7 @@ public class Passthrough extends Command
                         .sequential(new MoveWristPosition(desiredWristPos));
         }
         else if (type == PassthroughType.LOW) {
+            if (desiredSide == Robot.Side.FRONT) {commandGroup.sequential(new SetArmPosition(ArmDirection.DOWN));}
             if (currentSide != desiredSide) {
                 if ((currentSide == Robot.Side.FRONT || currentSide == Robot.Side.AMBIGUOUS) && 
                      Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
