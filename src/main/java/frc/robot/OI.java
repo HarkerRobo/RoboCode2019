@@ -7,6 +7,7 @@ import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.wrist.MoveWristPosition;
+import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.util.CustomOperatorGamepad;
@@ -67,6 +68,7 @@ public class OI {
     
     public void initBindings() {
         driverGamepad.getButtonX().whilePressed(new MoveWristPosition(1500));
+        driverGamepad.getButtonY().whenPressed(new ZeroWrist());
         // driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
             
         //     @Override

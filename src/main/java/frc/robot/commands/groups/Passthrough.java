@@ -70,6 +70,6 @@ public class Passthrough extends Command
     @Override
     public void interrupted()
     {
-        commandGroup.cancel();
+        commandGroup.cancel(); 
     }
 }

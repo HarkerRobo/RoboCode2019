@@ -27,10 +27,10 @@ import harkerrobolib.wrappers.HSTalon;
 public class Elevator extends Subsystem {
     private static Elevator el; 
 
-    private HSTalon talon;
+    private HSTalon masterTalon;
     private VictorSPX leftFrontVictor;
     private VictorSPX leftBackVictor;
-    private HSTalon rightTalon;
+    private HSTalon followerTalon;
     public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
     public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 1000; // tune
 
@@ -83,16 +83,16 @@ public class Elevator extends Subsystem {
 
 
     private Elevator() {
-        talon = new HSTalon(CAN_IDs.EL_MASTER);
+        masterTalon = new HSTalon(CAN_IDs.EL_MASTER);
         leftFrontVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_FRONT);
         leftBackVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_BACK);
-        rightTalon = new HSTalon(CAN_IDs.EL_TALON_FOLLOWER);
+        followerTalon = new HSTalon(CAN_IDs.EL_TALON_FOLLOWER);
     }
 
     
     @Override
     protected void initDefaultCommand() {
-        // setDefaultCommand(new MoveElevatorManual());
+        setDefaultCommand(new MoveElevatorManual());
     }
 
     public static Elevator getInstance() {
@@ -103,65 +103,59 @@ public class Elevator extends Subsystem {
 
 
     public void talonInit() {
-        leftFrontVictor.follow(talon);
-        leftBackVictor.follow(talon);
-        rightTalon.follow(talon);
+        leftFrontVictor.follow(masterTalon);
+        leftBackVictor.follow(masterTalon);
+        followerTalon.follow(masterTalon);
 
-        talon.setNeutralMode(NeutralMode.Brake);
+        masterTalon.setNeutralMode(NeutralMode.Brake);
         leftFrontVictor.setNeutralMode(NeutralMode.Brake);
         leftBackVictor.setNeutralMode(NeutralMode.Brake);
-        rightTalon.setNeutralMode(NeutralMode.Brake);
+        followerTalon.setNeutralMode(NeutralMode.Brake);
 
-        talon.setInverted(INVERTED_MASTER);
+        masterTalon.setInverted(INVERTED_MASTER);
         leftFrontVictor.setInverted(INVERTED_VICT_LEFT_FRONT);
         leftBackVictor.setInverted(INVERTED_VICT_LEFT_BACK);
-        rightTalon.setInverted(INVERTED_VICT_RIGHT);
+        followerTalon.setInverted(INVERTED_VICT_RIGHT);
         
-        rightTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        rightTalon.setSensorPhase(SENSOR_PHASE);
-        talon.configRemoteFeedbackFilter(rightTalon.getDeviceID(), RemoteSensorSource.TalonSRX_SelectedSensor, Global.REMOTE_0);
-        talon.configSelectedFeedbackCoefficient(Elevator.RIGHT_TALON_FEEDBACK_COEFFICIENT);
-        talon.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+        masterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        masterTalon.setSensorPhase(SENSOR_PHASE);
+        // masterTalon.configRemoteFeedbackFilter(followerTalon.getDeviceID(), RemoteSensorSource.TalonSRX_SelectedSensor, Global.REMOTE_0);
+        // masterTalon.configSelectedFeedbackCoefficient(Elevator.RIGHT_TALON_FEEDBACK_COEFFICIENT);
+        // masterTalon.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
 
-        talon.setSelectedSensorPosition(0);
+        masterTalon.setSelectedSensorPosition(0);
 
-        talon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
-        talon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-        talon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
-        talon.enableCurrentLimit(true);
+        masterTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
+        masterTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+        masterTalon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
+        masterTalon.enableCurrentLimit(true);
 
         // setUpPositionPID();
         // setUpMotionMagic();
     }
 
     public void moveElevatorVelocity(double speed) {
-        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
-    
-        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
-    
-        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
-    
-        talon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
+        getMasterTalon().set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     }
 
     public void setUpPositionPID() {
-        getMaster().configClosedLoopConstants(POSITION_PID_SLOT_INDEX, new Gains().kP(MoveElevatorPosition.POSITION_PID_kP)
+        getMasterTalon().configClosedLoopConstants(POSITION_PID_SLOT_INDEX, new Gains().kP(MoveElevatorPosition.POSITION_PID_kP)
                                                                                   .kI(MoveElevatorPosition.POSITION_PID_kI)
                                                                                   .kD(MoveElevatorPosition.POSITION_PID_kD)
                                                                                   .kF(MoveElevatorPosition.POSITION_PID_kF));
     }
 
     public void setUpMotionMagic() {
-        Elevator.getInstance().getMaster().configMotionAcceleration(MoveElevatorMotionMagic.MOTION_MAGIC_ACCELERATION);
-        Elevator.getInstance().getMaster().configMotionCruiseVelocity(MoveElevatorMotionMagic.CRUISE_VELOCITY);
-        getMaster().configClosedLoopConstants(MOTION_MAGIC_SLOT_INDEX, new Gains().kP(MoveElevatorMotionMagic.MOTION_MAGIC_kP)
+        Elevator.getInstance().getMasterTalon().configMotionAcceleration(MoveElevatorMotionMagic.MOTION_MAGIC_ACCELERATION);
+        Elevator.getInstance().getMasterTalon().configMotionCruiseVelocity(MoveElevatorMotionMagic.CRUISE_VELOCITY);
+        getMasterTalon().configClosedLoopConstants(MOTION_MAGIC_SLOT_INDEX, new Gains().kP(MoveElevatorMotionMagic.MOTION_MAGIC_kP)
                                                                                   .kI(MoveElevatorMotionMagic.MOTION_MAGIC_kI)
                                                                                   .kD(MoveElevatorMotionMagic.MOITION_MAGIC_kD)
                                                                                   .kF(MoveElevatorMotionMagic.MOTION_MAGIC_kF));
     }
     
-    public HSTalon getMaster() {
-        return talon;
+    public HSTalon getMasterTalon() {
+        return masterTalon;
     }
 
     public VictorSPX getLeftFrontVictor() {
@@ -172,8 +166,8 @@ public class Elevator extends Subsystem {
         return leftBackVictor;
     }
 
-    public HSTalon getRightTalon() {
-        return rightTalon;
+    public HSTalon getFollowerTalon() {
+        return followerTalon;
     }
 
     /**
@@ -181,7 +175,7 @@ public class Elevator extends Subsystem {
      * Must have preconfigured the selected sensor as an encoder.
      */
     public boolean isAbove (int position) {
-        return isAbove(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY), position);            
+        return isAbove(getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY), position);            
     }
 
     public boolean isAbove(int comparedPosition, int comparisonPosition) {
@@ -193,7 +187,7 @@ public class Elevator extends Subsystem {
      * Must have preconfigured the selected sensor as an encoder.
      */
     public boolean isBelow (int position) {
-        return isBelow(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY), position);
+        return isBelow(getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY), position);
     }
 
     /**
@@ -205,7 +199,7 @@ public class Elevator extends Subsystem {
     }
 
     public boolean isAt (int position) {
-        return Math.abs(getMaster().getSelectedSensorPosition(Global.PID_PRIMARY) - position)
+        return Math.abs(getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY) - position)
                             <= MoveElevatorMotionMagic.ALLOWABLE_ERROR;
     }    
 }

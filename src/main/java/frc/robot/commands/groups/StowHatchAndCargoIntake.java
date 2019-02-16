@@ -38,4 +38,4 @@ public class StowHatchAndCargoIntake extends CommandGroupWrapper {
         );
         sequential(new MoveWristPosition(Wrist.MID_POSITION));
     }
-}
+} 

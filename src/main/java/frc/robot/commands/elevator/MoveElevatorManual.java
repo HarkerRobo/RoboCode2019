@@ -26,7 +26,7 @@ public class MoveElevatorManual extends IndefiniteCommand {
      */
     @Override
     public void initialize() {
-        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
     }
 
     /**
@@ -34,9 +34,8 @@ public class MoveElevatorManual extends IndefiniteCommand {
      */
     @Override
     public void execute() {
-        OI oi = OI.getInstance();
         double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
-        Elevator.getInstance().getMaster().set(ControlMode.PercentOutput, desiredSpeed);
+        Elevator.getInstance().getMasterTalon().set(ControlMode.PercentOutput, desiredSpeed);
         // if(Math.abs(desiredSpeed) > 0)
         // {
         //     boolean isDown = desiredSpeed < 0;

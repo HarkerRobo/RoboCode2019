@@ -1,6 +1,9 @@
 package frc.robot.commands.wrist;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Wrist.WristDirection;
 
@@ -12,10 +15,19 @@ import frc.robot.subsystems.Wrist.WristDirection;
  * @since 2/8/19
  */
 public class ZeroWrist extends Command {
-    private static final double ZERO_SPEED = 0.5;
+    private static final double ZERO_SPEED = 0.2;
+    private static final int CURRENT_SPIKE = 15;
+    
+    private ArrayList<Double> currentVals;
+    private int VALUES_TO_SAMPLE = 10;
+    private int startTime = 0;
     
     public ZeroWrist() {
         requires(Wrist.getInstance());
+    }
+
+    public void initialize() {
+        startTime = Robot.getTime();
     }
 
     @Override
@@ -28,6 +40,16 @@ public class ZeroWrist extends Command {
      */
 	@Override
 	protected boolean isFinished() {
-		return Wrist.getInstance().getMasterTalon().getSensorCollection().isFwdLimitSwitchClosed();
+        if (startTime > Wrist.PEAK_TIME) {
+            currentVals.add(Wrist.getInstance().getMasterTalon().getOutputCurrent());
+            if (currentVals.size() >= VALUES_TO_SAMPLE) {
+                currentVals.remove(0);
+                
+                boolean isAllValid = true;
+                for (double currentVal : currentVals) {isAllValid = isAllValid && currentVal > CURRENT_SPIKE;}
+                return isAllValid;
+            }
+        }
+		return false; 
 	}    
 }

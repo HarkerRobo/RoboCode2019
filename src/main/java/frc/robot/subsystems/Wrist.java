@@ -48,9 +48,10 @@ public class Wrist extends Subsystem {
     private static final boolean MASTER_INVERTED = false;
     private static final boolean FOLLOWER_INVERTED = false;
 
-    private static final int CONTINUOUS_CURRENT_LIMIT = 0;
-    private static final int PEAK_CURRENT_LIMIT = 0;
-    private static final int PEAK_TIME = 500;
+    public static final int CONTINUOUS_CURRENT_LIMIT = 0;
+    public static final int PEAK_CURRENT_LIMIT = 0;
+    public static final int PEAK_TIME = 500;
+    
     public static final int SCORING_POSITION_FRONT_HATCH = 0;
     public static final int SCORING_POSITION_FRONT_CARGO = 0;
     public static final int SCORING_POSITION_BACK_HATCH = 0;
@@ -114,7 +115,7 @@ public class Wrist extends Subsystem {
         wristMaster.configPeakCurrentDuration(PEAK_TIME);
         wristMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
         wristMaster.enableCurrentLimit(true);
-        wristMaster.setSelectedSensorPosition(0);
+        // wristMaster.setSelectedSensorPosition(0);
         System.out.println("taloninit");
     }
 

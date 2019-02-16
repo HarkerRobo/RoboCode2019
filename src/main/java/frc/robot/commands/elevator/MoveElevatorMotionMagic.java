@@ -45,7 +45,7 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return Math.abs(Elevator.getInstance().getMaster().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;
+        return Math.abs(Elevator.getInstance().getMasterTalon().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;
     }
 
     /**
@@ -53,9 +53,9 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected void initialize() {
-        Elevator.getInstance().getMaster().selectProfileSlot(Elevator.MOTION_MAGIC_SLOT_INDEX, Global.PID_PRIMARY);
-        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-        Elevator.getInstance().getMaster().setSensorPhase(MOTION_MAGIC_SENSOR_PHASE);
+        Elevator.getInstance().getMasterTalon().selectProfileSlot(Elevator.MOTION_MAGIC_SLOT_INDEX, Global.PID_PRIMARY);
+        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
+        Elevator.getInstance().getMasterTalon().setSensorPhase(MOTION_MAGIC_SENSOR_PHASE);
 
         if(Elevator.getInstance().isBelow(Elevator.SAFE_LOW_PASSTHROUGH_POSITION)  && Arm.getInstance().getDirection() == ArmDirection.UP) {
                 new SetArmPosition(ArmDirection.DOWN);
@@ -67,6 +67,6 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected void execute() {
-        Elevator.getInstance().getMaster().set(ControlMode.MotionMagic, setpoint);  
+        Elevator.getInstance().getMasterTalon().set(ControlMode.MotionMagic, setpoint);  
     }
 }

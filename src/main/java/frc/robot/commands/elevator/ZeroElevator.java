@@ -28,7 +28,7 @@ public class ZeroElevator extends Command {
      */
 	@Override
 	protected boolean isFinished() {
-		return Elevator.getInstance().getMaster().getOutputCurrent() >= Elevator.ZERO_CURRENT_SPIKE;
+		return Elevator.getInstance().getMasterTalon().getOutputCurrent() >= Elevator.ZERO_CURRENT_SPIKE;
 	}
 
     /**
@@ -36,7 +36,7 @@ public class ZeroElevator extends Command {
      */
     @Override
     public void initialize() {
-        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
     }
 
     /**
@@ -44,7 +44,7 @@ public class ZeroElevator extends Command {
      */
     @Override
     public void execute() {
-        Elevator.getInstance().getMaster().set(ControlMode.PercentOutput, ZERO_DOWN_SPEED);
+        Elevator.getInstance().getMasterTalon().set(ControlMode.PercentOutput, ZERO_DOWN_SPEED);
     }
 
     /**
@@ -52,6 +52,6 @@ public class ZeroElevator extends Command {
      */
     @Override
     public void end() {
-        Elevator.getInstance().getMaster().setSelectedSensorPosition(ZERO_POSITION, Global.PID_PRIMARY);
+        Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(ZERO_POSITION, Global.PID_PRIMARY);
     }
 }

@@ -117,11 +117,9 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
-        SmartDashboard.putNumber("roller current", Rollers.getInstance().getTopTalon().getOutputCurrent());
-        SmartDashboard.putNumber("wrist current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
-        SmartDashboard.putNumber("wrist velocity", Wrist.getInstance().getMasterTalon().getSelectedSensorVelocity());
-        // System.out.println("el limit " + Elevator.getInstance().getMaster().getSensorCollection().isRevLimitSwitchClosed());
-        System.out.println("Elevator position: " + Elevator.getInstance().getRightTalon().getSelectedSensorPosition() + " Wrist position: " + Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
+
+        SmartDashboard.putNumber("el current ", Elevator.getInstance().getFollowerTalon().getOutputCurrent());
+        System.out.println("Elevator position: " + Elevator.getInstance().getMasterTalon().getSelectedSensorPosition() + " Wrist position: " + Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
     }
 
     /**
@@ -133,6 +131,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Left Error", drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
         SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
     
+        SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
         //System.out.println(limelight.getCamtranData());
     }
 
@@ -141,7 +140,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-
+        System.out.println("elevator limit " + elevator.getMasterTalon().getSensorCollection().isRevLimitSwitchClosed());
     }
 
     /**

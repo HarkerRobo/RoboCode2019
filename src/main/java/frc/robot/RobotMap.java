@@ -12,7 +12,7 @@ public class RobotMap {
     public class CAN_IDs {
         public static final int DT_LEFT_MASTER = 4, DT_RIGHT_MASTER = 1,
                                 DT_LEFT_FOLLOWER = 4, DT_RIGHT_FOLLOWER = 1;
-        public static final int EL_MASTER = 6, EL_VICTOR_LEFT_FRONT = 3, EL_VICTOR_LEFT_BACK = 5, EL_TALON_FOLLOWER = 2;
+        public static final int EL_MASTER = 2, EL_VICTOR_LEFT_FRONT = 3, EL_VICTOR_LEFT_BACK = 5, EL_TALON_FOLLOWER = 6;
         public static final int WRIST_MASTER = 9, WRIST_FOLLOWER = 9;
         public static final int BALL_INTAKE_MASTER = 1;
         public static final int ARM_MASTER = 0;
