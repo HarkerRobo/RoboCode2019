@@ -24,6 +24,7 @@ public class ZeroWrist extends Command {
     
     public ZeroWrist() {
         requires(Wrist.getInstance());
+        currentVals = new ArrayList<Double>();
     }
 
     public void initialize() {
