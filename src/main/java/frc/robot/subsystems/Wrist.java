@@ -89,7 +89,7 @@ public class Wrist extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-        setDefaultCommand(new MoveWristManual());
+        //setDefaultCommand(new MoveWristManual());
     }
     
     public void talonInit () {

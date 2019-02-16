@@ -28,7 +28,7 @@ public class StowHatchAndCargoIntake extends CommandGroupWrapper {
             public boolean condition() {
                 return Wrist.getInstance().getCurrentSide() == Robot.Side.FRONT && 
                        Elevator.getInstance().isAbove(Elevator.BALL_INTAKE_HEIGHT) &&
-                       Arm.getInstance().getDirection() == ArmDirection.DOWN;
+                       Arm.getInstance().getStates() == ArmDirection.DOWN;
             }
             })
             .sequential(new SetArmPosition(ArmDirection.UP))

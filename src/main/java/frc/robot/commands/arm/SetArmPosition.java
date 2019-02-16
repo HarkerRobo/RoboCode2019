@@ -20,6 +20,6 @@ public class SetArmPosition extends InstantCommand {
    }
 
    public void initialize() {
-        Arm.getInstance().setState(direction.getState());
+        Arm.getInstance().setState(direction);
    }      
 }
