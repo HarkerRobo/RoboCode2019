@@ -82,6 +82,8 @@ public class Robot extends TimedRobot {
         rollers.talonInit();
         intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
+
+        // elevator.getMasterTalon().get
     }
 
     /**
@@ -120,6 +122,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putNumber("el current ", Elevator.getInstance().getFollowerTalon().getOutputCurrent());
         System.out.println("Elevator position: " + Elevator.getInstance().getMasterTalon().getSelectedSensorPosition() + " Wrist position: " + Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
+        
     }
 
     /**
@@ -133,6 +136,12 @@ public class Robot extends TimedRobot {
     
         SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
         //System.out.println(limelight.getCamtranData());
+        SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
+        SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());
+        SmartDashboard.putNumber("left y", OI.getInstance().getDriverGamepad().getLeftY());
+        SmartDashboard.putNumber("left x", OI.getInstance().getDriverGamepad().getLeftX());
+
+        // System.out.println(OI.getInstance().getCustomOperatorGamepad().getBackwardThreePressed());
     }
 
     /**
@@ -140,7 +149,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-        System.out.println("elevator limit " + elevator.getMasterTalon().getSensorCollection().isRevLimitSwitchClosed());
+        // System.out.println("elevator limit " + elevator.getMasterTalon().getSensorCollection().isRevLimitSwitchClosed());
+        // System.out.println("elevator limit fwd" + elevator.getMasterTalon().getSensorCollection().isFwdLimitSwitchClosed());
     }
 
     /**

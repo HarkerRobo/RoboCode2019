@@ -48,8 +48,8 @@ public class Wrist extends Subsystem {
     private static final boolean MASTER_INVERTED = false;
     private static final boolean FOLLOWER_INVERTED = false;
 
-    public static final int CONTINUOUS_CURRENT_LIMIT = 0;
-    public static final int PEAK_CURRENT_LIMIT = 0;
+    public static final int CONTINUOUS_CURRENT_LIMIT = 7;
+    public static final int PEAK_CURRENT_LIMIT = 10;
     public static final int PEAK_TIME = 500;
     
     public static final int SCORING_POSITION_FRONT_HATCH = 0;
@@ -57,7 +57,7 @@ public class Wrist extends Subsystem {
     public static final int SCORING_POSITION_BACK_HATCH = 0;
     public static final int SCORING_POSITION_BACK_CARGO = 0;
 
-    public static final double ARBITRARY_FF = 0;
+    public static final double ARBITRARY_FF = 0.017;
 
     public static final int ANGLE_INTAKE = 180;
     public static final int HATCH_INTAKING_POSITION = 0;
@@ -90,7 +90,7 @@ public class Wrist extends Subsystem {
     public static final int MOTION_MAGIC_SLOT = 1;
 
     public static final boolean SENSOR_PHASE = true;
-    public static Supplier<Double> feedForwardLambda = () -> (ARBITRARY_FF * (Wrist.getInstance().isForward() ? -WristDirection.TO_FRONT.getSign() : -WristDirection.TO_BACK.getSign()));
+    public static Supplier<Double> feedForwardLambda = () -> (ARBITRARY_FF * Math.cos(Wrist.getInstance().convertEncoderToRadians(Wrist.getInstance().getMasterTalon().getSelectedSensorPosition())));
 
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
@@ -99,7 +99,7 @@ public class Wrist extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-        setDefaultCommand(new MoveWristManual());
+       // setDefaultCommand(new MoveWristManual());
     }
     
     public void talonInit () {
@@ -110,11 +110,15 @@ public class Wrist extends Subsystem {
 
         wristMaster.setInverted(MASTER_INVERTED);
         wristFollower.setInverted(FOLLOWER_INVERTED);
+
         wristMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+
         wristMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         wristMaster.configPeakCurrentDuration(PEAK_TIME);
         wristMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
         wristMaster.enableCurrentLimit(true);
+
+        wristMaster.setSensorPhase(SENSOR_PHASE);
         // wristMaster.setSelectedSensorPosition(0);
         System.out.println("taloninit");
     }
@@ -128,13 +132,13 @@ public class Wrist extends Subsystem {
     }
 
     public void setWristPercentOutput (double value, WristDirection direction) {
-        wristMaster.set(ControlMode.PercentOutput, value * direction.getSign(), 
-                        DemandType.ArbitraryFeedForward, feedForwardLambda.get() 
-                        );
+        // wristMaster.set(ControlMode.PercentOutput, value * direction.getSign(), 
+        //                 DemandType.ArbitraryFeedForward, feedForwardLambda.get() 
+        //                 );
     }
 
     public void setWrist (ControlMode mode, double value) {
-        wristMaster.set(mode, value, DemandType.ArbitraryFeedForward, feedForwardLambda.get());
+        // wristMaster.set(mode, value, DemandType.ArbitraryFeedForward, feedForwardLambda.get());
     }
     /**
      * Sets the output color of the LED.
@@ -153,7 +157,7 @@ public class Wrist extends Subsystem {
 
     /**
      * Determines if the current position is 
-     * behind the specified position.
+     * behind the specified position
      * 
      * @param position position that the current position is compared with
      */
@@ -172,12 +176,27 @@ public class Wrist extends Subsystem {
      * @param position position that the current position is compared in relation to
      */
     public boolean isFurtherForward (int position) {
-        return isFurtherForward (getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY), position);
+        return getMasterTalon().getSelectedSensorPosition() < position;
     }
 
-    public boolean isFurtherForward (int comparedPosition, int positionToCompare) {
-        return (comparedPosition - positionToCompare < -ALLOWABLE_ERROR && comparedPosition >= MAX_FORWARD_POSITION) ||
-            (comparedPosition - positionToCompare > ALLOWABLE_ERROR && comparedPosition <= MAX_FORWARD_POSITION);
+    public boolean isFurtherForward(int comparedPosition, int comparisonPosition) {
+        return comparisonPosition < comparedPosition;
+    }
+
+    public boolean isFurtherBackward (int position) {
+        return getMasterTalon().getSelectedSensorPosition() > position;
+    }
+
+    public boolean isFurtherBackward (int comparedPosition, int comparisonPosition) {
+        return comparisonPosition > comparedPosition;
+    }
+
+    public boolean isForward(int position) {
+        return position <= MID_POSITION;
+    }
+
+    public boolean isBackward(int position) {
+        return position > MID_POSITION;
     }
 
     public boolean isAt (int position) {
@@ -186,18 +205,17 @@ public class Wrist extends Subsystem {
 
     public void setupPositionPID () {
         Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.POSITION_SLOT, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
         Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);     
 
         Wrist.getInstance().getMasterTalon().config_kP(Wrist.POSITION_SLOT, MoveWristPosition.KP);
         Wrist.getInstance().getMasterTalon().config_kI(Wrist.POSITION_SLOT, MoveWristPosition.KI);
         Wrist.getInstance().getMasterTalon().config_kD(Wrist.POSITION_SLOT, MoveWristPosition.KD);
         Wrist.getInstance().getMasterTalon().config_kF(Wrist.POSITION_SLOT, MoveWristPosition.KF);
+        Wrist.getInstance().getMasterTalon().config_IntegralZone(Wrist.POSITION_SLOT, MoveWristPosition.IZONE);
     }
 
     public void setupMotionMagic() {
         Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.MAX_BACKWARD_POSITION, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
         Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);     
 
         Wrist.getInstance().getMasterTalon().config_kP(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KP);
@@ -240,14 +258,6 @@ public class Wrist extends Subsystem {
         return isFurtherBack(MID_POSITION);
     }
 
-    public boolean isForward(int position) {
-        return isFurtherForward(position, MID_POSITION);
-    }
-
-    public boolean isBackward(int position) {
-        return isFurtherBack (position, MID_POSITION);
-    }
-
     public boolean mustPassThrough(int desiredWristPosition) {
         return Wrist.getInstance().isAmbiguous() || 
                                         (Wrist.getInstance().isSafelyForward(desiredWristPosition) && Wrist.getInstance().isSafelyBackward() || 
@@ -261,5 +271,13 @@ public class Wrist extends Subsystem {
 
     public Side getSide (int position) {
         return isSafelyForward(position) ? Side.FRONT : Side.BACK;
+    }
+
+    public int convertAngleToEncoder(double angle) {
+        return (int)(angle * 4096 / 360);
+    }
+
+    public double convertEncoderToRadians(int encoder) {
+        return encoder / 4096.0 * 2 * Math.PI;
     }
 }   

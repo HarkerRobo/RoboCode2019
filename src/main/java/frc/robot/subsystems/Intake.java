@@ -31,8 +31,8 @@ public class Intake extends Subsystem {
     private static Intake instance;
     private CANSparkMax intakeSparkMax;
 
-    private final static int STALL_LIMIT = 20; // current limit (amps) when the robot is stopped
-    private final static int FREE_LIMIT = 15; // current limit (amps) when the robot is moving freely
+    private final static int STALL_LIMIT = 40; // current limit (amps) when the robot is stopped
+    private final static int FREE_LIMIT = 30; // current limit (amps) when the robot is moving freely
 
     private final static boolean CONTROLLER_INVERTED = true;
 

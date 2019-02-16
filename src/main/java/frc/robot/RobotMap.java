@@ -37,6 +37,8 @@ public class RobotMap {
         public static final LEDChannel BLUE_CHANNEL = LEDChannel.LEDChannelC;
 
         public static final String LIMELIGHT_URL = "http://10.10.72.11:5802";
+
+        public static final double BAT_SATURATION_VOLTAGE = 10.0;
     }
     
 }

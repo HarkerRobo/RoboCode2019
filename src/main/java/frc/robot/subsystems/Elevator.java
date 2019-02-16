@@ -12,6 +12,7 @@ import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
+import frc.robot.commands.elevator.MoveElevatorMotionMagicManual;
 import frc.robot.commands.elevator.MoveElevatorPosition;
 import harkerrobolib.util.Gains;
 import harkerrobolib.wrappers.HSTalon;
@@ -33,12 +34,13 @@ public class Elevator extends Subsystem {
     private HSTalon followerTalon;
     public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
     public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 1000; // tune
+    public static final int MAX_POSITION = 22794;
 
     private static final boolean SENSOR_PHASE = true;
 
-    private static final int PEAK_CURRENT_LIMIT = 25;
-    private static final int CONT_CURRENT_LIMIT = 15;
-    private static final int PEAK_CURRENT_TIME = 150;
+    public static final int PEAK_CURRENT_LIMIT = 25;
+    public static final int CONT_CURRENT_LIMIT = 15;
+    public static final int PEAK_TIME = 150;
 
     private static final int RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
 
@@ -55,7 +57,7 @@ public class Elevator extends Subsystem {
     public static final int RAIL_POSITION = 100; //TUNE
     public static final int BALL_INTAKING_HEIGHT = 100; //Tune
     
-    public static final int FFGRAV = 0;
+    public static final double FFGRAV = 0.1;
     public static final int ZERO_CURRENT_SPIKE = 0;
 
     public static final int LOW_SCORING_POSITION_HATCH = 0; 
@@ -64,6 +66,8 @@ public class Elevator extends Subsystem {
     public static final int MEDIUM_SCORING_POSITION_CARGO = 0; 
     public static final int HIGH_SCORING_POSITION_HATCH = 0; 
     public static final int HIGH_SCORING_POSITION_CARGO = 0; 
+
+    public static final double NOMINAL_OUTPUT = 0.06;
 
     /**
      * Constants used to ramp down past elevator soft limit
@@ -92,7 +96,7 @@ public class Elevator extends Subsystem {
     
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MoveElevatorManual());
+        setDefaultCommand(new MoveElevatorMotionMagicManual());
     }
 
     public static Elevator getInstance() {
@@ -119,39 +123,54 @@ public class Elevator extends Subsystem {
         
         masterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         masterTalon.setSensorPhase(SENSOR_PHASE);
+        masterTalon.configNominalOutputForward(NOMINAL_OUTPUT);
+        masterTalon.configNominalOutputReverse(NOMINAL_OUTPUT);
         // masterTalon.configRemoteFeedbackFilter(followerTalon.getDeviceID(), RemoteSensorSource.TalonSRX_SelectedSensor, Global.REMOTE_0);
         // masterTalon.configSelectedFeedbackCoefficient(Elevator.RIGHT_TALON_FEEDBACK_COEFFICIENT);
         // masterTalon.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
 
-        masterTalon.setSelectedSensorPosition(0);
-
         masterTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
         masterTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-        masterTalon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
+        masterTalon.configPeakCurrentDuration(PEAK_TIME);
         masterTalon.enableCurrentLimit(true);
+
+        masterTalon.configVoltageCompSaturation(Global.BAT_SATURATION_VOLTAGE);
+        masterTalon.enableVoltageCompensation(true);
 
         // setUpPositionPID();
         // setUpMotionMagic();
     }
 
-    public void moveElevatorVelocity(double speed) {
+    public void moveElevatorPercentOutput(double speed) {
         getMasterTalon().set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     }
 
     public void setUpPositionPID() {
-        getMasterTalon().configClosedLoopConstants(POSITION_PID_SLOT_INDEX, new Gains().kP(MoveElevatorPosition.POSITION_PID_kP)
-                                                                                  .kI(MoveElevatorPosition.POSITION_PID_kI)
-                                                                                  .kD(MoveElevatorPosition.POSITION_PID_kD)
-                                                                                  .kF(MoveElevatorPosition.POSITION_PID_kF));
+        // getMasterTalon().configClosedLoopConstants(POSITION_PID_SLOT_INDEX, new Gains().kP(MoveElevatorPosition.KP)
+        //                                                                           .kI(MoveElevatorPosition.KI)
+        //                                                                           .kD(MoveElevatorPosition.KD)
+        //                                                                           .kF(MoveElevatorPosition.KF));
+        getMasterTalon().config_kF(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KF);
+        getMasterTalon().config_kP(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KP);
+        getMasterTalon().config_kI(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KI);
+        getMasterTalon().config_kD(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KD);
+        getMasterTalon().config_IntegralZone(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.IZONE);
     }
 
     public void setUpMotionMagic() {
         Elevator.getInstance().getMasterTalon().configMotionAcceleration(MoveElevatorMotionMagic.MOTION_MAGIC_ACCELERATION);
         Elevator.getInstance().getMasterTalon().configMotionCruiseVelocity(MoveElevatorMotionMagic.CRUISE_VELOCITY);
-        getMasterTalon().configClosedLoopConstants(MOTION_MAGIC_SLOT_INDEX, new Gains().kP(MoveElevatorMotionMagic.MOTION_MAGIC_kP)
-                                                                                  .kI(MoveElevatorMotionMagic.MOTION_MAGIC_kI)
-                                                                                  .kD(MoveElevatorMotionMagic.MOITION_MAGIC_kD)
-                                                                                  .kF(MoveElevatorMotionMagic.MOTION_MAGIC_kF));
+ // getMasterTalon().configClosedLoopConstants(MOTION_MAGIC_SLOT_INDEX, new Gains().kP(MoveElevatorMotionMagic.KP)
+                                                                                //   .kI(MoveElevatorMotionMagic.KI)
+                                                                                //   .kD(MoveElevatorMotionMagic.KD)
+                                                                                //   .kF(MoveElevatorMotionMagic.KF));   
+        getMasterTalon().config_kF(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.KF);
+        getMasterTalon().config_kP(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.KP);
+        getMasterTalon().config_kI(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.KI);
+        getMasterTalon().config_kD(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.KD);
+        getMasterTalon().config_IntegralZone(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.IZONE);
+
+        getMasterTalon().selectProfileSlot(Elevator.MOTION_MAGIC_SLOT_INDEX, Global.PID_PRIMARY);
     }
     
     public HSTalon getMasterTalon() {

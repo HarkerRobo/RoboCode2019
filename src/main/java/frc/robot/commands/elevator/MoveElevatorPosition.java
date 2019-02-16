@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
 
@@ -25,12 +26,12 @@ public class MoveElevatorPosition extends Command
      /**
      * Elevator position PID constants
      */
-    public static final double POSITION_PID_kF = 0.0;
-    public static final double POSITION_PID_kP = 0.0;
-    public static final double POSITION_PID_kI = 0.0;
-    public static final double POSITION_PID_kD = 0.0;
+    public static final double KF = 0.0;
+    public static final double KP = 0.09;
+    public static final double KI = 0.0007;
+    public static final double KD = 0.0;
+    public static final int IZONE = 1500;
 
-    private static final boolean SENSOR_PHASE = false;
     private static final int ALLOWABLE_ERROR = 0;
 
     public MoveElevatorPosition(double setpoint)
@@ -45,9 +46,9 @@ public class MoveElevatorPosition extends Command
     @Override
     public void initialize()
     {
-        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+        //Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
         Elevator.getInstance().getMasterTalon().selectProfileSlot(Elevator.POSITION_PID_SLOT_INDEX, Global.PID_PRIMARY);
-        Elevator.getInstance().getMasterTalon().setSensorPhase(SENSOR_PHASE);
+        Elevator.getInstance().setUpPositionPID();
     }
          
     /**
@@ -56,7 +57,8 @@ public class MoveElevatorPosition extends Command
     @Override
     public void execute()
     {
-        Elevator.getInstance().getMasterTalon().set(ControlMode.Position, setpoint);    
+        Elevator.getInstance().getMasterTalon().set(ControlMode.Position, setpoint);   
+
             
     }
     
@@ -65,7 +67,7 @@ public class MoveElevatorPosition extends Command
      */
     @Override
 	protected boolean isFinished() {
-		return Math.abs(Elevator.getInstance().getMasterTalon().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;
+		return false;// Math.abs(Elevator.getInstance().getMasterTalon().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;
 	}
         
 }

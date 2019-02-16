@@ -1,9 +1,12 @@
 package frc.robot.commands.elevator;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
 
@@ -13,45 +16,54 @@ import frc.robot.subsystems.Elevator;
  * 
  * @author Angela Jia
  * @author Arun Sundaresan
+ * @author Finn Frankis
  * @since 1/14/19
  */
 public class ZeroElevator extends Command {
 
-    private static final double ZERO_DOWN_SPEED = -0.3;
-    private static final int ZERO_POSITION = 0;
+    private static final double ZERO_SPEED = -0.2;
+    private static final int CURRENT_SPIKE = 5;
+    
+    private ArrayList<Double> currentVals;
+    private int VALUES_TO_SAMPLE = 10;
+    private int startTime = 0;
+    
     public ZeroElevator() {
-        requires(Elevator.getInstance());        
+        requires(Elevator.getInstance());
+        currentVals = new ArrayList<Double>();
+    }
+
+    public void initialize() {
+        startTime = Robot.getTime();
+    }
+
+    @Override
+    public void execute() {
+        Elevator.getInstance().getMasterTalon().set(ControlMode.PercentOutput, ZERO_SPEED);
     }
 
     /**
-     * {@inheritDoc}
+     * @return true if wrist has hit hard limit on front side
      */
 	@Override
 	protected boolean isFinished() {
-		return Elevator.getInstance().getMasterTalon().getOutputCurrent() >= Elevator.ZERO_CURRENT_SPIKE;
-	}
+        if ((Robot.getTime() - startTime) > Elevator.PEAK_TIME) {
+            System.out.println(Elevator.getInstance().getMasterTalon().getOutputCurrent());
+            currentVals.add(Elevator.getInstance().getMasterTalon().getOutputCurrent());
+            if (currentVals.size() >= VALUES_TO_SAMPLE) {
+                currentVals.remove(0);
+                
+                boolean isAllValid = true;
+                for (double currentVal : currentVals) {isAllValid = isAllValid && currentVal > CURRENT_SPIKE;}
+                return isAllValid;
+            }
+        }
+		return false; 
+    }    
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize() {
-        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void execute() {
-        Elevator.getInstance().getMasterTalon().set(ControlMode.PercentOutput, ZERO_DOWN_SPEED);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void end() {
-        Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(ZERO_POSITION, Global.PID_PRIMARY);
+    protected void end () {
+        Elevator.getInstance().getMasterTalon().set(ControlMode.Disabled, 0);
+        Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
+        System.out.println("command over");
     }
 }

@@ -18,12 +18,12 @@ import frc.robot.subsystems.Wrist;
 public class MoveWristMotionMagic extends Command {
     private double position;
     
-	public static final double KF = 0.0;
-	public static final double KD = 0.0;
+    public static final double KF = 0.0;
+    public static final double KP = 0.5;
 	public static final double KI = 0.0;
-    public static final double KP = 0.0;
+    public static final double KD = 1;
     public static final int ACCELERATION = 5;
-    public static final int CRUISE_VELOCITY = 35;
+    public static final int CRUISE_VELOCITY = 200;
 
     public MoveWristMotionMagic (double position) {
         requires (Wrist.getInstance());
@@ -52,6 +52,6 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return false;//Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
+        return true;//Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
     }
 }

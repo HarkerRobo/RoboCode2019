@@ -26,7 +26,7 @@ public class MoveElevatorManual extends IndefiniteCommand {
      */
     @Override
     public void initialize() {
-        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+        //Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
     }
 
     /**

@@ -12,17 +12,17 @@ import harkerrobolib.wrappers.HSJoystickButton;
  * @author Angela Jia
  */
 public class CustomOperatorGamepad extends Joystick {            
-    private static final int FORWARD_THREE_PORT = 0;
-    private static final int BACKWARD_THREE_PORT = 1;
-    private static final int FORWARD_TWO_PORT = 2;
-    private static final int BACKWARD_TWO_PORT = 3;
-    private static final int FORWARD_ONE_PORT = 4;
-    private static final int BACKWARD_ONE_PORT = 5;
+    private static final int FORWARD_THREE_PORT = 1;
+    private static final int BACKWARD_THREE_PORT = 2;
+    private static final int FORWARD_TWO_PORT = 3;
+    private static final int BACKWARD_TWO_PORT = 4;
+    private static final int FORWARD_ONE_PORT = 5;
+    private static final int BACKWARD_ONE_PORT = 6;
 
-    private static final int ZERO_PORT = 6;
-    private static final int OUTTAKE_BALL_OR_HATCH_PORT= 7;
-    private static final int INTAKE_HATCH_PORT = 8; 
-    private static final int BRING_ALL_IN_PORT = 9;
+    private static final int ZERO_PORT = 7;
+    private static final int OUTTAKE_BALL_OR_HATCH_PORT= 8;
+    private static final int INTAKE_HATCH_PORT = 9; 
+    private static final int BRING_ALL_IN_PORT = 10;
 
     private HSJoystickButton forwardOneButton;
     private HSJoystickButton forwardTwoButton;

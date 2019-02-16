@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.subsystems.Arm;
@@ -25,15 +26,16 @@ public class MoveElevatorMotionMagic extends Command {
      /**
      * Elevator motion magic constants
      */
-    public static final double MOTION_MAGIC_kF = 0.0;
-    public static final double MOTION_MAGIC_kP = 0.0;
-    public static final double MOTION_MAGIC_kI = 0.0;
-    public static final double MOITION_MAGIC_kD = 0.0;
-    public static final int MOTION_MAGIC_ACCELERATION = 0;
-    public static final int CRUISE_VELOCITY = 0;
+    public static final double KF = 0.31;
+    public static final double KP = 0.26;
+    public static final double KI = 0.0015;
+    public static final double KD = 5;
+    public static final int IZONE = 500;
+    public static final int MOTION_MAGIC_ACCELERATION = 10000;
+    public static final int CRUISE_VELOCITY = 5000;
 
     public static final boolean MOTION_MAGIC_SENSOR_PHASE = false;
-    public static final int ALLOWABLE_ERROR = 10;
+    public static final int ALLOWABLE_ERROR = 100;
 
     public MoveElevatorMotionMagic(int setpoint) {
         requires(Elevator.getInstance());
@@ -53,13 +55,13 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected void initialize() {
-        Elevator.getInstance().getMasterTalon().selectProfileSlot(Elevator.MOTION_MAGIC_SLOT_INDEX, Global.PID_PRIMARY);
-        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-        Elevator.getInstance().getMasterTalon().setSensorPhase(MOTION_MAGIC_SENSOR_PHASE);
-
-        if(Elevator.getInstance().isBelow(Elevator.SAFE_LOW_PASSTHROUGH_POSITION)  && Arm.getInstance().getDirection() == ArmDirection.UP) {
-                new SetArmPosition(ArmDirection.DOWN);
-        }
+        
+       
+        // if(Elevator.getInstance().isBelow(Elevator.SAFE_LOW_PASSTHROUGH_POSITION)  && Arm.getInstance().getDirection() == ArmDirection.UP) {
+        //         new SetArmPosition(ArmDirection.DOWN).start();
+        //}
+        Elevator.getInstance().setUpMotionMagic();
+        
     }
 
     /**
@@ -68,5 +70,7 @@ public class MoveElevatorMotionMagic extends Command {
     @Override
     protected void execute() {
         Elevator.getInstance().getMasterTalon().set(ControlMode.MotionMagic, setpoint);  
+        SmartDashboard.putNumber("el error", Elevator.getInstance().getMasterTalon().getClosedLoopError()) ;
+    
     }
 }
