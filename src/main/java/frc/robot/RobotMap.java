@@ -17,9 +17,9 @@ public class RobotMap {
         public static final int BALL_INTAKE_MASTER = 1;
         public static final int ARM_MASTER = 0;
         public static final int RO_TOP = 3, RO_BOTTOM = 7;
-        public static final int ARM_FORWARD_CHANNEL = 0, ARM_REVERSE_CHANNEL = 1;
-        public static final int EXTENDER_FORWARD_CHANNEL = 2, EXTENDER_REVERSE_CHANNEL = 5,
-                                FLOWER_FORWARD_CHANNEL = 0, FLOWER_REVERSE_CHANNEL = 0;
+        public static final int ARM_FORWARD_CHANNEL = 2, ARM_REVERSE_CHANNEL = 3;
+        public static final int EXTENDER_FORWARD_CHANNEL = 4, EXTENDER_REVERSE_CHANNEL = 5,
+                                FLOWER_FORWARD_CHANNEL = 6, FLOWER_REVERSE_CHANNEL = 7;
         public static final int PIGEON = 1;
         public static final int PCM = 0;
     }

@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
     private static OI oi;
     private static double startTime;
-    private IMotorController talon;
+    // private CANSparkMax talon;
 
     public enum Side {
         FRONT, BACK, AMBIGUOUS;
@@ -67,22 +67,21 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         System.out.println("robotinit");
         drivetrain = Drivetrain.getInstance();
-        //arm = Arm.getInstance();
+        arm = Arm.getInstance();
         elevator = Elevator.getInstance();
-        // intake = Intake.getInstance();
-        //rollers = Rollers.getInstance();
+        intake = Intake.getInstance();
+        rollers = Rollers.getInstance();
         wrist = Wrist.getInstance();
-        //hatchLatcher = HatchLatcher.getInstance();
+        hatchLatcher = HatchLatcher.getInstance();
         oi = OI.getInstance();        
         //limelight = Limelight.getInstance();        
        
         drivetrain.talonInit();
         elevator.talonInit();
         wrist.talonInit();
-        // intake.controllerInit();
-        // ballIntake.controllerInit();
+        rollers.talonInit();
+        intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
-        // talon = new VictorSPX(CAN_IDs.WRIST_FOLLOWER);
     }
 
     /**
@@ -117,8 +116,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        // talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
-        SmartDashboard.putNumber("el current", Elevator.getInstance().getMaster().getOutputCurrent());
+        //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
+        SmartDashboard.putNumber("roller current", Rollers.getInstance().getTopTalon().getOutputCurrent());
         SmartDashboard.putNumber("wrist current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
         SmartDashboard.putNumber("wrist velocity", Wrist.getInstance().getMasterTalon().getSelectedSensorVelocity());
         // System.out.println("el limit " + Elevator.getInstance().getMaster().getSensorCollection().isRevLimitSwitchClosed());

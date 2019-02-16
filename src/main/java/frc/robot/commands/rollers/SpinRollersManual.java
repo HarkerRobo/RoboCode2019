@@ -28,12 +28,12 @@ public class SpinRollersManual extends IndefiniteCommand {
      */
     @Override
 	public void execute() {
-        double driverRightY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);      
-        if((int) Math.signum(driverRightY) == RollerDirection.IN.getSign() && Math.abs(driverRightY) > Rollers.HATCH_STOW_SPEED)
+        double driverRightX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightX(), OI.DRIVER_DEADBAND);      
+        if((int) Math.signum(driverRightX) == RollerDirection.IN.getSign() && Math.abs(driverRightX) > Rollers.HATCH_STOW_SPEED)
             new LoadOrScoreHatch(ScoreState.LOAD);
-        if (driverRightY > 0) // joystick up
-            Rollers.getInstance().moveRollers(Math.abs(driverRightY), RollerDirection.OUT);
-        else if (driverRightY < 0) // joystick down
-            Rollers.getInstance().moveRollers(Math.abs(driverRightY), RollerDirection.IN);
+        if (driverRightX > 0) // joystick up
+            Rollers.getInstance().moveRollers(Math.abs(driverRightX), RollerDirection.OUT);
+        else if (driverRightX <= 0) // joystick down
+            Rollers.getInstance().moveRollers(Math.abs(driverRightX), RollerDirection.IN);
 	}
 }

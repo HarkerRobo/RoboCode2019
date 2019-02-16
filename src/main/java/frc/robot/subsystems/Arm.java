@@ -16,7 +16,7 @@ import frc.robot.RobotMap.CAN_IDs;
  */
 public class Arm extends Subsystem {
     public enum ArmDirection {        
-        UP (DoubleSolenoid.Value.kForward), DOWN (DoubleSolenoid.Value.kReverse);
+        UP (DoubleSolenoid.Value.kReverse), DOWN (DoubleSolenoid.Value.kForward);
         private DoubleSolenoid.Value state;
         private ArmDirection(DoubleSolenoid.Value state) {
             this.state = state;

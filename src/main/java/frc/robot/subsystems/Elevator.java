@@ -86,7 +86,7 @@ public class Elevator extends Subsystem {
     
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MoveElevatorManual());
+        // setDefaultCommand(new MoveElevatorManual());
     }
 
     public static Elevator getInstance() {
