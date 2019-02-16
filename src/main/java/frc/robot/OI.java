@@ -6,6 +6,7 @@ import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
+import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.util.CustomOperatorGamepad;
@@ -65,44 +66,44 @@ public class OI {
     }
     
     public void initBindings() {
-
-        driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
+        driverGamepad.getButtonX().whilePressed(new MoveWristPosition(1500));
+        // driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
             
-            @Override
-            public void initialize() {
-                driverControlScheme++;
-                initBindings();
-            }
+        //     @Override
+        //     public void initialize() {
+        //         driverControlScheme++;
+        //         initBindings();
+        //     }
 
-        });
+        // });
 
-        if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
-            driver = Driver.CHRIS;
-            driverGamepad = new XboxGamepad(DRIVER_PORT);
+        // if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
+        //     driver = Driver.CHRIS;
+        //     driverGamepad = new XboxGamepad(DRIVER_PORT);
             
-            driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
-            driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
-            driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+        //     driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
+        //     driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
+        //     driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
            
 
-        } else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
-            driver = Driver.PRANAV;
-            driverGamepad = new XboxGamepad(DRIVER_PORT);
+        // } else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
+        //     driver = Driver.PRANAV;
+        //     driverGamepad = new XboxGamepad(DRIVER_PORT);
             
-            driverGamepad.getButtonBumperRight().whileActive(new AlignWithLimelightDrive(Limelight.TX_SETPOINT));
+        //     driverGamepad.getButtonBumperRight().whileActive(new AlignWithLimelightDrive(Limelight.TX_SETPOINT));
 
-            driverGamepad.getButtonB().whileActive(new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN));
+        //     driverGamepad.getButtonB().whileActive(new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN));
 
-            driverGamepad.getButtonA().whenPressed(new ToggleArmPosition());
+        //     driverGamepad.getButtonA().whenPressed(new ToggleArmPosition());
 
-            driverGamepad.getButtonX().whenPressed(new ToggleFlowerState());
-            driverGamepad.getButtonY().whenPressed(new ToggleExtenderState());
+        //     driverGamepad.getButtonX().whenPressed(new ToggleFlowerState());
+        //     driverGamepad.getButtonY().whenPressed(new ToggleExtenderState());
             
-        } else if(driverControlScheme % NUM_DRIVERS == ANGELA_CONTROL_SCHEME) {
-            driver = Driver.ANGELA;
-            driverGamepad = new XboxGamepad(DRIVER_PORT);
+        // } else if(driverControlScheme % NUM_DRIVERS == ANGELA_CONTROL_SCHEME) {
+        //     driver = Driver.ANGELA;
+        //     driverGamepad = new XboxGamepad(DRIVER_PORT);
             
-        } 
+        // } 
 
         // customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
         // customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));

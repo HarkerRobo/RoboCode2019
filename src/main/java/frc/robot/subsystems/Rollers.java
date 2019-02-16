@@ -103,9 +103,9 @@ public class Rollers extends Subsystem {
     }
 
     public double getRecommendedRollersOutput() {
-        int wristAngle = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition();
-        if(
-            return ROLLER_SHOOTING_SPEED;
+        // int wristAngle = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition();
+        // if(
+        //     return ROLLER_SHOOTING_SPEED;
         return DEFAULT_ROLLER_MAGNITUDE;
     }
 

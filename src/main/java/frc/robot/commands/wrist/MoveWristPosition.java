@@ -21,7 +21,7 @@ public class MoveWristPosition extends Command {
 	public static final double KF = 0.0;
 	public static final double KP = 0.8;
 	public static final double KI = 0.0;
-	public static final double KD = 0;
+	public static final double KD = 1;
 
     public MoveWristPosition (double position) {
         requires (Wrist.getInstance());
