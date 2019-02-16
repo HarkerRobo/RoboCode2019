@@ -1,4 +1,4 @@
-package frc.robot.commands.groups;
+ package frc.robot.commands.groups;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot.Side;
@@ -6,7 +6,9 @@ import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.groups.Passthrough.PassthroughType;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.Pair;
 import harkerrobolib.auto.CommandGroupWrapper;
 
 /**
@@ -20,49 +22,83 @@ import harkerrobolib.auto.CommandGroupWrapper;
  */
 public class SetScoringPosition extends Command {
 	public enum Location {
-        F1(Elevator.LOW_SCORING_POSITION, Wrist.ANGLE_SCORING_FRONT), 
-        F2(Elevator.MEDIUM_SCORING_POSITION, Wrist.ANGLE_SCORING_FRONT), 
-        F3(Elevator.HIGH_SCORING_POSITION, Wrist.ANGLE_SCORING_FRONT), 
-        B1(Elevator.LOW_SCORING_POSITION, Wrist.ANGLE_SCORING_BACK),
-        B2(Elevator.MEDIUM_SCORING_POSITION, Wrist.ANGLE_SCORING_BACK), 
-		B3(Elevator.HIGH_SCORING_POSITION, Wrist.ANGLE_SCORING_BACK),
-		ZERO(0, 0), 
-		HATCH_INTAKE(Elevator.HATCH_INTAKE_SCORING_POSITION, Wrist.HATCH_INTAKE_SCORING_ANGLE),
-		CARGO_INTAKE(Elevator.CARGO_INTAKE_SCORING_POSITION, Wrist.CARGO_INTAKE_SCORING_ANGLE); 
+        F1(Elevator.LOW_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH), 
+        F2(Elevator.MEDIUM_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
+        F3(Elevator.HIGH_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH), 
+        B1(Elevator.LOW_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
+        B2(Elevator.MEDIUM_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
+		B3(Elevator.HIGH_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
+		ZERO(0, 0, 0, 0), 
+		HATCH_INTAKE(Integer.MAX_VALUE, Integer.MAX_VALUE, Elevator.HATCH_INTAKING_POSITION, Wrist.HATCH_INTAKING_POSITION),
+		CARGO_INTAKE(Elevator.CARGO_INTAKING_POSITION, Wrist.CARGO_INTAKING_POSITION, Integer.MAX_VALUE, Integer.MAX_VALUE); 
         
-        private int height;
-        private int angle;
+        private int cargoHeight;
+		private int cargoAngle;
+		private int hatchHeight;
+		private int hatchAngle;
+		private boolean hasVariableValues; // whether the height/angle depends on the presence of hatch vs. cargo
 
-        private Location (int height, int angle) {
-            this.height = height;
-            this.angle = angle;
+        private Location (int cargoHeight, int cargoAngle, int hatchHeight, int hatchAngle) {
+			this.cargoHeight = cargoHeight;
+			this.cargoAngle = cargoAngle;
+			this.hatchHeight = hatchHeight;
+			this.hatchAngle = hatchAngle;
+			hasVariableValues = (hatchHeight != Integer.MAX_VALUE || hatchAngle != Integer.MAX_VALUE) && 
+								(cargoHeight != Integer.MAX_VALUE || cargoAngle != Integer.MAX_VALUE);
         }
 
-        public int getHeight () {return height;}
-        public int getAngle () {return angle;}
+        public int getHatchHeight () {return hatchHeight;}
+		public int getHatchAngle () {return hatchAngle;}
+		public int getCargoHeight () {return cargoHeight;}
+		public int getCargoAngle () {return cargoAngle;}
+		public boolean getHasVariableValues () {return hasVariableValues;}
+		public Pair<Integer, Integer> getDesiredHeightAndAngle () {
+			Pair<Integer, Integer> desiredPair; // desired pair with height followed by angle 
+			boolean hasHatch = HatchLatcher.getInstance().hasHatch();
+			if (hasVariableValues) {desiredPair = hasHatch ? new Pair<Integer, Integer>(hatchHeight, hatchAngle) : 
+															  new Pair<Integer, Integer>(cargoHeight, cargoAngle);}
+			else {desiredPair = (hatchHeight == Integer.MAX_VALUE && hatchAngle == Integer.MAX_VALUE) ? new Pair<Integer, Integer>(cargoHeight, cargoAngle) :
+																									   new Pair<Integer, Integer> (hatchHeight, hatchAngle);}
+			return desiredPair;
+		}
     }
 
-	private int desiredHeight;
-	private int desiredAngle;
+	private Location desiredLocation;
+
 	private Side desiredSide;
 	private CommandGroupWrapper commandGroup;
 	
-	public SetScoringPosition(int desiredHeight, int desiredAngle) {
-		this.desiredHeight = desiredHeight;
-		this.desiredAngle = desiredAngle;
-		this.desiredSide = Wrist.getInstance().getSide(desiredAngle);
-    }
-	
 	public SetScoringPosition(Location desiredLocation) {
-		this(desiredLocation.getHeight(), desiredLocation.getAngle());
+		this.desiredLocation = desiredLocation;
 	}
 	
 	@Override
     public void initialize () {
 		commandGroup = new CommandGroupWrapper();
+		int desiredHeight = desiredLocation.getDesiredHeightAndAngle().getFirst();
+		int desiredAngle = desiredLocation.getDesiredHeightAndAngle().getSecond();
+
+		desiredSide = Wrist.getInstance().getSide(desiredAngle);
 		Side currentSide = Wrist.getInstance().getCurrentSide();
 		// if (currentSide == Side.AMBIGUOUS || desiredSide == Side.AMBIGUOUS) {
-		// 	if()
+		// 	if(currentSide == Side.AMBIGUOUS && desiredSide == Side.AMBIGUOUS) {
+		// 		if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
+		// 			commandGroup.sequential(new Passthrough(PassthroughType.HIGH, Side.AMBIGUOUS, desiredAngle)); 
+		// 		}
+		// 		else {
+		// 			if() {
+						
+		// 			}
+		// 		}
+		// 	} else if(currentSide == Side.AMBIGUOUS) {
+		// 		if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
+		// 			if(desiredSide == Side.BACK) {
+
+		// 			}
+		// 		}
+		// 	} else { // desired is ambiguous but not current
+				
+		// 	}
 		// } else
 		 if (currentSide != desiredSide) { //opposite side
             if (currentSide == Side.BACK) { //back -> front
