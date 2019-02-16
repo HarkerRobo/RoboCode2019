@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.rollers.SpinRollersManual;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -104,7 +103,8 @@ public class Rollers extends Subsystem {
     }
 
     public double getRecommendedRollersOutput() {
-        if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) 
+        int wristAngle = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition();
+        if(
             return ROLLER_SHOOTING_SPEED;
         return DEFAULT_ROLLER_MAGNITUDE;
     }

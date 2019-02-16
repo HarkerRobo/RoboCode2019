@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -54,6 +55,8 @@ public class Wrist extends Subsystem {
     public static final int SCORING_POSITION_BACK_HATCH = 0;
     public static final int SCORING_POSITION_BACK_CARGO = 0;
 
+    public static final int ARBITRARY_FF = 0;
+
     public static final int ANGLE_INTAKE = 180;
     public static final int HATCH_INTAKING_POSITION = 0;
     public static final int CARGO_INTAKING_POSITION = 180;
@@ -65,6 +68,7 @@ public class Wrist extends Subsystem {
     public static final int SAFE_FORWARD_POSITION = 0;
     public static final int SAFE_BACKWARD_POSITION = 10000;
     public static final int RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+
     /**
      * The percentage distance from either the front or the back after which precautionary measures must be taken to limit max operable speed.
      */
@@ -121,7 +125,8 @@ public class Wrist extends Subsystem {
     }
 
     public void setWrist (double percent, WristDirection direction) {
-        wristMaster.set(ControlMode.PercentOutput, percent * direction.getSign());
+        wristMaster.set(ControlMode.PercentOutput, percent * direction.getSign(), 
+                        DemandType.ArbitraryFeedForward, ARBITRARY_FF * (isFurtherForward(getMasterTalon().getSelectedSensorPosition(), MID_POSITION) ? -1 : 1));
     }
 
     /**
