@@ -28,30 +28,34 @@ public class SpinRollersManual extends IndefiniteCommand {
      */
     @Override
 	public void execute() {
-        double output;
+        double output = 0;
+        RollerDirection rollerDirection = RollerDirection.IN;
         if(OI.getInstance().getDriver() == OI.Driver.PRANAV) {
             double driverRightTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND);      
             double driverLeftTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND);    
-            if(driverRightTrigger == 0) {
+            if(driverRightTrigger > 0) {
                 output = Rollers.getInstance().getRecommendedRollersOutput();
+                rollerDirection = RollerDirection.OUT;
             } else {
-                output = -driverLeftTrigger;
+                output = driverLeftTrigger;
+                rollerDirection = RollerDirection.IN;
             }
         } else if(OI.getInstance().getDriver() == OI.Driver.CHRIS){
             if(OI.getInstance().getDriverGamepad().getButtonXState()) {
                 output = Rollers.getInstance().getRecommendedRollersOutput();
+                rollerDirection = RollerDirection.OUT;
             } else {
-                output = -MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND);
+                if(OI.getInstance().getDriverGamepad().getLeftTrigger() > 0) {
+                    output = Rollers.DEFAULT_ROLLER_MAGNITUDE;
+                    rollerDirection = RollerDirection.IN;
+                }
             }
         } else {
-            output = 0;
-        } 
+            //Angela
+        }
         
         if((int) Math.signum(output) == RollerDirection.IN.getSign() && Math.abs(output) > Rollers.HATCH_STOW_SPEED)
             new LoadOrScoreHatch(ScoreState.LOAD);
-        if (output > 0) // joystick up
-            Rollers.getInstance().moveRollers(Math.abs(output), RollerDirection.OUT);
-        else if (output < 0) // joystick down
-            Rollers.getInstance().moveRollers(Math.abs(output), RollerDirection.IN);
+        Rollers.getInstance().moveRollers(output, rollerDirection);
 	}
 }
