@@ -95,7 +95,7 @@
 //             while (!isComplete)
 //             {
 //                 if (distanceTravelled <= 0)
-//                     distanceTravelled = 
+//                     distanceTravelled = 0;
 //                 double velPosAccel = Math.sqrt(Math.pow(prevVelocity, 2) + 2*maxAcceleration*distanceTravelled);
 //                 double velMax = maxVelocity;
 //                 double velNegAccel = Math.sqrt(Math.pow(prevVelocity, 2) + 2*maxAcceleration*(splineDistance - distanceTravelled));

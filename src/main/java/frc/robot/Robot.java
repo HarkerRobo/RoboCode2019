@@ -8,6 +8,10 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.IMotorController;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -49,8 +53,8 @@ public class Robot extends TimedRobot {
     private static HatchLatcher hatchLatcher;
     private static Limelight limelight;
     private static OI oi;
-    private static HSTalon talon;
     private static double startTime;
+    // private CANSparkMax talon;
 
     public enum Side {
         FRONT, BACK, AMBIGUOUS;
@@ -61,23 +65,23 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        System.out.println("robotinit");
         drivetrain = Drivetrain.getInstance();
-        //arm = Arm.getInstance();
-        // elevator = Elevator.getInstance();
-        // intake = Intake.getInstance();
-        //rollers = Rollers.getInstance();
-        //wrist = Wrist.getInstance();
-        //hatchLatcher = HatchLatcher.getInstance();
+        arm = Arm.getInstance();
+        elevator = Elevator.getInstance();
+        intake = Intake.getInstance();
+        rollers = Rollers.getInstance();
+        wrist = Wrist.getInstance();
+        hatchLatcher = HatchLatcher.getInstance();
         oi = OI.getInstance();        
         //limelight = Limelight.getInstance();        
        
         drivetrain.talonInit();
-        // elevator.talonInit();
-        // intake.controllerInit();
-        // ballIntake.controllerInit();
-        
+        elevator.talonInit();
+        wrist.talonInit();
+        rollers.talonInit();
+        intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
-        //talon = new HSTalon(0);
     }
 
     /**
@@ -102,7 +106,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         startTime = Timer.getFPGATimestamp();
-        drivetrain.talonInit();
+        // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+        //Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     }
 
     /**
@@ -111,7 +116,12 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
-        //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
+        //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
+        SmartDashboard.putNumber("roller current", Rollers.getInstance().getTopTalon().getOutputCurrent());
+        SmartDashboard.putNumber("wrist current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
+        SmartDashboard.putNumber("wrist velocity", Wrist.getInstance().getMasterTalon().getSelectedSensorVelocity());
+        // System.out.println("el limit " + Elevator.getInstance().getMaster().getSensorCollection().isRevLimitSwitchClosed());
+        System.out.println("Elevator position: " + Elevator.getInstance().getRightTalon().getSelectedSensorPosition() + " Wrist position: " + Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
     }
 
     /**
@@ -122,7 +132,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SmartDashboard.putNumber("Left Error", drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
         SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
-
+    
         //System.out.println(limelight.getCamtranData());
     }
 

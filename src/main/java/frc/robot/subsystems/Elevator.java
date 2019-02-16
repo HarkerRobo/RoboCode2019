@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -28,19 +30,22 @@ public class Elevator extends Subsystem {
     private HSTalon talon;
     private VictorSPX leftFrontVictor;
     private VictorSPX leftBackVictor;
-    private VictorSPX rightVictor;
-
+    private HSTalon rightTalon;
     public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
     public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 1000; // tune
 
-    private static final int PEAK_CURRENT_LIMIT = 0;
-    private static final int CONT_CURRENT_LIMIT = 0;
-    private static final int PEAK_CURRENT_TIME = 0;
+    private static final boolean SENSOR_PHASE = true;
 
-    private static final boolean INVERTED_MASTER = false;
-    private static final boolean INVERTED_VICT_LEFT_FRONT = false;
-    private static final boolean INVERTED_VICT_LEFT_BACK = false;
-    private static final boolean INVERTED_VICT_RIGHT = false;
+    private static final int PEAK_CURRENT_LIMIT = 25;
+    private static final int CONT_CURRENT_LIMIT = 15;
+    private static final int PEAK_CURRENT_TIME = 150;
+
+    private static final int RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
+
+    private static final boolean INVERTED_MASTER = true;
+    private static final boolean INVERTED_VICT_LEFT_FRONT = true;
+    private static final boolean INVERTED_VICT_LEFT_BACK = true;
+    private static final boolean INVERTED_VICT_RIGHT = true;
 
     public static final int INTAKE_POSITION = 0;
     
@@ -81,13 +86,13 @@ public class Elevator extends Subsystem {
         talon = new HSTalon(CAN_IDs.EL_MASTER);
         leftFrontVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_FRONT);
         leftBackVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_BACK);
-        rightVictor = new VictorSPX(CAN_IDs.EL_VICTOR_RIGHT);
+        rightTalon = new HSTalon(CAN_IDs.EL_TALON_FOLLOWER);
     }
 
     
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MoveElevatorManual());
+        // setDefaultCommand(new MoveElevatorManual());
     }
 
     public static Elevator getInstance() {
@@ -100,24 +105,33 @@ public class Elevator extends Subsystem {
     public void talonInit() {
         leftFrontVictor.follow(talon);
         leftBackVictor.follow(talon);
-        rightVictor.follow(talon);
+        rightTalon.follow(talon);
 
         talon.setNeutralMode(NeutralMode.Brake);
         leftFrontVictor.setNeutralMode(NeutralMode.Brake);
         leftBackVictor.setNeutralMode(NeutralMode.Brake);
-        rightVictor.setNeutralMode(NeutralMode.Brake);
+        rightTalon.setNeutralMode(NeutralMode.Brake);
 
         talon.setInverted(INVERTED_MASTER);
         leftFrontVictor.setInverted(INVERTED_VICT_LEFT_FRONT);
         leftBackVictor.setInverted(INVERTED_VICT_LEFT_BACK);
-        rightVictor.setInverted(INVERTED_VICT_RIGHT);
+        rightTalon.setInverted(INVERTED_VICT_RIGHT);
         
+        rightTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        rightTalon.setSensorPhase(SENSOR_PHASE);
+        talon.configRemoteFeedbackFilter(rightTalon.getDeviceID(), RemoteSensorSource.TalonSRX_SelectedSensor, Global.REMOTE_0);
+        talon.configSelectedFeedbackCoefficient(Elevator.RIGHT_TALON_FEEDBACK_COEFFICIENT);
+        talon.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+
+        talon.setSelectedSensorPosition(0);
+
         talon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
         talon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
         talon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
+        talon.enableCurrentLimit(true);
 
-        setUpPositionPID();
-        setUpMotionMagic();
+        // setUpPositionPID();
+        // setUpMotionMagic();
     }
 
     public void moveElevatorVelocity(double speed) {
@@ -158,8 +172,8 @@ public class Elevator extends Subsystem {
         return leftBackVictor;
     }
 
-    public VictorSPX getRightVictor() {
-        return rightVictor;
+    public HSTalon getRightTalon() {
+        return rightTalon;
     }
 
     /**

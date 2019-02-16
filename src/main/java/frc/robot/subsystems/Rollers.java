@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
+import frc.robot.commands.rollers.SpinRollersManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -17,7 +18,7 @@ import harkerrobolib.wrappers.HSTalon;
  */
 public class Rollers extends Subsystem {
     public enum RollerDirection {
-        IN(1), OUT(-1);
+        IN(-1), OUT(1);
 
         private int sign;
 
@@ -31,10 +32,10 @@ public class Rollers extends Subsystem {
     }
 
     private static final boolean TOP_INVERTED = false;
-    private static final boolean BOTTOM_INVERTED = false;
-    private static final int CONTINUOUS_CURRENT_LIMIT = 0;
-    private static final int PEAK_CURRENT_LIMIT = 0;
-    private static final int PEAK_TIME = 0;
+    private static final boolean BOTTOM_INVERTED = true;
+    private static final int CONTINUOUS_CURRENT_LIMIT = 7;
+    private static final int PEAK_CURRENT_LIMIT = 10;
+    private static final int PEAK_TIME = 500;
 
     public static final double DEFAULT_ROLLER_MAGNITUDE = 0.5;
     public static final double ROLLER_SHOOTING_SPEED = 0.8;
@@ -54,7 +55,7 @@ public class Rollers extends Subsystem {
 
     @Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new SpinRollersIndefinite(1, getRecommendedRollersOutput());
+		setDefaultCommand(new SpinRollersManual());
     }
     
     /**
@@ -79,6 +80,9 @@ public class Rollers extends Subsystem {
 
         rTalonTop.configPeakCurrentDuration(PEAK_TIME);
         rTalonBottom.configPeakCurrentDuration(PEAK_TIME);
+
+        rTalonBottom.enableCurrentLimit(true);
+        rTalonTop.enableCurrentLimit(true);
     }
     
     public HSTalon getTopTalon(){

@@ -15,15 +15,17 @@ import frc.robot.subsystems.Wrist;
  * 
  * @since 1/12/19
  */
-public class MoveWristPosition extends Command {
+public class MoveWristMotionMagic extends Command {
     private double position;
     
 	public static final double KF = 0.0;
-	public static final double KP = 0.8;
+	public static final double KD = 0.0;
 	public static final double KI = 0.0;
-	public static final double KD = 0;
+    public static final double KP = 0.0;
+    public static final int ACCELERATION = 5;
+    public static final int CRUISE_VELOCITY = 35;
 
-    public MoveWristPosition (double position) {
+    public MoveWristMotionMagic (double position) {
         requires (Wrist.getInstance());
         this.position = position;                
     }            
@@ -33,7 +35,7 @@ public class MoveWristPosition extends Command {
      */
     @Override
     public void initialize() {
-        Wrist.getInstance().setupPositionPID();
+        Wrist.getInstance().setupMotionMagic();
     }
     
     /**
@@ -41,8 +43,8 @@ public class MoveWristPosition extends Command {
      */
     @Override
     public void execute() {
-        SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
-        Wrist.getInstance().getMasterTalon().set(ControlMode.Position, position);
+       
+        Wrist.getInstance().getMasterTalon().set(ControlMode.MotionMagic, position);
     }        
         
     /**
@@ -50,11 +52,6 @@ public class MoveWristPosition extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return false;//return Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
-    }  
-
-    public void clearRequirements()
-    {
-        super.clearRequirements();
+        return false;//Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
     }
 }

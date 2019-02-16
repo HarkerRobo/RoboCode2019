@@ -18,7 +18,5 @@ public class SpinIntakeAndRollers extends ParallelCommandGroup {
             new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, Intake.IntakeDirection.IN),
             new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, Rollers.RollerDirection.IN)
         );
-        requires(Intake.getInstance());
-        requires(Rollers.getInstance());
     }
 }

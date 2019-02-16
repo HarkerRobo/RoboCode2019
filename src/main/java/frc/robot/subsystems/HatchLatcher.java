@@ -19,7 +19,7 @@ import frc.robot.RobotMap.CAN_IDs;
  */
 public class HatchLatcher extends Subsystem {
     public enum ExtenderDirection {
-        IN(DoubleSolenoid.Value.kReverse), OUT(DoubleSolenoid.Value.kForward);
+        IN(DoubleSolenoid.Value.kForward), OUT(DoubleSolenoid.Value.kReverse);
         private DoubleSolenoid.Value value;
 
         private ExtenderDirection(DoubleSolenoid.Value value) {

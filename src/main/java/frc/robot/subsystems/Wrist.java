@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot.Side;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
+import frc.robot.commands.wrist.MoveWristManual;
+import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.commands.wrist.MoveWristPosition;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -68,7 +70,7 @@ public class Wrist extends Subsystem {
      */
     public static final double SLOW_DOWN_PERCENT_TO_ENDPOINT = 0.75;
 
-    /**
+    /*
      * The physical distance (encoder units) from either the front or the back after which precautionary measures must be taken to limit max operable speed.
      */
     public static final double SLOW_DOWN_DISTANCE_FROM_ENDPOINT = Wrist.RANGE_OF_MOTION * (1 - Wrist.SLOW_DOWN_PERCENT_TO_ENDPOINT);
@@ -79,8 +81,9 @@ public class Wrist extends Subsystem {
     public static final int MAX_SPEED = 100; // TUNE
 
     public static final int POSITION_SLOT = 0;
+    public static final int MOTION_MAGIC_SLOT = 1;
 
-    public static final boolean SENSOR_PHASE = false;
+    public static final boolean SENSOR_PHASE = true;
 
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
@@ -89,18 +92,24 @@ public class Wrist extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
+        setDefaultCommand(new MoveWristManual());
     }
     
     public void talonInit () {
+        wristFollower.follow(wristMaster);
+
         wristMaster.setNeutralMode(NeutralMode.Brake);
         wristFollower.setNeutralMode (NeutralMode.Brake);
 
         wristMaster.setInverted(MASTER_INVERTED);
         wristFollower.setInverted(FOLLOWER_INVERTED);
-        
+        wristMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         wristMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         wristMaster.configPeakCurrentDuration(PEAK_TIME);
         wristMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+        wristMaster.enableCurrentLimit(true);
+        wristMaster.setSelectedSensorPosition(0);
+        System.out.println("taloninit");
     }
 
     public HSTalon getMasterTalon () {
@@ -172,6 +181,19 @@ public class Wrist extends Subsystem {
         Wrist.getInstance().getMasterTalon().config_kI(Wrist.POSITION_SLOT, MoveWristPosition.KI);
         Wrist.getInstance().getMasterTalon().config_kD(Wrist.POSITION_SLOT, MoveWristPosition.KD);
         Wrist.getInstance().getMasterTalon().config_kF(Wrist.POSITION_SLOT, MoveWristPosition.KF);
+    }
+
+    public void setupMotionMagic() {
+        Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.MAX_BACKWARD_POSITION, Global.PID_PRIMARY);
+        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
+        Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);     
+
+        Wrist.getInstance().getMasterTalon().config_kP(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KP);
+        Wrist.getInstance().getMasterTalon().config_kI(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KI);
+        Wrist.getInstance().getMasterTalon().config_kD(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KD);
+        Wrist.getInstance().getMasterTalon().config_kF(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KF);
+        Wrist.getInstance().getMasterTalon().configMotionCruiseVelocity(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.CRUISE_VELOCITY);
+        Wrist.getInstance().getMasterTalon().configMotionAcceleration(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.ACCELERATION);
     }
 
     /**
