@@ -20,7 +20,7 @@ public class ZeroWrist extends Command {
 
     @Override
     public void execute() {
-        Wrist.getInstance().setWrist(ZERO_SPEED, WristDirection.TO_FRONT);
+        Wrist.getInstance().setWristPercentOutput(ZERO_SPEED, WristDirection.TO_FRONT);
     }
 
     /**

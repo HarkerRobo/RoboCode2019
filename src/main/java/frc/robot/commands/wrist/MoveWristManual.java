@@ -36,6 +36,8 @@ public class MoveWristManual extends IndefiniteCommand {
         double leftOperatorTrigger = OI.getInstance().getDriverGamepad().getLeftTrigger();
         double rightOperatorTrigger = OI.getInstance().getDriverGamepad().getRightTrigger();
 
+        double magnitude = 0;
+        WristDirection direction;
         //double currentPosition = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
         
         if (leftOperatorTrigger > rightOperatorTrigger) {
@@ -45,15 +47,19 @@ public class MoveWristManual extends IndefiniteCommand {
                 leftOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromBack);
             }*/
             
-            Wrist.getInstance().setWrist(leftOperatorTrigger, WristDirection.TO_BACK);
+            magnitude = leftOperatorTrigger;
+            direction = WristDirection.TO_BACK;
         }
         else {
             /*double distFromFront = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
 
             if (distFromFront <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
                 rightOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromFront);*/
-                Wrist.getInstance().setWrist(rightOperatorTrigger, WristDirection.TO_FRONT);
-            }
+            magnitude = rightOperatorTrigger;
+            direction = WristDirection.TO_FRONT;
+        }
+
+        Wrist.getInstance().setWristPercentOutput(magnitude, direction);
     }
 
     /**

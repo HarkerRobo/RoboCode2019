@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.awt.Color;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -55,7 +56,7 @@ public class Wrist extends Subsystem {
     public static final int SCORING_POSITION_BACK_HATCH = 0;
     public static final int SCORING_POSITION_BACK_CARGO = 0;
 
-    public static final int ARBITRARY_FF = 0;
+    public static final double ARBITRARY_FF = 0;
 
     public static final int ANGLE_INTAKE = 180;
     public static final int HATCH_INTAKING_POSITION = 0;
@@ -88,6 +89,7 @@ public class Wrist extends Subsystem {
     public static final int MOTION_MAGIC_SLOT = 1;
 
     public static final boolean SENSOR_PHASE = true;
+    public static Supplier<Double> feedForwardLambda = () -> (ARBITRARY_FF * (Wrist.getInstance().isForward() ? -WristDirection.TO_FRONT.getSign() : -WristDirection.TO_BACK.getSign()));
 
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
@@ -124,11 +126,15 @@ public class Wrist extends Subsystem {
         return wristFollower;
     }
 
-    public void setWrist (double percent, WristDirection direction) {
-        wristMaster.set(ControlMode.PercentOutput, percent * direction.getSign(), 
-                        DemandType.ArbitraryFeedForward, ARBITRARY_FF * (isFurtherForward(getMasterTalon().getSelectedSensorPosition(), MID_POSITION) ? -1 : 1));
+    public void setWristPercentOutput (double value, WristDirection direction) {
+        wristMaster.set(ControlMode.PercentOutput, value * direction.getSign(), 
+                        DemandType.ArbitraryFeedForward, feedForwardLambda.get() 
+                        );
     }
 
+    public void setWrist (ControlMode mode, double value) {
+        wristMaster.set(mode, value, DemandType.ArbitraryFeedForward, feedForwardLambda.get());
+    }
     /**
      * Sets the output color of the LED.
      */
@@ -209,34 +215,50 @@ public class Wrist extends Subsystem {
         return !isFurtherForward(SAFE_FORWARD_POSITION) && !isFurtherBack(SAFE_BACKWARD_POSITION);
     }
 
-    public boolean isForward() {
+    public boolean isSafelyForward() {
         return isFurtherForward(SAFE_FORWARD_POSITION);
     }
 
-    public boolean isForward(int position) {
+    public boolean isSafelyForward(int position) {
         return isFurtherForward(position, SAFE_FORWARD_POSITION);
     }
 
-    public boolean isBackward(int position) {
+    public boolean isSafelyBackward(int position) {
         return isFurtherBack(position, SAFE_BACKWARD_POSITION);
     }
 
-    public boolean isBackward() {
+    public boolean isSafelyBackward() {
         return isFurtherBack(SAFE_BACKWARD_POSITION);
+    }
+
+    public boolean isForward() {
+        return isFurtherForward(MID_POSITION);
+    }
+
+    public boolean isBackward() {
+        return isFurtherBack(MID_POSITION);
+    }
+
+    public boolean isForward(int position) {
+        return isFurtherForward(position, MID_POSITION);
+    }
+
+    public boolean isBackward(int position) {
+        return isFurtherBack (position, MID_POSITION);
     }
 
     public boolean mustPassThrough(int desiredWristPosition) {
         return Wrist.getInstance().isAmbiguous() || 
-                                        (Wrist.getInstance().isForward(desiredWristPosition) && Wrist.getInstance().isBackward() || 
-                                            Wrist.getInstance().isBackward(desiredWristPosition) && Wrist.getInstance().isForward());
+                                        (Wrist.getInstance().isSafelyForward(desiredWristPosition) && Wrist.getInstance().isSafelyBackward() || 
+                                            Wrist.getInstance().isSafelyBackward(desiredWristPosition) && Wrist.getInstance().isSafelyForward());
     }
 
     public Side getCurrentSide() {
         if (isAmbiguous()) {return Side.AMBIGUOUS;}
-        return isForward() ? Side.FRONT : Side.BACK;
+        return isSafelyForward() ? Side.FRONT : Side.BACK;
     }
 
     public Side getSide (int position) {
-        return isForward(position) ? Side.FRONT : Side.BACK;
+        return isSafelyForward(position) ? Side.FRONT : Side.BACK;
     }
 }   

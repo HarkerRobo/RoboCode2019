@@ -42,7 +42,7 @@ public class MoveWristPosition extends Command {
     @Override
     public void execute() {
         SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
-        Wrist.getInstance().getMasterTalon().set(ControlMode.Position, position);
+        Wrist.getInstance().setWrist(ControlMode.Position, position);
     }        
         
     /**
