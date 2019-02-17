@@ -21,8 +21,8 @@ import frc.robot.subsystems.Elevator;
  */
 public class ZeroElevator extends Command {
 
-    private static final double ZERO_SPEED = -0.2;
-    private static final int CURRENT_SPIKE = 5;
+    private static final double ZERO_SPEED = -0.26;
+    private static final double CURRENT_SPIKE = 2.8;
     
     private ArrayList<Double> currentVals;
     private int VALUES_TO_SAMPLE = 10;

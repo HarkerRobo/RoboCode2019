@@ -18,10 +18,10 @@ public class MoveElevatorMotionMagicManual extends IndefiniteCommand {
     }
 
     protected void execute() {
-        int position = (int) ((Elevator.MAX_POSITION - 1000)* Math.abs(
-            MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), 
-                                        OI.DRIVER_DEADBAND)));
-        if (OI.getInstance().getDriverGamepad().getButtonBumperLeftState())
-            Elevator.getInstance().getMasterTalon().set(ControlMode.MotionMagic, position);
+        // int position = (int) ((Elevator.MAX_POSITION - 1000)* Math.abs(
+        //     MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), 
+        //                                 OI.DRIVER_DEADBAND)));
+        // if (OI.getInstance().getDriverGamepad().getButtonBumperLeftState())
+        //     Elevator.getInstance().getMasterTalon().set(ControlMode.MotionMagic, position);
     }
 }

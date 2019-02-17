@@ -15,7 +15,9 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
@@ -27,6 +29,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
+import frc.robot.util.TestGroup;
+import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -54,6 +58,7 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
     private static OI oi;
     private static double startTime;
+    
     // private CANSparkMax talon;
 
     public enum Side {
@@ -82,7 +87,6 @@ public class Robot extends TimedRobot {
         rollers.talonInit();
         intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
-
         // elevator.getMasterTalon().get
     }
 
@@ -118,10 +122,12 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+        // System.out.println("completed: " + cgw.isCompleted() + " " + cgw.isRunning());
         //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
 
-        SmartDashboard.putNumber("el current ", Elevator.getInstance().getFollowerTalon().getOutputCurrent());
-        System.out.println("Elevator position: " + Elevator.getInstance().getMasterTalon().getSelectedSensorPosition() + " Wrist position: " + Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
+        // SmartDashboard.putNumber("el current ", Elevator.getInstance().getFollowerTalon().getOutputCurrent());
+        // System.out.println("Elevator position: " + Elevator.getInstance().getMasterTalon().getSelectedSensorPosition() + " Wrist position: " + Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
         
     }
 
@@ -131,15 +137,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putNumber("Left Error", drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
-        SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
+        // SmartDashboard.putNumber("Left Error", drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
+        // SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
     
-        SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
-        //System.out.println(limelight.getCamtranData());
-        SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
-        SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());
-        SmartDashboard.putNumber("left y", OI.getInstance().getDriverGamepad().getLeftY());
-        SmartDashboard.putNumber("left x", OI.getInstance().getDriverGamepad().getLeftX());
+        // SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
+        // //System.out.println(limelight.getCamtranData());
+        // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
+        // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());
+        // SmartDashboard.putNumber("left y", OI.getInstance().getDriverGamepad().getLeftY());
+        // SmartDashboard.putNumber("left x", OI.getInstance().getDriverGamepad().getLeftX());
 
         // System.out.println(OI.getInstance().getCustomOperatorGamepad().getBackwardThreePressed());
     }
@@ -149,6 +155,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
+        
         // System.out.println("elevator limit " + elevator.getMasterTalon().getSensorCollection().isRevLimitSwitchClosed());
         // System.out.println("elevator limit fwd" + elevator.getMasterTalon().getSensorCollection().isFwdLimitSwitchClosed());
     }

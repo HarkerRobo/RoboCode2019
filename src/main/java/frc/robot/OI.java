@@ -76,8 +76,8 @@ public class OI {
     public void initBindings() {
         //driverGamepad.getButtonX().whilePressed(new MoveWristPosition(170));
        // driverGamepad.getButtonY().whenPressed(new ZeroWrist());
-        driverGamepad.getButtonA().whenPressed(new ZeroElevator());
-        driverGamepad.getButtonB().whilePressed(new MoveElevatorMotionMagic(15000));
+        // driverGamepad.getButtonA().whenPressed(new ZeroElevator());
+        
         // driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
             
         //     @Override
@@ -88,16 +88,17 @@ public class OI {
 
         // });
 
-        // if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
-        //     driver = Driver.CHRIS;
-        //     driverGamepad = new XboxGamepad(DRIVER_PORT);
+        driverGamepad = new XboxGamepad(DRIVER_PORT);
             
-        //     driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
-        //     driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
-        //     driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+        driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
+        driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
+        driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+        
+        if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
+            driver = Driver.CHRIS;
            
 
-        // } else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
+        } //else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
         //     driver = Driver.PRANAV;
         //     driverGamepad = new XboxGamepad(DRIVER_PORT);
             
@@ -123,7 +124,7 @@ public class OI {
         customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
         customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
-        customOperatorGamepad.getZeroButton().whenPressed(new SetScoringPosition(Location.ZERO));
+        customOperatorGamepad.getZeroButton().whenPressed(new ZeroElevator());
         customOperatorGamepad.getOuttakeButton().whilePressed(new OuttakeBallOrHatch());
         customOperatorGamepad.getIntakeHatchButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE));
         customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());

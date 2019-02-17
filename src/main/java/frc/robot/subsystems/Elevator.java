@@ -33,7 +33,7 @@ public class Elevator extends Subsystem {
     private VictorSPX leftBackVictor;
     private HSTalon followerTalon;
     public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
-    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 1000; // tune
+    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 19000; // tune
     public static final int MAX_POSITION = 22794;
 
     private static final boolean SENSOR_PHASE = true;
@@ -54,18 +54,18 @@ public class Elevator extends Subsystem {
     public static final int HATCH_INTAKING_POSITION = 0;
     public static final int CARGO_INTAKING_POSITION = 20;
 
-    public static final int RAIL_POSITION = 100; //TUNE
+    public static final int RAIL_POSITION = 18000; //TUNE
     public static final int BALL_INTAKING_HEIGHT = 100; //Tune
     
     public static final double FFGRAV = 0.1;
     public static final int ZERO_CURRENT_SPIKE = 0;
 
-    public static final int LOW_SCORING_POSITION_HATCH = 0; 
-    public static final int LOW_SCORING_POSITION_CARGO = 0; 
-    public static final int MEDIUM_SCORING_POSITION_HATCH = 0; 
-    public static final int MEDIUM_SCORING_POSITION_CARGO = 0; 
-    public static final int HIGH_SCORING_POSITION_HATCH = 0; 
-    public static final int HIGH_SCORING_POSITION_CARGO = 0; 
+    public static final int LOW_SCORING_POSITION_HATCH = 9310; 
+    public static final int LOW_SCORING_POSITION_CARGO = 9310; 
+    public static final int MEDIUM_SCORING_POSITION_HATCH = 14000; 
+    public static final int MEDIUM_SCORING_POSITION_CARGO = 14000; 
+    public static final int HIGH_SCORING_POSITION_HATCH = 19000; 
+    public static final int HIGH_SCORING_POSITION_CARGO = 19000; 
 
     public static final double NOMINAL_OUTPUT = 0.06;
 

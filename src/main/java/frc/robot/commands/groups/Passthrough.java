@@ -39,6 +39,7 @@ public class Passthrough extends Command
 
     @Override
     public void initialize() {
+        commandGroup = new CommandGroupWrapper();
         if (type == PassthroughType.HIGH) {
             if ((currentSide == Robot.Side.FRONT || currentSide == Robot.Side.AMBIGUOUS) 
                 && Elevator.getInstance().isBelow(Elevator.RAIL_POSITION)) {
@@ -48,15 +49,18 @@ public class Passthrough extends Command
                         .sequential(new MoveWristMotionMagic(desiredWristPos));
         }
         else if (type == PassthroughType.LOW) {
-            if (desiredSide == Robot.Side.FRONT) {commandGroup.sequential(new SetArmPosition(ArmDirection.DOWN));}
+            if (desiredSide == Robot.Side.FRONT) {commandGroup.sequential(new SetArmPosition(ArmDirection.DOWN)); System.out.println("ac");}
             if (currentSide != desiredSide) {
                 if ((currentSide == Robot.Side.FRONT || currentSide == Robot.Side.AMBIGUOUS) && 
                      Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
                         commandGroup.sequential (new Passthrough (PassthroughType.HIGH, currentSide, Wrist.MAX_BACKWARD_POSITION));
+                System.out.println("aa");
                 }
                 commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_LOW_PASSTHROUGH_POSITION));
+                System.out.println("ab");
             }
-            commandGroup.sequential(new MoveWristMotionMagic(desiredWristPos));
+            //commandGroup.sequential(new MoveWristMotionMagic(desiredWristPos));
+            System.out.println("ad");
          }
 
         commandGroup.start();
@@ -71,5 +75,9 @@ public class Passthrough extends Command
     public void interrupted()
     {
         commandGroup.cancel(); 
+    }
+
+    public void end () {
+        System.out.println("PASSTHROUGH OVER " + type);
     }
 }

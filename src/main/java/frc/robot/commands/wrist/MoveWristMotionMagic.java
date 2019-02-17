@@ -35,6 +35,7 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     public void initialize() {
+        System.out.println("entering wrist motion");
         Wrist.getInstance().setupMotionMagic();
     }
     
@@ -43,8 +44,7 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     public void execute() {
-       
-        Wrist.getInstance().getMasterTalon().set(ControlMode.MotionMagic, position);
+        Wrist.getInstance().setWrist(ControlMode.MotionMagic, position);
     }        
         
     /**

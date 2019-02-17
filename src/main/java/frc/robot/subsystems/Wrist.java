@@ -52,10 +52,10 @@ public class Wrist extends Subsystem {
     public static final int PEAK_CURRENT_LIMIT = 10;
     public static final int PEAK_TIME = 500;
     
-    public static final int SCORING_POSITION_FRONT_HATCH = 0;
-    public static final int SCORING_POSITION_FRONT_CARGO = 0;
-    public static final int SCORING_POSITION_BACK_HATCH = 0;
-    public static final int SCORING_POSITION_BACK_CARGO = 0;
+    public static final int SCORING_POSITION_FRONT_HATCH = 25;
+    public static final int SCORING_POSITION_FRONT_CARGO = 25;
+    public static final int SCORING_POSITION_BACK_HATCH = 135;
+    public static final int SCORING_POSITION_BACK_CARGO = 135;
 
     public static final double ARBITRARY_FF = 0.017;
 
@@ -65,10 +65,10 @@ public class Wrist extends Subsystem {
 
     public static final int ALLOWABLE_ERROR = 400;
     public static final int MAX_FORWARD_POSITION = 0;
-    public static final int MAX_BACKWARD_POSITION = 10000; // TUNE
+    public static final int MAX_BACKWARD_POSITION = 185; // TUNE
     public static final int MID_POSITION = (MAX_FORWARD_POSITION + MAX_BACKWARD_POSITION)/2;
-    public static final int SAFE_FORWARD_POSITION = 0;
-    public static final int SAFE_BACKWARD_POSITION = 10000;
+    public static final int SAFE_FORWARD_POSITION = 70;
+    public static final int SAFE_BACKWARD_POSITION = 110;
     public static final int RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
 
     /**
@@ -180,7 +180,7 @@ public class Wrist extends Subsystem {
     }
 
     public boolean isFurtherForward(int comparedPosition, int comparisonPosition) {
-        return comparisonPosition < comparedPosition;
+        return comparedPosition < comparisonPosition;
     }
 
     public boolean isFurtherBackward (int position) {
@@ -188,7 +188,7 @@ public class Wrist extends Subsystem {
     }
 
     public boolean isFurtherBackward (int comparedPosition, int comparisonPosition) {
-        return comparisonPosition > comparedPosition;
+        return comparedPosition > comparisonPosition;
     }
 
     public boolean isForward(int position) {
