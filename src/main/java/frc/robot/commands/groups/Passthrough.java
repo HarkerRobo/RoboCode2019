@@ -59,9 +59,9 @@ public class Passthrough extends Command
                 commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_LOW_PASSTHROUGH_POSITION));
                 System.out.println("ab");
             }
-            //commandGroup.sequential(new MoveWristMotionMagic(desiredWristPos));
+            commandGroup.sequential(new MoveWristMotionMagic(desiredWristPos));
             System.out.println("ad");
-         }
+        }
 
         commandGroup.start();
     }

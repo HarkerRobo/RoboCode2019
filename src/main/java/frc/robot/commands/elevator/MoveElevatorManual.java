@@ -35,7 +35,7 @@ public class MoveElevatorManual extends IndefiniteCommand {
     @Override
     public void execute() {
         double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
-        Elevator.getInstance().getMasterTalon().set(ControlMode.PercentOutput, desiredSpeed);
+        //Elevator.getInstance().getMasterTalon().set(ControlMode.PercentOutput, desiredSpeed);
         // if(Math.abs(desiredSpeed) > 0)
         // {
         //     boolean isDown = desiredSpeed < 0;

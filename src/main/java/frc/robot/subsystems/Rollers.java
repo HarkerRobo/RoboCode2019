@@ -61,6 +61,9 @@ public class Rollers extends Subsystem {
      * Initialises the Talons
      */
     public void talonInit(){
+        rTalonTop.configFactoryDefault();
+        rTalonBottom.configFactoryDefault();
+        
         rTalonTop.setNeutralMode(NeutralMode.Coast);
         rTalonBottom.setNeutralMode(NeutralMode.Coast);
 
@@ -103,9 +106,9 @@ public class Rollers extends Subsystem {
     }
 
     public double getRecommendedRollersOutput() {
-        // int wristAngle = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition();
-        // if(
-        //     return ROLLER_SHOOTING_SPEED;
+        //  int wristAngle = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition();
+        //  if(Math.abs(wristAngle - 90)
+        //      return ROLLER_SHOOTING_SPEED;
         return DEFAULT_ROLLER_MAGNITUDE;
     }
 

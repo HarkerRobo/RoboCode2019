@@ -149,7 +149,6 @@ public class AlignWithLimelightDrive extends Command {
      */
     @Override
     public void interrupted() {
-        System.out.println("Interrupted");
         end();
     }
 

@@ -18,16 +18,17 @@ import frc.robot.subsystems.Wrist;
 public class MoveWristMotionMagic extends Command {
     private double position;
     
-    public static final double KF = 0.0;
-    public static final double KP = 0.5;
-	public static final double KI = 0.0;
-    public static final double KD = 1;
-    public static final int ACCELERATION = 5;
-    public static final int CRUISE_VELOCITY = 200;
+    public static final double KF = 2.6;
+    public static final double KP = 1.1;
+	public static final double KI = 0.0025;
+    public static final double KD = 100;
+    public static final int IZONE = 150;
+    public static final int ACCELERATION = 450;
+    public static final int CRUISE_VELOCITY = 400;
 
-    public MoveWristMotionMagic (double position) {
+    public MoveWristMotionMagic (double angle) {
         requires (Wrist.getInstance());
-        this.position = position;                
+        this.position = Wrist.getInstance().convertDegreesToEncoder(angle);              
     }            
     
     /**
@@ -44,6 +45,7 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     public void execute() {
+        SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
         Wrist.getInstance().setWrist(ControlMode.MotionMagic, position);
     }        
         
@@ -53,5 +55,16 @@ public class MoveWristMotionMagic extends Command {
     @Override
     protected boolean isFinished() {
         return true;//Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
+    }
+
+    @Override
+    public void end () {
+        System.out.println("wrist motion magic end");
+        Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
+    }
+
+    @Override
+    public void interrupted() {
+        end();
     }
 }

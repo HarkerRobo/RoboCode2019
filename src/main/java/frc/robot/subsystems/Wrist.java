@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot.Side;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
+import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
+import frc.robot.commands.wrist.MoveWristMotionMagicManual;
 import frc.robot.commands.wrist.MoveWristPosition;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -45,8 +47,8 @@ public class Wrist extends Subsystem {
 
     private CANifier canifier;
 
-    private static final boolean MASTER_INVERTED = false;
-    private static final boolean FOLLOWER_INVERTED = false;
+    private static final boolean MASTER_INVERTED = true;
+    private static final boolean FOLLOWER_INVERTED = true;
 
     public static final int CONTINUOUS_CURRENT_LIMIT = 7;
     public static final int PEAK_CURRENT_LIMIT = 10;
@@ -57,7 +59,7 @@ public class Wrist extends Subsystem {
     public static final int SCORING_POSITION_BACK_HATCH = 135;
     public static final int SCORING_POSITION_BACK_CARGO = 135;
 
-    public static final double ARBITRARY_FF = 0.017;
+    public static final double ARBITRARY_FF = 0.002;//17;
 
     public static final int ANGLE_INTAKE = 180;
     public static final int HATCH_INTAKING_POSITION = 0;
@@ -84,13 +86,17 @@ public class Wrist extends Subsystem {
     public static final double MAX_PERCENT_OUTPUT = 1.0;
     public static final double MIN_PERCENT_OUTPUT = 0.0;
 
-    public static final int MAX_SPEED = 100; // TUNE
-
     public static final int POSITION_SLOT = 0;
     public static final int MOTION_MAGIC_SLOT = 1;
 
-    public static final boolean SENSOR_PHASE = true;
-    public static Supplier<Double> feedForwardLambda = () -> (ARBITRARY_FF * Math.cos(Wrist.getInstance().convertEncoderToRadians(Wrist.getInstance().getMasterTalon().getSelectedSensorPosition())));
+    public static final boolean SENSOR_PHASE = false;
+    public static final double WRIST_PARALLEL_FORWARD_DEG = 5.0;
+    public static Supplier<Double> feedForwardLambda = () -> (ARBITRARY_FF * 
+                                                                Math.cos(Wrist.getInstance().convertEncoderToRadians
+                                                                (Wrist.getInstance().getMasterTalon().getSelectedSensorPosition()) - WRIST_PARALLEL_FORWARD_DEG * Math.PI / 180));
+    
+    public static final int FORWARD_SOFT_LIMIT = 180;
+    public static final int REVERSE_SOFT_LIMIT = 5;
 
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
@@ -99,10 +105,13 @@ public class Wrist extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-       // setDefaultCommand(new MoveWristManual());
+       setDefaultCommand(new MoveWristManual());
     }
     
     public void talonInit () {
+        wristMaster.configFactoryDefault();
+        wristFollower.configFactoryDefault();
+
         wristFollower.follow(wristMaster);
 
         wristMaster.setNeutralMode(NeutralMode.Brake);
@@ -121,6 +130,12 @@ public class Wrist extends Subsystem {
         wristMaster.setSensorPhase(SENSOR_PHASE);
         // wristMaster.setSelectedSensorPosition(0);
         System.out.println("taloninit");
+
+        wristMaster.configForwardSoftLimitThreshold(convertDegreesToEncoder(FORWARD_SOFT_LIMIT));
+        wristMaster.configReverseSoftLimitThreshold(convertDegreesToEncoder(REVERSE_SOFT_LIMIT));
+
+        wristMaster.configForwardSoftLimitEnable(true);
+        wristMaster.configReverseSoftLimitEnable(true);
     }
 
     public HSTalon getMasterTalon () {
@@ -215,17 +230,19 @@ public class Wrist extends Subsystem {
     }
 
     public void setupMotionMagic() {
-        Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.MAX_BACKWARD_POSITION, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);     
+        getMasterTalon().config_kF(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KF);
+        getMasterTalon().config_kP(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KP);
+        getMasterTalon().config_kI(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KI);
+        getMasterTalon().config_kD(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KD);
+        getMasterTalon().config_IntegralZone(Wrist.MOTION_MAGIC_SLOT , MoveWristMotionMagic.IZONE);
 
-        Wrist.getInstance().getMasterTalon().config_kP(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KP);
-        Wrist.getInstance().getMasterTalon().config_kI(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KI);
-        Wrist.getInstance().getMasterTalon().config_kD(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KD);
-        Wrist.getInstance().getMasterTalon().config_kF(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.KF);
-        Wrist.getInstance().getMasterTalon().configMotionCruiseVelocity(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.CRUISE_VELOCITY);
-        Wrist.getInstance().getMasterTalon().configMotionAcceleration(Wrist.MOTION_MAGIC_SLOT, MoveWristMotionMagic.ACCELERATION);
+        getMasterTalon().configMotionAcceleration(MoveWristMotionMagic.ACCELERATION);
+        getMasterTalon().configMotionCruiseVelocity(MoveWristMotionMagic.CRUISE_VELOCITY);
+
+        getMasterTalon().selectProfileSlot(Wrist.MOTION_MAGIC_SLOT, Global.PID_PRIMARY);
     }
 
+    
     /**
      * Determines if the current position is 
      * in the ambiguous region.
@@ -273,11 +290,27 @@ public class Wrist extends Subsystem {
         return isSafelyForward(position) ? Side.FRONT : Side.BACK;
     }
 
-    public int convertAngleToEncoder(double angle) {
-        return (int)(angle * 4096 / 360);
+    public int convertDegreesToEncoder(double angle) {
+        return (int)(angle * Global.ENCODER_TICKS_PER_REVOLUTION / 360);
     }
 
     public double convertEncoderToRadians(int encoder) {
-        return encoder / 4096.0 * 2 * Math.PI;
+        return encoder * 1.0 / Global.ENCODER_TICKS_PER_REVOLUTION * 2 * Math.PI;
+    }
+
+    public double convertEncoderToDegrees(int encoder) {
+        return encoder * 1.0 / Global.ENCODER_TICKS_PER_REVOLUTION * 360.0;
+    }
+
+    public double getCurrentAngleRadians() {
+        return convertEncoderToRadians(getCurrentAngleEncoder());
+    }
+
+    public double getCurrentAngleDegrees() {
+        return convertEncoderToDegrees(getCurrentAngleEncoder());
+    }     
+
+    public int getCurrentAngleEncoder() {
+        return getMasterTalon().getSelectedSensorPosition();
     }
 }   

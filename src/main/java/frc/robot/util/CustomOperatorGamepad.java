@@ -20,8 +20,8 @@ public class CustomOperatorGamepad extends Joystick {
     private static final int BACKWARD_ONE_PORT = 6;
 
     private static final int ZERO_PORT = 7;
-    private static final int OUTTAKE_BALL_OR_HATCH_PORT= 8;
-    private static final int INTAKE_HATCH_PORT = 9; 
+    private static final int OUTTAKE_BALL_OR_HATCH_PORT= 9;
+    private static final int INTAKE_HATCH_PORT = 8; 
     private static final int BRING_ALL_IN_PORT = 10;
 
     private HSJoystickButton forwardOneButton;

@@ -16,7 +16,7 @@ import frc.robot.subsystems.Wrist;
  * @since 1/12/19
  */
 public class MoveWristPosition extends Command {
-    private double position;
+    private double position; 
     
 	public static final double KF = 0.0;
 	public static final double KP = 0.5;
@@ -26,7 +26,7 @@ public class MoveWristPosition extends Command {
 
     public MoveWristPosition (double angle) {
         requires (Wrist.getInstance());
-        this.position = Wrist.getInstance().convertAngleToEncoder(angle);                
+        this.position = Wrist.getInstance().convertDegreesToEncoder(angle);                
     }            
     
     /**
@@ -52,10 +52,5 @@ public class MoveWristPosition extends Command {
     @Override
     protected boolean isFinished() {
         return true;//return Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
-    }  
-
-    public void clearRequirements()
-    {
-        super.clearRequirements();
     }
 }

@@ -47,7 +47,7 @@ public class MoveWristManual extends IndefiniteCommand {
                 leftOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromBack);
             }*/
             
-            magnitude = leftOperatorTrigger;
+            magnitude = 0.5 * leftOperatorTrigger;
             direction = WristDirection.TO_BACK;
         }
         else {
@@ -55,7 +55,7 @@ public class MoveWristManual extends IndefiniteCommand {
 
             if (distFromFront <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
                 rightOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromFront);*/
-            magnitude = rightOperatorTrigger;
+            magnitude = 0.5 * rightOperatorTrigger;
             direction = WristDirection.TO_FRONT;
         }
 

@@ -61,11 +61,13 @@ public class Elevator extends Subsystem {
     public static final int ZERO_CURRENT_SPIKE = 0;
 
     public static final int LOW_SCORING_POSITION_HATCH = 9310; 
-    public static final int LOW_SCORING_POSITION_CARGO = 9310; 
+    public static final int LOW_ROCKET_SCORING_POSITION_CARGO = 9310; 
     public static final int MEDIUM_SCORING_POSITION_HATCH = 14000; 
-    public static final int MEDIUM_SCORING_POSITION_CARGO = 14000; 
+    public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO = 14000; 
     public static final int HIGH_SCORING_POSITION_HATCH = 19000; 
-    public static final int HIGH_SCORING_POSITION_CARGO = 19000; 
+    public static final int HIGH_ROCKET_SCORING_POSITION_CARGO = 19000; 
+    public static final int CARGO_SHIP_SCORING_POSITION_CARGO = 11000;
+    public static final int CARGO_SHIP_SCORING_POSITION_HATCH = 11000;
 
     public static final double NOMINAL_OUTPUT = 0.06;
 
@@ -86,6 +88,7 @@ public class Elevator extends Subsystem {
     public static final int MOTION_MAGIC_SLOT_INDEX = 1;
 
 
+
     private Elevator() {
         masterTalon = new HSTalon(CAN_IDs.EL_MASTER);
         leftFrontVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_FRONT);
@@ -96,7 +99,7 @@ public class Elevator extends Subsystem {
     
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MoveElevatorMotionMagicManual());
+        setDefaultCommand(new MoveElevatorManual());
     }
 
     public static Elevator getInstance() {
@@ -107,6 +110,11 @@ public class Elevator extends Subsystem {
 
 
     public void talonInit() {
+        masterTalon.configFactoryDefault();
+        leftFrontVictor.configFactoryDefault();
+        leftBackVictor.configFactoryDefault();
+        followerTalon.configFactoryDefault();
+
         leftFrontVictor.follow(masterTalon);
         leftBackVictor.follow(masterTalon);
         followerTalon.follow(masterTalon);

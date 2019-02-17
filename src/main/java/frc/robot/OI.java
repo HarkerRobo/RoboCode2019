@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
@@ -13,12 +14,14 @@ import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
+import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.commands.wrist.MoveWristPosition;
 import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.Limelight;
+import harkerrobolib.auto.ParallelCommandGroup;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
@@ -93,11 +96,23 @@ public class OI {
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+
+        driverGamepad.getButtonBumperRight().whenPressed(new InstantCommand() {
+            public void initialize() {
+                driverGamepad.setRumble(RumbleType.kRightRumble, 1);
+            }
+        });
+
+        driverGamepad.getButtonBumperRight().whenReleased(new InstantCommand() {
+            public void initialize() {
+                driverGamepad.setRumble(RumbleType.kRightRumble, 0);
+            }
+        });
         
         if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
             driver = Driver.CHRIS;
            
-
+        
         } //else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
         //     driver = Driver.PRANAV;
         //     driverGamepad = new XboxGamepad(DRIVER_PORT);
@@ -120,13 +135,14 @@ public class OI {
         customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
         customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));
         customOperatorGamepad.getForwardThreeButton().whenPressed(new SetScoringPosition(Location.F3));
-        customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
+        // customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
+        // customOperatorGamepad.getBackwardOneButton().whilePressed(new MoveWristMotionMagic(45));
         customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
         customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
-        customOperatorGamepad.getZeroButton().whenPressed(new ZeroElevator());
+        customOperatorGamepad.getZeroButton().whilePressed(new ZeroWrist());
         customOperatorGamepad.getOuttakeButton().whilePressed(new OuttakeBallOrHatch());
-        customOperatorGamepad.getIntakeHatchButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE));
+        customOperatorGamepad.getIntakeHatchButton().whilePressed(new ZeroElevator());
         customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());
     }  
 

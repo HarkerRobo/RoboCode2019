@@ -58,7 +58,8 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
     private static OI oi;
     private static double startTime;
-    
+
+    private CommandGroupWrapper wrapper;
     // private CANSparkMax talon;
 
     public enum Side {
@@ -88,6 +89,7 @@ public class Robot extends TimedRobot {
         intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
         // elevator.getMasterTalon().get
+        wrapper = new CommandGroupWrapper().sequential(new WaitCommand(1)).sequential(new WaitCommand(2));
     }
 
     /**
@@ -111,6 +113,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
+        wrapper.start();
         startTime = Timer.getFPGATimestamp();
         // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         //Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
@@ -140,7 +143,7 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("Left Error", drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
         // SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
     
-        // SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
+        SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getCurrentAngleDegrees());
         // //System.out.println(limelight.getCamtranData());
         // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
         // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());
@@ -155,7 +158,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void testPeriodic() {
-        
         // System.out.println("elevator limit " + elevator.getMasterTalon().getSensorCollection().isRevLimitSwitchClosed());
         // System.out.println("elevator limit fwd" + elevator.getMasterTalon().getSensorCollection().isFwdLimitSwitchClosed());
     }

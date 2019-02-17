@@ -76,6 +76,9 @@ public class Drivetrain extends HSDrivetrain {
      * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
+        getLeftMaster().configFactoryDefault();
+        getRightMaster().configFactoryDefault();
+
         followMasters();
         resetTalonInverts();
         setNeutralMode(NeutralMode.Brake);
