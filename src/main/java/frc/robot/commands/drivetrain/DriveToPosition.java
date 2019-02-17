@@ -4,7 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.util.Conversions;
 import harkerrobolib.util.Conversions.PositionUnit;
@@ -24,13 +26,26 @@ public class DriveToPosition extends Command {
 	private int leftError;
 	private int rightError;
 	
-	public static final double LEFT_KD = 0;
-	public static final double LEFT_KI = 0;
-	public static final double LEFT_KP = 0;
-	
-	public static final double RIGHT_KD = 0;
-	public static final double RIGHT_KI = 0;
-	public static final double RIGHT_KP = 0;
+	public static final double LEFT_KD, LEFT_KI, LEFT_KP;
+	public static final double RIGHT_KD, RIGHT_KI, RIGHT_KP;
+
+	static {
+		if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
+			LEFT_KD = 0;
+			LEFT_KI = 0;
+			LEFT_KP = 0;
+			RIGHT_KD = 0;
+			RIGHT_KI = 0;
+			RIGHT_KP = 0;
+		} else {
+			LEFT_KD = 0;
+			LEFT_KI = 0;
+			LEFT_KP = 0;
+			RIGHT_KD = 0;
+			RIGHT_KI = 0;
+			RIGHT_KP = 0;
+		}
+	}
 
 	/**
 	 * 

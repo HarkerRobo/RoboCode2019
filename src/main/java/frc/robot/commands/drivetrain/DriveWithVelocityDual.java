@@ -27,6 +27,13 @@ public class DriveWithVelocityDual extends IndefiniteCommand {
 
     private Limelight limelight;
 
+    public static final double TURN_KP, TURN_KI, TURN_KD, TURN_KF;
+    public static final double FORWARD_KF, FORWARD,KP, FORWARD_KI, FORWARD_KD;
+
+    static {
+        if()
+    }
+
     public static final double TURN_KP = .07; //0.09
     public static final double TURN_KI = 0.001;
     public static final double TURN_KD = 0.3;

@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
+import frc.robot.RobotMap;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
 import frc.robot.util.PIDOutputGetter;
@@ -25,15 +27,30 @@ import harkerrobolib.util.MathUtil;
 public class AlignWithLimelightDrive extends Command {
     private Limelight limelight;
 
-    public static final double TURN_KP = .07; //0.09
-    public static final double TURN_KI = 0.001;
-    public static final double TURN_KD = 0.3;
-    public static final double TURN_KF = 0;
-    
-    private static final double FORWARD_KF = 0;
-    private static final double FORWARD_KP = 0.045;
-    private static final double FORWARD_KI = 0;//0.001;
-    private static final double FOWARD_KD = 0.2;   
+    public static final double TURN_KP, TURN_KI, TURN_KD, TURN_KF;
+    public static final double FORWARD_KP, FORWARD_KI, FORWARD_KD, FORWARD_KF;
+
+    static {
+        if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            TURN_KP = .07; //0.09
+            TURN_KI = 0.001;
+            TURN_KD = 0.3;
+            TURN_KF = 0;
+            FORWARD_KF = 0;
+            FORWARD_KP = 0.045;
+            FORWARD_KI = 0;//0.001;
+            FORWARD_KD = 0.2;   
+        } else {
+            TURN_KP = .07; //0.09
+            TURN_KI = 0.001;
+            TURN_KD = 0.3;
+            TURN_KF = 0;
+            FORWARD_KF = 0;
+            FORWARD_KP = 0.045;
+            FORWARD_KI = 0;//0.001;
+            FORWARD_KD = 0.2;  
+        }
+    }
 
     public static final double TURN_ALLOWABLE_ERROR = 0.054;
     public static final double FORWARD_ALLOWABLE_ERROR = 0.05;
