@@ -6,11 +6,11 @@ import frc.robot.Robot.Side;
 import frc.robot.commands.TestCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.elevator.ZeroElevator;
-import frc.robot.commands.groups.PassthroughHigh;
-import frc.robot.commands.groups.PassthroughLow;
-import frc.robot.commands.groups.StowHatchAndCargoIntake;
+import frc.robot.commands.groups.SetScoringPosition;
+import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
+import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.util.CustomOperatorGamepad;
 import harkerrobolib.wrappers.HSGamepad;
@@ -42,6 +42,7 @@ public class OI {
     private static final int OPERATOR_PORT = 1;
 
     public static final double DRIVER_DEADBAND = 0.15;
+    public static final double DRIVER_DEADBAND_TRIGGER = 0.15;
     public static final double OPERATOR_DEADBAND_JOYSTICK = 0.1;
     public static final double OPERATOR_DEADBAND_TRIGGER = 0.1;
 
@@ -92,7 +93,7 @@ public class OI {
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
-
+        driverGamepad.getButtonX().whenPressed(new MoveWristMotionMagic(25));
         driverGamepad.getButtonBumperRight().whenPressed(new InstantCommand() {
             public void initialize() {
                 driverGamepad.setRumble(RumbleType.kRightRumble, 1);
@@ -128,37 +129,18 @@ public class OI {
             
         // } 
 
-        // customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
-        // customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));
-        // customOperatorGamepad.getForwardThreeButton().whenPressed(new SetScoringPosition(Location.F3));
-        // customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
-        // customOperatorGamepad.getBackwardOneButton().whilePressed(new MoveWristMotionMagic(45));
-        // customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
-        // customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
+        customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
+        customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));
+        customOperatorGamepad.getForwardThreeButton().whenPressed(new SetScoringPosition(Location.F3));
+        customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
+        customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
+        customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
-        customOperatorGamepad.getForwardOneButton().whenPressed(
-            new PassthroughHigh(Side.FRONT, 60)
-        );
-
-        customOperatorGamepad.getBackwardOneButton().whenPressed(
-            new PassthroughLow(Side.FRONT, 60)
-        );
-
-        customOperatorGamepad.getForwardTwoButton().whenPressed(
-            new PassthroughHigh(Side.BACK, 60)
-        );
-
-
-        customOperatorGamepad.getBackwardTwoButton().whenPressed(
-            new PassthroughLow(Side.BACK, 60)
-        );
-
-        customOperatorGamepad.getBackwardThreeButton().whenPressed(new TestCommand());
 
 
         customOperatorGamepad.getZeroButton().whilePressed(new ZeroWrist());
         customOperatorGamepad.getIntakeHatchButton().whilePressed(new ZeroElevator());
-        customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());
+        // customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());
         
         // customOperatorGamepad.getOuttakeButton().whenPressed(new InstantCommand() {
         //     @Override

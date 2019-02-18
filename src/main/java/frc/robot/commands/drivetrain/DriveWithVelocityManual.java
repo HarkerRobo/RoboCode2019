@@ -54,7 +54,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     public void execute() {
         double leftX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
         double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);        
-        Drivetrain.getInstance().arcadeDriveVelocity(OI.getInstance().getDriverGamepad().getLeftY(), Math.pow(leftX, 2) * Math.signum(leftX));
+        Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
         // if(OI.getInstance().getDriverGamepad().getLeftY() > 0.5)
         //     Drivetrain.getInstance().arcadeDriveVelocity(0.8, OI.getInstance().getDriverGamepad().getLeftX());
         // else if(OI.getInstance().getDriverGamepad().getLeftY() < -0.5)

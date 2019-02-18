@@ -18,7 +18,7 @@ import frc.robot.subsystems.Wrist.WristDirection;
  * @since 2/8/19
  */
 public class ZeroWrist extends Command {
-    private static final double ZERO_SPEED = 0.15;
+    private static final double ZERO_SPEED = 0.21;
     private static final int CURRENT_SPIKE = 5;
     private static final double TIMEOUT = 5000;
     

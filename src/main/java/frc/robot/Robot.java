@@ -144,7 +144,8 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
     
         SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getCurrentAngleDegrees());
-        SmartDashboard.putNumber("LEFT X", OI.getInstance().getDriverGamepad().getLeftX());
+        SmartDashboard.putNumber("Encoder Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+        SmartDashboard.putNumber("LEFT Y", OI.getInstance().getDriverGamepad().getLeftY());
         // //System.out.println(limelight.getCamtranData());
         // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
         // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());
@@ -222,6 +223,9 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         drivetrain.setNeutralMode(Global.DISABLED_NEUTRAL_MODE);
+
+        elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
+        wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
     }
     
 }

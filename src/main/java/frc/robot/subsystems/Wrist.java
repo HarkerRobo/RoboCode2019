@@ -54,8 +54,8 @@ public class Wrist extends Subsystem {
     
     public static final int SCORING_POSITION_FRONT_HATCH = 25;
     public static final int SCORING_POSITION_FRONT_CARGO = 25;
-    public static final int SCORING_POSITION_BACK_HATCH = 135;
-    public static final int SCORING_POSITION_BACK_CARGO = 135;
+    public static final int SCORING_POSITION_BACK_HATCH = 180;
+    public static final int SCORING_POSITION_BACK_CARGO = 180;
 
     public static final double ARBITRARY_FF = 0.002;//17;
 
@@ -63,11 +63,12 @@ public class Wrist extends Subsystem {
     public static final int HATCH_INTAKING_POSITION = 0;
     public static final int CARGO_INTAKING_POSITION = 180;
 
-    public static final int ALLOWABLE_ERROR = 400;
+    public static final int ALLOWABLE_ERROR = 50;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 185; // TUNE
-    public static final int FRONT_HIGH_PASSTHROUGH_ANGLE = 55;
-    public static final int BACK_HIGH_PASSTHROUGH_ANGLE = 135;
+    public static final int FRONT_HIGH_PASSTHROUGH_HATCH = 32;
+    public static final int FRONT_HIGH_PASSTHROUGH_CARGO = 32;
+    public static final int BACK_HIGH_PASSTHROUGH_ANGLE = 184;
     public static final int FRONT_LOW_PASSTHROUGH_ANGLE = 20;
     public static final int BACK_LOW_PASSTHROUGH_ANGLE = 160;
 
@@ -157,7 +158,7 @@ public class Wrist extends Subsystem {
     }
 
     public void setWrist (ControlMode mode, double value) {
-        // wristMaster.set(mode, value, DemandType.ArbitraryFeedForward, feedForwardLambda.get());
+        wristMaster.set(mode, value, DemandType.ArbitraryFeedForward, feedForwardLambda.get());
     }
     /**
      * Sets the output color of the LED.
@@ -195,7 +196,7 @@ public class Wrist extends Subsystem {
      * @param position position that the current position is compared in relation to
      */
     public boolean isFurtherForward (int position) {
-        return getMasterTalon().getSelectedSensorPosition() < position;
+        return getCurrentAngleDegrees() < position;
     }
 
     public boolean isFurtherForward(int comparedPosition, int comparisonPosition) {
@@ -203,7 +204,7 @@ public class Wrist extends Subsystem {
     }
 
     public boolean isFurtherBackward (int position) {
-        return getMasterTalon().getSelectedSensorPosition() > position;
+        return getCurrentAngleDegrees() > position;
     }
 
     public boolean isFurtherBackward (int comparedPosition, int comparisonPosition) {
@@ -219,7 +220,7 @@ public class Wrist extends Subsystem {
     }
 
     public boolean isAt (int position) {
-        return Math.abs(getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY) - position) == ALLOWABLE_ERROR;
+        return Math.abs(getCurrentAngleDegrees() - position) == ALLOWABLE_ERROR;
     }
 
     public void setupPositionPID () {

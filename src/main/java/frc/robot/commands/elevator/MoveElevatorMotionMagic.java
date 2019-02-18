@@ -43,12 +43,12 @@ public class MoveElevatorMotionMagic extends Command {
 
     public MoveElevatorMotionMagic(int setpoint) {
         requires(Elevator.getInstance());
-        try {throw new RuntimeException();} catch (Exception e) {e.printStackTrace();}
+        //try {throw new RuntimeException();} catch (Exception e) {e.printStackTrace();}
         this.setpoint = setpoint;
     }
 
     public MoveElevatorMotionMagic (Supplier<Integer> setpointLambda) {
-        super(0);
+        this(0);
         this.setpointLambda = setpointLambda;
     }
 
@@ -57,7 +57,7 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return Math.abs(Elevator.getInstance().getMasterTalon().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;
+        return Math.abs(setpoint - Elevator.getInstance().getMasterTalon().getSelectedSensorPosition()) <= ALLOWABLE_ERROR;
     }
 
     /**
@@ -69,6 +69,7 @@ public class MoveElevatorMotionMagic extends Command {
         // if(Elevator.getInstance().isBelow(Elevator.SAFE_LOW_PASSTHROUGH_POSITION)  && Arm.getInstance().getDirection() == ArmDirection.UP) {
         //         new SetArmPosition(ArmDirection.DOWN).start();
         //}
+        if (setpointLambda != null) {this.setpoint = setpointLambda.get();}
         System.out.println("EL MOTION MAGIC " + setpoint);
         Elevator.getInstance().setUpMotionMagic();
         

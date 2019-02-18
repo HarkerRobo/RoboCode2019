@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Wrist;
 
 /**
@@ -44,9 +45,9 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     public void initialize() {
-        System.out.println("entering wrist motion");
-        if (setpointLambda != null) {this.position = setpointLambda.get();}
+        if (setpointLambda != null) {this.position = Wrist.getInstance().convertDegreesToEncoder(setpointLambda.get());}
         Wrist.getInstance().setupMotionMagic();
+        System.out.println("entering wrist motion " + position);
     }
     
     /**
@@ -54,7 +55,7 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     public void execute() {
-        SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
+        SmartDashboard.putNumber("Wrist Error", position - Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
         Wrist.getInstance().setWrist(ControlMode.MotionMagic, position);
     }        
         
@@ -63,13 +64,12 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return true;//Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
+        return Math.abs(position - Wrist.getInstance().getMasterTalon().getSelectedSensorPosition()) <= Wrist.ALLOWABLE_ERROR;
     }
 
     @Override
     public void end () {
         System.out.println("wrist motion magic end");
-        Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
     }
 
     @Override
