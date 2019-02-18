@@ -9,6 +9,7 @@ import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.CommandGroupWrapper;
+import harkerrobolib.commands.PrintCommand;
 
 /**
  * Moves the wrist from one side of the elevator to the other safely.
@@ -41,11 +42,12 @@ public class PassthroughHigh extends Command
                 System.out.println("we are below rail pos and currently front/ambig");
             commandGroup.sequential(new PassthroughLow(currentSide, Wrist.MAX_BACKWARD_POSITION));
         }
+        commandGroup.sequential(new PrintCommand("printcommand after passthrough low!"));
         System.out.println("adding a elevatormotionmagic/movewristmotionmagic");
         commandGroup.sequential(new MoveElevatorMotionMagic(Elevator.SAFE_HIGH_PASSTHROUGH_POSITION))
                     .sequential(new MoveWristMotionMagic(desiredWristPos));
         
-
+        commandGroup.sequential(new PrintCommand("printcommand command done"));
         commandGroup.start();
     }
 
@@ -57,6 +59,7 @@ public class PassthroughHigh extends Command
     @Override
     public void interrupted()
     {
+        System.out.println("Interrupted");
         commandGroup.cancel(); 
     }
 

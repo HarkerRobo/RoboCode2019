@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot.Side;
+import frc.robot.commands.TestCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.PassthroughHigh;
@@ -151,6 +152,8 @@ public class OI {
         customOperatorGamepad.getBackwardTwoButton().whenPressed(
             new PassthroughLow(Side.BACK, 60)
         );
+
+        customOperatorGamepad.getBackwardThreeButton().whenPressed(new TestCommand());
 
 
         customOperatorGamepad.getZeroButton().whilePressed(new ZeroWrist());
