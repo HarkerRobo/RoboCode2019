@@ -87,9 +87,7 @@ public class SetScoringPosition extends CommandGroup {
 													Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS) &&
 													Elevator.getInstance().isBelow(getDesiredHeight.get(), Elevator.RAIL_POSITION);
 
-		addSequential (new ConditionalCommand(mustPassthroughHigh, 
-							new MoveWristMotionMagic(() -> getDesiredSide.get() == Side.FRONT ? 
-								Wrist.FRONT_HIGH_PASSTHROUGH_ANGLE : Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
+		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
 						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
