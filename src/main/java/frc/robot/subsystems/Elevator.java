@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -12,9 +11,7 @@ import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.elevator.MoveElevatorMotionMagicManual;
 import frc.robot.commands.elevator.MoveElevatorPosition;
-import harkerrobolib.util.Gains;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -32,7 +29,8 @@ public class Elevator extends Subsystem {
     private VictorSPX leftFrontVictor;
     private VictorSPX leftBackVictor;
     private HSTalon followerTalon;
-    public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
+    public static final int SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
+    public static final int SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
     public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
     public static final int MAX_POSITION = 22794;
 

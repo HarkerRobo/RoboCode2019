@@ -3,21 +3,15 @@ package frc.robot.commands.groups;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot.Side;
-import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.hatchpanelintake.SetExtenderManual;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Wrist;
+import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
-import harkerrobolib.auto.CommandGroupWrapper;
 
 /**
  * Passes through and moves to a desired height.
@@ -81,19 +75,28 @@ public class SetScoringPosition extends CommandGroup {
 	
 	public SetScoringPosition(Location desiredLocation) {
 		this.desiredLocation = desiredLocation;
-		BooleanSupplier shouldRunWrist1 = () ->;
-		BooleanSupplier shouldRunElevator1 = () ->;
-		BooleanSupplier shouldRunWrist2 = () ->;
-		BooleanSupplier shouldRunElevator2 = () ->;
 
-		Supplier<Integer> getWrist1Position = () ->;
-		Supplier<Integer> getElevator1Position = () ->;
-		Supplier<Integer> getWrist2Position = () ->;
-		Supplier<Integer> getElevator2Position = () ->;
+		Supplier<Integer> getDesiredHeight = () -> desiredLocation.getDesiredHeightAndAngle().getFirst();
+		Supplier<Integer> getDesiredAngle = () -> desiredLocation.getDesiredHeightAndAngle().getSecond();
+		Supplier<Side> getDesiredSide = () -> Wrist.getInstance().getSide(getDesiredAngle.get());
+		Supplier<Integer> getSafePassthroughHeight = () -> HatchLatcher.getInstance().hasHatch() ? Elevator.SAFE_LOW_PASSTHROUGH_POSITION_HATCH : 
+														Elevator.SAFE_LOW_PASSTHROUGH_POSITION_CARGO;
+		BooleanSupplier mustPassthroughLow = () -> Wrist.getInstance().getCurrentSide() != getDesiredSide.get();
+		BooleanSupplier mustPassthroughHigh = () -> Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) &&
+													(Wrist.getInstance().getCurrentSide() == Side.FRONT || 
+													Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS) &&
+													Elevator.getInstance().isBelow(getDesiredHeight.get(), Elevator.RAIL_POSITION);
 
-		addSequential (new ConditionalCommand(shouldRunWrist1, new MoveWristMotionMagic(getWrist1Position)));
-		addSequential (new ConditionalCommand(shouldRunElevator1, new MoveElevatorMotionMagic(getElevator1Position)));
-		addSequential (new ConditionalCommand(shouldRunWrist2, new MoveWristMotionMagic(getWrist2Position)));
-		addSequential (new ConditionalCommand(shouldRunElevator2, new MoveElevatorMotionMagic(getElevator2Position)));
+		addSequential (new ConditionalCommand(mustPassthroughHigh, 
+							new MoveWristMotionMagic(() -> getDesiredSide.get() == Side.FRONT ? 
+								Wrist.FRONT_HIGH_PASSTHROUGH_ANGLE : Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
+
+		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
+						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
+		addSequential(new MoveWristMotionMagic(() -> (mustPassthroughLow.getAsBoolean() ? 
+														(getDesiredSide.get() == Side.FRONT ? Wrist.FRONT_HIGH_PASSTHROUGH_ANGLE : Wrist.BACK_HIGH_PASSTHROUGH_ANGLE) 
+														: getDesiredAngle.get()))); // perform the passthrough OR simply move to desired angle
+		addSequential (new MoveElevatorMotionMagic(getDesiredHeight));
+		addSequential (new ConditionalCommand(() -> Elevator.getInstance().isAbove(Elevator.RAIL_POSITION), new MoveWristMotionMagic(getDesiredAngle)));
 	}
 }

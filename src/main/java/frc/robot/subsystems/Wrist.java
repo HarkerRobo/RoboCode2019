@@ -14,10 +14,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot.Side;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
-import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
-import frc.robot.commands.wrist.MoveWristMotionMagicManual;
 import frc.robot.commands.wrist.MoveWristPosition;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -68,6 +66,11 @@ public class Wrist extends Subsystem {
     public static final int ALLOWABLE_ERROR = 400;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 185; // TUNE
+    public static final int FRONT_HIGH_PASSTHROUGH_ANGLE = 55;
+    public static final int BACK_HIGH_PASSTHROUGH_ANGLE = 135;
+    public static final int FRONT_LOW_PASSTHROUGH_ANGLE = 20;
+    public static final int BACK_LOW_PASSTHROUGH_ANGLE = 160;
+
     public static final int MID_POSITION = (MAX_FORWARD_POSITION + MAX_BACKWARD_POSITION)/2;
     public static final int SAFE_FORWARD_POSITION = 70;
     public static final int SAFE_BACKWARD_POSITION = 110;
@@ -97,6 +100,7 @@ public class Wrist extends Subsystem {
     
     public static final int FORWARD_SOFT_LIMIT = 180;
     public static final int REVERSE_SOFT_LIMIT = 5;
+
 
     private Wrist () {
         wristMaster = new HSTalon(CAN_IDs.WRIST_MASTER);
