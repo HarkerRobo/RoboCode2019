@@ -21,12 +21,12 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     private static final double LEFT_KP = 0.4;
     private static final double LEFT_KI = 0.0;
     private static final double LEFT_KD = 0.0;
-    private static final double LEFT_KF = 0.21;
+    private static final double LEFT_KF = 0.18;
 
     private static final double RIGHT_KP = 0.4;
     private static final double RIGHT_KI = 0.0;
     private static final double RIGHT_KD = 0.0;
-    private static final double RIGHT_KF = 0.21;
+    private static final double RIGHT_KF = 0.25;
 
     public DriveWithVelocityManual() {
         requires(Drivetrain.getInstance());
@@ -53,7 +53,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
 
     public void execute() {
         double leftX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
-        double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);        
+        double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);        
         Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
         // if(OI.getInstance().getDriverGamepad().getLeftY() > 0.5)
         //     Drivetrain.getInstance().arcadeDriveVelocity(0.8, OI.getInstance().getDriverGamepad().getLeftX());

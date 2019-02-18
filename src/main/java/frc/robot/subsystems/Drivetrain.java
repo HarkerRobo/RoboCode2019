@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.Global;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import frc.robot.util.Pair;
 import harkerrobolib.subsystems.HSDrivetrain;
@@ -34,8 +35,8 @@ public class Drivetrain extends HSDrivetrain {
     private final static boolean LEFT_FOLLOWER_INVERTED = true;
     private final static boolean RIGHT_FOLLOWER_INVERTED = false;
 
-    private final static double MAX_FORWARD_VELOCITY = 14;
-    private final static double MAX_TURN_VELOCITY = 3;
+    private final static double MAX_FORWARD_VELOCITY = 12;
+    private final static double MAX_TURN_VELOCITY = 5;
 
     private static int TALON_PEAK_LIMIT = 20;
     private static int TALON_PEAK_TIME = 750;
@@ -83,6 +84,10 @@ public class Drivetrain extends HSDrivetrain {
         followMasters();
         resetTalonInverts();
         setNeutralMode(NeutralMode.Brake);
+        getLeftMaster().configVoltageCompSaturation(Global.BAT_SATURATION_VOLTAGE);
+        getRightMaster().configVoltageCompSaturation(Global.BAT_SATURATION_VOLTAGE);
+        getLeftMaster().enableVoltageCompensation(true);
+        getRightMaster().enableVoltageCompensation(true);
         // getLeftMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
         // getRightMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
         // getLeftMaster().configPeakCurrentDuration(TALON_PEAK_TIME, 10);

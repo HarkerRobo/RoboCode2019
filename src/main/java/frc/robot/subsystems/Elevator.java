@@ -58,7 +58,7 @@ public class Elevator extends Subsystem {
     public static final double FFGRAV = 0.1;
     public static final int ZERO_CURRENT_SPIKE = 0;
 
-    public static final int LOW_SCORING_POSITION_HATCH = 9310; 
+    public static final int LOW_SCORING_POSITION_HATCH = 7746; 
     public static final int LOW_ROCKET_SCORING_POSITION_CARGO = 9310; 
     public static final int MEDIUM_SCORING_POSITION_HATCH = 12000; 
     public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
