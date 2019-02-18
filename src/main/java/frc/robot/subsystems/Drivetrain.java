@@ -44,7 +44,8 @@ public class Drivetrain extends HSDrivetrain {
     public static final int ALLOWABLE_ERROR = 0;
     public static final int POSITION_SLOT_INDEX = 0;
     public static final int ANGLE_SLOT_INDEX = 1;
-    public static final int VELOCITY_SLOT_INDEX = 2;
+	public static final int VELOCITY_SLOT_INDEX = 2;
+	public static final int MOTION_PROF_SLOT = 3;
     public static final boolean LEFT_PIGEON_PHASE = true;
     public static final boolean RIGHT_PIGEON_PHASE = true;
     public static final boolean RIGHT_POSITION_PHASE = false;
