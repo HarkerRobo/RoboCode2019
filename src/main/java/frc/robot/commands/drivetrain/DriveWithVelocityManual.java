@@ -7,9 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.util.Pair;
 import harkerrobolib.commands.IndefiniteCommand;
-import harkerrobolib.util.Gains;
 import harkerrobolib.util.MathUtil;
 
 /**
@@ -28,7 +26,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     private static final double RIGHT_KP = 0.4;
     private static final double RIGHT_KI = 0.0;
     private static final double RIGHT_KD = 0.0;
-    private static final double RIGHT_KF = 0.25;
+    private static final double RIGHT_KF = 0.21;
 
     public DriveWithVelocityManual() {
         requires(Drivetrain.getInstance());
