@@ -33,7 +33,7 @@ public class Elevator extends Subsystem {
     private VictorSPX leftBackVictor;
     private HSTalon followerTalon;
     public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
-    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 19000; // tune
+    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
     public static final int MAX_POSITION = 22794;
 
     private static final boolean SENSOR_PHASE = true;

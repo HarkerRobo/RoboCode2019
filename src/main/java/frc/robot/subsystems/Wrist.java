@@ -147,9 +147,9 @@ public class Wrist extends Subsystem {
     }
 
     public void setWristPercentOutput (double value, WristDirection direction) {
-        // wristMaster.set(ControlMode.PercentOutput, value * direction.getSign(), 
-        //                 DemandType.ArbitraryFeedForward, feedForwardLambda.get() 
-        //                 );
+        wristMaster.set(ControlMode.PercentOutput, value * direction.getSign(), 
+                        DemandType.ArbitraryFeedForward, feedForwardLambda.get() 
+                        );
     }
 
     public void setWrist (ControlMode mode, double value) {

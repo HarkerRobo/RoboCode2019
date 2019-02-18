@@ -144,6 +144,7 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
     
         SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getCurrentAngleDegrees());
+        SmartDashboard.putNumber("LEFT X", OI.getInstance().getDriverGamepad().getLeftX());
         // //System.out.println(limelight.getCamtranData());
         // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
         // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());

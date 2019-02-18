@@ -3,7 +3,6 @@ package frc.robot.commands.groups;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
 import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.groups.Passthrough.PassthroughType;
 import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
 import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
 import frc.robot.commands.wrist.MoveWristPosition;
@@ -25,7 +24,7 @@ public class StowHatchAndCargoIntake extends CommandGroupWrapper {
     public StowHatchAndCargoIntake () {
         sequential(new CommandGroupWrapper()
             .parallel(new LoadOrScoreHatch(ScoreState.LOAD))
-            .parallel(new CommandGroupWrapper().sequential(new ConditionalCommand(new Passthrough(PassthroughType.LOW, Robot.Side.FRONT, Wrist.SAFE_BACKWARD_POSITION)) {
+            .parallel(new CommandGroupWrapper().sequential(new ConditionalCommand(new PassthroughLow(Robot.Side.FRONT, Wrist.SAFE_BACKWARD_POSITION)) {
                 @Override
                 public boolean condition() {
                     return Wrist.getInstance().getCurrentSide() == Robot.Side.FRONT && 

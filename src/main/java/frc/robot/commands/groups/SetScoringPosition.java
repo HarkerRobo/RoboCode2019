@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.groups.Passthrough.PassthroughType;
 import frc.robot.commands.hatchpanelintake.SetExtenderManual;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Arm;
@@ -95,7 +94,7 @@ public class SetScoringPosition extends Command {
 		// if (currentSide == Side.AMBIGUOUS || desiredSide == Side.AMBIGUOUS) {
 		// 	if(currentSide == Side.AMBIGUOUS && desiredSide == Side.AMBIGUOUS) {
 		// 		if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
-		// 			commandGroup.sequential(new Passthrough(PassthroughType.HIGH, Side.AMBIGUOUS, desiredAngle)); 
+		// 			commandGroup.sequential(new PassthroughHigh(Side.AMBIGUOUS, desiredAngle)); 
 		// 		}
 		// 		else {
 		// 			if() {
@@ -115,24 +114,24 @@ public class SetScoringPosition extends Command {
 		if (currentSide != desiredSide) { //opposite side
             if (currentSide == Side.BACK) { //back -> front
                 if (Elevator.getInstance().isAbove(desiredHeight, Elevator.RAIL_POSITION)) { //desired height on back above rail
-					commandGroup.sequential(new Passthrough(PassthroughType.HIGH, currentSide, desiredAngle))
+					commandGroup.sequential(new PassthroughHigh(currentSide, desiredAngle))
 								.sequential(new MoveElevatorMotionMagic(desiredHeight));	
 					System.out.println("a");																																																										
 				}
 				else {
-					commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, desiredAngle));
+					commandGroup.sequential(new PassthroughLow(currentSide, desiredAngle));
 					commandGroup.sequential(new MoveElevatorMotionMagic(desiredHeight));
 					System.out.println("b");
 				}												
             }
             else { // front -> back
                 if (Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
-					commandGroup.sequential(new Passthrough(PassthroughType.HIGH, currentSide, desiredAngle))
+					commandGroup.sequential(new PassthroughHigh(currentSide, desiredAngle))
 								.sequential(new MoveElevatorMotionMagic(desiredHeight));
 					System.out.println("c");
                 }
                 else {
-                    commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, desiredAngle))
+                    commandGroup.sequential(new PassthroughLow(currentSide, desiredAngle))
 								.sequential (new MoveElevatorMotionMagic(desiredHeight));
 					System.out.println("d");
                 }
@@ -145,15 +144,15 @@ public class SetScoringPosition extends Command {
 			} else { //front -> front
 				if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) && 
 				   Elevator.getInstance().isBelow(desiredHeight, Elevator.RAIL_POSITION)) { //front 3
-					commandGroup.sequential(new Passthrough(PassthroughType.HIGH, currentSide, desiredAngle))
-								.sequential(new Passthrough(PassthroughType.LOW, currentSide, desiredAngle))
+					commandGroup.sequential(new PassthroughHigh(currentSide, desiredAngle))
+								.sequential(new PassthroughLow(currentSide, desiredAngle))
 								.sequential(new MoveElevatorMotionMagic(desiredHeight));
 					System.out.println("f");
 				} 
 				else {
 					
-					commandGroup.sequential(new Passthrough(PassthroughType.LOW, currentSide, desiredAngle))
-								.sequential(new Passthrough(PassthroughType.HIGH, currentSide, desiredAngle))
+					commandGroup.sequential(new PassthroughLow(currentSide, desiredAngle))
+								.sequential(new PassthroughHigh(currentSide, desiredAngle))
 								.sequential(new MoveWristMotionMagic(desiredAngle));
 					System.out.println("g");
 				}
