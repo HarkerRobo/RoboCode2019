@@ -1,6 +1,10 @@
- package frc.robot.commands.groups;
+package frc.robot.commands.groups;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
@@ -24,7 +28,7 @@ import harkerrobolib.auto.CommandGroupWrapper;
  * @author Arnav Gupta
  * @since  2/11/19
  */
-public class SetScoringPosition extends Command {
+public class SetScoringPosition extends CommandGroup {
 	public enum Location {
         F1(Elevator.LOW_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH), 
         F2(Elevator.MEDIUM_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
@@ -74,97 +78,22 @@ public class SetScoringPosition extends Command {
 	private Location desiredLocation;
 
 	private Side desiredSide;
-	private CommandGroupWrapper commandGroup;
 	
 	public SetScoringPosition(Location desiredLocation) {
 		this.desiredLocation = desiredLocation;
-	}
-	
-	@Override
-    public void initialize () {
-		ArmDirection initialDirection = Arm.getInstance().getDirection();
-		commandGroup = new CommandGroupWrapper();
-		commandGroup.addSequential(new SetExtenderManual(ExtenderDirection.IN));
+		BooleanSupplier shouldRunWrist1 = () ->;
+		BooleanSupplier shouldRunElevator1 = () ->;
+		BooleanSupplier shouldRunWrist2 = () ->;
+		BooleanSupplier shouldRunElevator2 = () ->;
 
-		int desiredHeight = desiredLocation.getDesiredHeightAndAngle().getFirst();
-		int desiredAngle = desiredLocation.getDesiredHeightAndAngle().getSecond();
+		Supplier<Integer> getWrist1Position = () ->;
+		Supplier<Integer> getElevator1Position = () ->;
+		Supplier<Integer> getWrist2Position = () ->;
+		Supplier<Integer> getElevator2Position = () ->;
 
-		desiredSide = Wrist.getInstance().getSide(desiredAngle);
-		Side currentSide = Wrist.getInstance().getCurrentSide();
-		// if (currentSide == Side.AMBIGUOUS || desiredSide == Side.AMBIGUOUS) {
-		// 	if(currentSide == Side.AMBIGUOUS && desiredSide == Side.AMBIGUOUS) {
-		// 		if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
-		// 			commandGroup.sequential(new PassthroughHigh(Side.AMBIGUOUS, desiredAngle)); 
-		// 		}
-		// 		else {
-		// 			if() {
-						
-		// 			}
-		// 		}
-		// 	} else if(currentSide == Side.AMBIGUOUS) {
-		// 		if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
-		// 			if(desiredSide == Side.BACK) {
-
-		// 			}
-		// 		}
-		// 	} else { // desired is ambiguous but not current
-				
-		// 	}
-		// } else
-		if (currentSide != desiredSide) { //opposite side
-            if (currentSide == Side.BACK) { //back -> front
-                if (Elevator.getInstance().isAbove(desiredHeight, Elevator.RAIL_POSITION)) { //desired height on back above rail
-					commandGroup.sequential(new PassthroughHigh(currentSide, desiredAngle))
-								.sequential(new MoveElevatorMotionMagic(desiredHeight));	
-					System.out.println("a");																																																										
-				}
-				else {
-					commandGroup.sequential(new PassthroughLow(currentSide, desiredAngle));
-					commandGroup.sequential(new MoveElevatorMotionMagic(desiredHeight));
-					System.out.println("b");
-				}												
-            }
-            else { // front -> back
-                if (Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)) {
-					commandGroup.sequential(new PassthroughHigh(currentSide, desiredAngle))
-								.sequential(new MoveElevatorMotionMagic(desiredHeight));
-					System.out.println("c");
-                }
-                else {
-                    commandGroup.sequential(new PassthroughLow(currentSide, desiredAngle))
-								.sequential (new MoveElevatorMotionMagic(desiredHeight));
-					System.out.println("d");
-                }
-            }
-		} else { //same side
-			if (currentSide == Side.BACK) { //back -> back
-				commandGroup.sequential(new MoveElevatorMotionMagic(desiredHeight))
-							.sequential(new MoveWristMotionMagic(desiredAngle));
-				System.out.println("e");
-			} else { //front -> front
-				if(Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) && 
-				   Elevator.getInstance().isBelow(desiredHeight, Elevator.RAIL_POSITION)) { //front 3
-					commandGroup.sequential(new PassthroughHigh(currentSide, desiredAngle))
-								.sequential(new PassthroughLow(currentSide, desiredAngle))
-								.sequential(new MoveElevatorMotionMagic(desiredHeight));
-					System.out.println("f");
-				} 
-				else {
-					
-					commandGroup.sequential(new PassthroughLow(currentSide, desiredAngle))
-								.sequential(new PassthroughHigh(currentSide, desiredAngle))
-								.sequential(new MoveWristMotionMagic(desiredAngle));
-					System.out.println("g");
-				}
-			}
-		}
-		System.out.println("Going to position " + desiredHeight + " " + desiredAngle + " " + desiredSide);
-		commandGroup.sequential(new SetArmPosition(initialDirection));
-		commandGroup.start();
-    }
-
-    @Override
-	protected boolean isFinished() {
-		return commandGroup.isCompleted();
+		addSequential (new ConditionalCommand(shouldRunWrist1, new MoveWristMotionMagic(getWrist1Position)));
+		addSequential (new ConditionalCommand(shouldRunElevator1, new MoveElevatorMotionMagic(getElevator1Position)));
+		addSequential (new ConditionalCommand(shouldRunWrist2, new MoveWristMotionMagic(getWrist2Position)));
+		addSequential (new ConditionalCommand(shouldRunElevator2, new MoveElevatorMotionMagic(getElevator2Position)));
 	}
 }

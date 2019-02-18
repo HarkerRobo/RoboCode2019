@@ -1,5 +1,7 @@
 package frc.robot.commands.elevator;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
@@ -37,10 +39,17 @@ public class MoveElevatorMotionMagic extends Command {
     public static final boolean MOTION_MAGIC_SENSOR_PHASE = false;
     public static final int ALLOWABLE_ERROR = 100;
 
+    private Supplier<Integer> setpointLambda;
+
     public MoveElevatorMotionMagic(int setpoint) {
         requires(Elevator.getInstance());
         try {throw new RuntimeException();} catch (Exception e) {e.printStackTrace();}
         this.setpoint = setpoint;
+    }
+
+    public MoveElevatorMotionMagic (Supplier<Integer> setpointLambda) {
+        super(0);
+        this.setpointLambda = setpointLambda;
     }
 
     /**

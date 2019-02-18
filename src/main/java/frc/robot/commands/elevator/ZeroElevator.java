@@ -23,6 +23,7 @@ public class ZeroElevator extends Command {
 
     private static final double ZERO_SPEED = -0.26;
     private static final double CURRENT_SPIKE = 2.8;
+    private static final double TIMEOUT = 5000;
     
     private ArrayList<Double> currentVals;
     private int VALUES_TO_SAMPLE = 10;
@@ -47,6 +48,10 @@ public class ZeroElevator extends Command {
      */
 	@Override
 	protected boolean isFinished() {
+        if (Robot.getTime() - startTime > TIMEOUT) {
+            return true;
+        }
+
         if ((Robot.getTime() - startTime) > Elevator.PEAK_TIME) {
             System.out.println(Elevator.getInstance().getMasterTalon().getOutputCurrent());
             currentVals.add(Elevator.getInstance().getMasterTalon().getOutputCurrent());

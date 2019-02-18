@@ -1,5 +1,7 @@
 package frc.robot.commands.wrist;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -17,6 +19,7 @@ import frc.robot.subsystems.Wrist;
  */
 public class MoveWristMotionMagic extends Command {
     private double position;
+    private Supplier<Integer> setpointLambda;
     
     public static final double KF = 2.6;
     public static final double KP = 1.1;
@@ -30,6 +33,11 @@ public class MoveWristMotionMagic extends Command {
         requires (Wrist.getInstance());
         this.position = Wrist.getInstance().convertDegreesToEncoder(angle);              
     }            
+
+    public MoveWristMotionMagic (Supplier<Integer> setpointLambda) {
+        super(0);
+        this.setpointLambda = setpointLambda;
+    }
     
     /**
      * {@inheritDoc}
@@ -37,6 +45,7 @@ public class MoveWristMotionMagic extends Command {
     @Override
     public void initialize() {
         System.out.println("entering wrist motion");
+        if (setpointLambda != null) {this.position = setpointLambda.get();}
         Wrist.getInstance().setupMotionMagic();
     }
     
