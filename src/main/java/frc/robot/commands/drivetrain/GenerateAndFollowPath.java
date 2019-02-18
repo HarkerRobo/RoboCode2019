@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import com.ctre.phoenix.motion.MotionProfileStatus;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.auto.Path;
+import harkerrobolib.util.Conversions;
 import harkerrobolib.util.Gains;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.Waypoint;
@@ -24,8 +30,43 @@ import jaci.pathfinder.Trajectory.Segment;
  * @author Jatin Kohli
  * @author Arnav Gupta
  */
-public class GenerateAndFollowPath extends Command
+public class GenerateAndFollowPath extends InstantCommand
 {
+	private double dt;
+    private double maxVelocity = Path.V_DEFAULT;
+	private double maxAcceleration = Path.ACCEL_DEFAULT;
+	private double wheelBase = Path.WHEELBASE_DEFAULT;
+
+	public static final double SMALL_NUMBER = 0.001;
+
+	private Function<Double, Double> function;
+
+    public static final Function<Double, Double> BASIS_FUNCTION_00 = 
+        t -> 2*Math.pow(t, 3) - 3*Math.pow(t, 2) + 1;
+    public static final Function<Double, Double> BASIS_FUNCTION_10 = 
+        t -> Math.pow(t, 3) - 2*Math.pow(t, 2) + t;
+    public static final Function<Double, Double> BASIS_FUNCTION_01 = 
+        t -> -2*Math.pow(t, 3) + 3*Math.pow(t, 2);
+    public static final Function<Double, Double> BASIS_FUNCTION_11 = 
+        t -> Math.pow(t, 3) - Math.pow(t, 2); 
+
+
+	private Function<Double, Double> derivative;
+
+    public static final Function<Double, Double> BASIS_DERIVATIVE_00 = 
+        t -> 6*Math.pow(t, 2) - 6*t;
+    public static final Function<Double, Double> BASIS_DERIVATIVE_10 = 
+        t -> 3*Math.pow(t, 2) - 4*t + 1;
+    public static final Function<Double, Double> BASIS_DERIVATIVE_01 = 
+        t -> -6*Math.pow(t, 2) + 6*t;
+    public static final Function<Double, Double> BASIS_DERIVATIVE_11 = 
+        t -> 3*Math.pow(t, 2) - 2*t; 
+
+	private Waypoint[] points;
+
+    private Trajectory leftTrajectory;
+    private Trajectory rightTrajectory;
+	
 	public static final double 
 		LEFT_KF = 0,
 		LEFT_KD = 0, 
@@ -37,48 +78,37 @@ public class GenerateAndFollowPath extends Command
 		RIGHT_KI = 0, 
 		RIGHT_KP = 0;
 
-    private double dt = Path.DT_DEFAULT;
-    private double maxVelocity = Path.V_DEFAULT;
-	private double maxAcceleration = Path.ACCEL_DEFAULT;
-	private double wheelBase = Path.WHEELBASE_DEFAULT;
+	private MotionProfileStatus status; //status of left Talon
+	private Notifier notifier;
 
-	public static double SMALL_NUMBER = 0.001;
-
-    public static final Function<Double, Double> BASIS_FUNCTION_00 = 
-        t -> 2*Math.pow(t, 3) - 3*Math.pow(t, 2) + 1;
-    public static final Function<Double, Double> BASIS_FUNCTION_10 = 
-        t -> Math.pow(t, 3) - 2*Math.pow(t, 2) + t;
-    public static final Function<Double, Double> BASIS_FUNCTION_01 = 
-        t -> -2*Math.pow(t, 3) + 3*Math.pow(t, 2);
-    public static final Function<Double, Double> BASIS_FUNCTION_11 = 
-        t -> Math.pow(t, 3) - Math.pow(t, 2); 
-
-    public static final Function<Double, Double> BASIS_DERIVATIVE_00 = 
-        t -> 6*Math.pow(t, 2) - 6*t;
-    public static final Function<Double, Double> BASIS_DERIVATIVE_10 = 
-        t -> 3*Math.pow(t, 2) - 4*t + 1;
-    public static final Function<Double, Double> BASIS_DERIVATIVE_01 = 
-        t -> -6*Math.pow(t, 2) + 6*t;
-    public static final Function<Double, Double> BASIS_DERIVATIVE_11 = 
-        t -> 3*Math.pow(t, 2) - 2*t; 
-
-    private Function<Double, Double> function;
-    private Function<Double, Double> derivative;
-
-    private Trajectory leftTrajectory;
-    private Trajectory rightTrajectory;
-
-    private Waypoint[] points;
+	double period;
+	public static final double MIN_POINTS = 10;
 
     public GenerateAndFollowPath(Waypoint[] points)
     {
         requires(Drivetrain.getInstance());
-        this.points = points;
+		this.points = points;
 
         for (Waypoint p : this.points)
         {
             p.angle = Math.tan(Math.toRadians(p.angle)); //Convert headings to derivatives on a xy coordinate plane for calculations
-        }
+		}
+		
+		status = new MotionProfileStatus();
+
+		notifier = new Notifier(
+			new Runnable(){
+				@Override
+				public void run() {
+					Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
+					Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
+
+					Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
+				}
+			}
+		);
+
+		period = dt/2 * Conversions.MS_PER_SEC;
     }
 
     /**
@@ -88,8 +118,8 @@ public class GenerateAndFollowPath extends Command
      */
     public GenerateAndFollowPath(Waypoint [] points, double dt)
     {
-        this(points);
-        this.dt = dt;
+		this(points);
+		this.dt = dt;
     }
 
     /**
@@ -123,6 +153,8 @@ public class GenerateAndFollowPath extends Command
     @Override
     protected void initialize() 
     {
+		double startTime = Timer.getFPGATimestamp();
+
 		List<Segment> leftSegments = new ArrayList<Segment>();
 		List<Segment> rightSegments = new ArrayList<Segment>();
 
@@ -232,24 +264,36 @@ public class GenerateAndFollowPath extends Command
 
                 isComplete = isApproximately(finalX, x) && isApproximately(finalY, y);
             }
-		} 
+		}
 
 		leftTrajectory = createTrajectory(leftSegments);
 		rightTrajectory = createTrajectory(rightSegments);
 
+		double endTime = Timer.getFPGATimestamp();
+		System.out.print("Time taken: " + (endTime - startTime));
+		System.out.println("Number of left points: " + leftTrajectory.segments.length);
+		System.out.println("Number of right points: " + rightTrajectory.segments.length);
+
+		//Start motion profile setup
 		configTalons();
+		notifier.startPeriodic(period);
 	}
-		
 
-    @Override
-    protected void execute() {
-        
-    }
+	@Override
+	protected void end()
+	{
+		Drivetrain.getInstance().getLeftMaster().clearMotionProfileTrajectories();
+		Drivetrain.getInstance().getRightMaster().clearMotionProfileTrajectories();
 
-    @Override
-    protected boolean isFinished() {
-        return false;
-    }
+		Drivetrain.getInstance().getLeftMaster().set(ControlMode.Disabled, 0);
+		Drivetrain.getInstance().getRightMaster().set(ControlMode.Disabled, 0);
+	}
+
+	@Override
+	protected void interrupted()
+	{
+		end();
+	}
 
     /**
      * 
@@ -312,5 +356,14 @@ public class GenerateAndFollowPath extends Command
 					.kP(RIGHT_KP)
 					.kI(RIGHT_KI)
 					.kD(RIGHT_KD));
+
+		Drivetrain.getInstance().getLeftMaster().changeMotionControlFramePeriod((int)period);
+		Drivetrain.getInstance().getRightMaster().changeMotionControlFramePeriod((int)period);
+
+		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryPeriod(0);
+		Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryPeriod(0);
+
+		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryInterpolationEnable(false);
+		Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryInterpolationEnable(false);
 	}
 }
