@@ -1,10 +1,8 @@
 package frc.robot.commands.elevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import frc.robot.OI;
-import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;

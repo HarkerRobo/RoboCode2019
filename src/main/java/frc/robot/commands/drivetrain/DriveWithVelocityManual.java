@@ -1,14 +1,14 @@
 package frc.robot.commands.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.util.Pair;
 import harkerrobolib.commands.IndefiniteCommand;
-import harkerrobolib.util.Gains;
+import harkerrobolib.util.MathUtil;
 
 /**
  * Drives with velocity manually.
@@ -18,15 +18,15 @@ import harkerrobolib.util.Gains;
  * @since February 2, 2019
  */
 public class DriveWithVelocityManual extends IndefiniteCommand {
-    private static final double LEFT_KP = 0.16;
+    private static final double LEFT_KP = 0.4;
     private static final double LEFT_KI = 0.0;
     private static final double LEFT_KD = 0.0;
-    private static final double LEFT_KF = 0.21;
+    private static final double LEFT_KF = 0.18;
 
-    private static final double RIGHT_KP = 0.16;
+    private static final double RIGHT_KP = 0.4;
     private static final double RIGHT_KI = 0.0;
     private static final double RIGHT_KD = 0.0;
-    private static final double RIGHT_KF = 0.21;
+    private static final double RIGHT_KF = 0.25;
 
     public DriveWithVelocityManual() {
         requires(Drivetrain.getInstance());
@@ -52,7 +52,9 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     }
 
     public void execute() {
-        Drivetrain.getInstance().arcadeDriveVelocity(OI.getInstance().getDriverGamepad().getLeftY(), OI.getInstance().getDriverGamepad().getLeftX());
+        double leftX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
+        double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);        
+        Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
         // if(OI.getInstance().getDriverGamepad().getLeftY() > 0.5)
         //     Drivetrain.getInstance().arcadeDriveVelocity(0.8, OI.getInstance().getDriverGamepad().getLeftX());
         // else if(OI.getInstance().getDriverGamepad().getLeftY() < -0.5)
@@ -64,5 +66,10 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
         SmartDashboard.putNumber("Error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(0));
         //Drivetrain.getInstance().getLeftMaster().set(ControlMode.Velocity, )
 
+    }
+
+    public void end () {
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.Disabled, 0);
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.Disabled, 0);
     }
 }

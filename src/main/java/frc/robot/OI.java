@@ -1,18 +1,21 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.Robot.Side;
+import frc.robot.commands.TestCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.elevator.MoveElevatorPosition;
 import frc.robot.commands.elevator.ZeroElevator;
-import frc.robot.commands.groups.OuttakeBallOrHatch;
 import frc.robot.commands.groups.SetScoringPosition;
-import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.groups.SetScoringPosition.Location;
+import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
+import frc.robot.commands.hatchpanelintake.StowHatchIntake;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
+import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.rollers.SpinRollersManual;
 import frc.robot.commands.wrist.MoveWristPosition;
@@ -20,6 +23,8 @@ import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Intake.IntakeDirection;
+import frc.robot.commands.wrist.MoveWristMotionMagic;
+import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.Limelight;
 import harkerrobolib.wrappers.HSGamepad;
@@ -51,6 +56,7 @@ public class OI {
     private static final int OPERATOR_PORT = 1;
 
     public static final double DRIVER_DEADBAND = 0.15;
+    public static final double DRIVER_DEADBAND_TRIGGER = 0.15;
     public static final double OPERATOR_DEADBAND_JOYSTICK = 0.1;
     public static final double OPERATOR_DEADBAND_TRIGGER = 0.1;
 
@@ -69,10 +75,13 @@ public class OI {
     private static final int ANGELA_CONTROL_SCHEME = 0;
     private static Driver driver;
 
+    private static boolean cargoBayToggleMode;
+
     private OI() {
         driver = Driver.CHRIS;
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
+        cargoBayToggleMode = false;
         initBindings();
     }
     
@@ -88,6 +97,17 @@ public class OI {
                 driverControlScheme++;
                 initBindings();
             }
+        // driverGamepad.getButtonA().whenPressed(new ZeroElevator());
+        
+        // driverGamepad.getButtonStart().whilePressed(new InstantCommand() {
+            
+
+        //     @Override
+        //     public void initialize() {
+        //         driverControlScheme++;
+        //         initBindings();
+        //         System.out.println("START");
+        //     }
 
         });
 
@@ -98,11 +118,37 @@ public class OI {
             driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
             driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
             driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+            //driverGamepad.getButtonBumperRight().whenPressed(new StowHatchIntake());
            
 
         } else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
             driver = Driver.PRANAV;
             driverGamepad = new XboxGamepad(DRIVER_PORT);
+        driverGamepad = new XboxGamepad(DRIVER_PORT);
+            
+        driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
+        driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
+        driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+        driverGamepad.getButtonX().whenPressed(new MoveWristMotionMagic(25));
+        driverGamepad.getButtonBumperRight().whenPressed(new InstantCommand() {
+            public void initialize() {
+                driverGamepad.setRumble(RumbleType.kRightRumble, 1);
+            }
+        });
+
+        driverGamepad.getButtonBumperRight().whenReleased(new InstantCommand() {
+            public void initialize() {
+                driverGamepad.setRumble(RumbleType.kRightRumble, 0);
+            }
+        });
+        
+        if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
+            driver = Driver.CHRIS;
+           
+        
+        } //else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
+        //     driver = Driver.PRANAV;
+        //     driverGamepad = new XboxGamepad(DRIVER_PORT);
             
             driverGamepad.getButtonBumperRight().whileActive(new AlignWithLimelightDrive(Limelight.TX_SETPOINT));
 
@@ -133,12 +179,29 @@ public class OI {
         customOperatorGamepad.getBackwardTwoButton().whenPressed(new SetScoringPosition(Location.B2));
         customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
-        customOperatorGamepad.getZeroButton().whenPressed(new SetScoringPosition(Location.ZERO));
-        customOperatorGamepad.getOuttakeButton().whilePressed(new OuttakeBallOrHatch());
-        customOperatorGamepad.getIntakeHatchButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE));
-        customOperatorGamepad.getStowButton().whenPressed(new StowHatchAndCargoIntake());
-    }  
 
+
+        customOperatorGamepad.getZeroButton().whilePressed(new ZeroWrist());
+        customOperatorGamepad.getIntakeHatchButton().whilePressed(new ZeroElevator());
+         customOperatorGamepad.getStowButton().whenPressed(new SetScoringPosition(Location.F1, true));
+        
+        // customOperatorGamepad.getOuttakeButton().whenPressed(new InstantCommand() {
+        //     @Override
+        //     public void initialize() {
+        //         cargoBayToggleMode = !cargoBayToggleMode;
+        //         if(cargoBayToggleMode) {
+        //             customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.CARGO_SHIP_FRONT));
+        //             customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.CARGO_SHIP_BACK));
+        //         } else {
+        //             customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
+        //             customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
+        //         }
+        //     }
+        // });
+
+
+    }  
+    
     public HSGamepad getDriverGamepad() {
         return driverGamepad;
     }

@@ -2,6 +2,8 @@ package frc.robot.commands.hatchpanelintake;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.subsystems.HatchLatcher;
+import frc.robot.subsystems.HatchLatcher.FlowerDirection;
+import frc.robot.util.PneumaticsUtil;
 
 /**
  * Toggles flower direction.
@@ -19,7 +21,7 @@ public class ToggleFlowerState extends InstantCommand{
      */
     @Override
     public void initialize() {
-        HatchLatcher.getInstance().setFlowerState(HatchLatcher.getInstance().getFlowerState());
+        HatchLatcher.getInstance().setFlowerState(FlowerDirection.convertDirection(PneumaticsUtil.switchSolenoidValue(HatchLatcher.getInstance().getFlowerState().getValue())));
     }
 
           

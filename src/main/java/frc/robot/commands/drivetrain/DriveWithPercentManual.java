@@ -3,6 +3,7 @@ package frc.robot.commands.drivetrain;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import frc.robot.OI;
+import frc.robot.OI.Driver;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
@@ -32,8 +33,16 @@ public class DriveWithPercentManual extends IndefiniteCommand {
      */
     @Override
     public void execute() {
-        double leftDriverX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
-        double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
+        double leftDriverX = 0;
+        double leftDriverY = 0;
+        if(OI.getInstance().getDriver() == Driver.CHRIS || OI.getInstance().getDriver() == Driver.PRANAV) {
+             leftDriverX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
+             leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
+        }
+        else {
+            leftDriverX = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
+            leftDriverY =  MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND);
+        }
 
         
         Drivetrain.getInstance().arcadeDrivePercentOutput(leftDriverY, leftDriverX);

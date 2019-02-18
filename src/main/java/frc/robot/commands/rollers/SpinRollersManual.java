@@ -51,7 +51,15 @@ public class SpinRollersManual extends IndefiniteCommand {
                 }
             }
         } else {
-            //Angela
+            if(OI.getInstance().getDriverGamepad().getButtonXState())  {
+                output = Rollers.getInstance().getRecommendedRollersOutput();
+                rollerDirection = rollerDirection.IN;
+            } else {
+                if(OI.getInstance().getDriverGamepad().getButtonYState()) {
+                    output = Rollers.getInstance().getRecommendedRollersOutput();
+                    rollerDirection = rollerDirection.OUT;
+                }
+            }
         }
         
         if((int) Math.signum(output) == RollerDirection.IN.getSign() && Math.abs(output) > Rollers.HATCH_STOW_SPEED)

@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.Global;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import frc.robot.util.Pair;
 import harkerrobolib.subsystems.HSDrivetrain;
@@ -34,8 +35,8 @@ public class Drivetrain extends HSDrivetrain {
     private final static boolean LEFT_FOLLOWER_INVERTED = true;
     private final static boolean RIGHT_FOLLOWER_INVERTED = false;
 
-    private final static double MAX_FORWARD_VELOCITY = 14;
-    private final static double MAX_TURN_VELOCITY = 4;
+    private final static double MAX_FORWARD_VELOCITY = 12;
+    private final static double MAX_TURN_VELOCITY = 5;
 
     private static int TALON_PEAK_LIMIT = 20;
     private static int TALON_PEAK_TIME = 750;
@@ -44,7 +45,8 @@ public class Drivetrain extends HSDrivetrain {
     public static final int ALLOWABLE_ERROR = 0;
     public static final int POSITION_SLOT_INDEX = 0;
     public static final int ANGLE_SLOT_INDEX = 1;
-    public static final int VELOCITY_SLOT_INDEX = 2;
+	public static final int VELOCITY_SLOT_INDEX = 2;
+	public static final int MOTION_PROF_SLOT = 3;
     public static final boolean LEFT_PIGEON_PHASE = true;
     public static final boolean RIGHT_PIGEON_PHASE = true;
     public static final boolean RIGHT_POSITION_PHASE = false;
@@ -76,9 +78,16 @@ public class Drivetrain extends HSDrivetrain {
      * A method to initialize the Talons for the start of the match.
      */
     public void talonInit() {
+        getLeftMaster().configFactoryDefault();
+        getRightMaster().configFactoryDefault();
+
         followMasters();
         resetTalonInverts();
         setNeutralMode(NeutralMode.Brake);
+        getLeftMaster().configVoltageCompSaturation(Global.BAT_SATURATION_VOLTAGE);
+        getRightMaster().configVoltageCompSaturation(Global.BAT_SATURATION_VOLTAGE);
+        getLeftMaster().enableVoltageCompensation(true);
+        getRightMaster().enableVoltageCompensation(true);
         // getLeftMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
         // getRightMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
         // getLeftMaster().configPeakCurrentDuration(TALON_PEAK_TIME, 10);

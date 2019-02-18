@@ -39,27 +39,28 @@ public class MoveWristManual extends IndefiniteCommand {
         double magnitude = 0;
         WristDirection direction;
         //double currentPosition = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
-        
-        if (leftOperatorTrigger > rightOperatorTrigger) {
-            /*double distFromBack = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
+        if (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER) {
+            if (leftOperatorTrigger > rightOperatorTrigger) {
+                /*double distFromBack = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
 
-            if (distFromBack <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
-                leftOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromBack);
-            }*/
-            
-            magnitude = leftOperatorTrigger;
-            direction = WristDirection.TO_BACK;
+                if (distFromBack <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
+                    leftOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromBack);
+                }*/
+                
+                magnitude = 0.35 * leftOperatorTrigger;
+                direction = WristDirection.TO_BACK;
+            }
+            else {
+                /*double distFromFront = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
+
+                if (distFromFront <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
+                    rightOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromFront);*/
+                magnitude = 0.35 * rightOperatorTrigger;
+                direction = WristDirection.TO_FRONT;
+            }
+
+            Wrist.getInstance().setWristPercentOutput(magnitude, direction);
         }
-        else {
-            /*double distFromFront = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
-
-            if (distFromFront <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
-                rightOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromFront);*/
-            magnitude = rightOperatorTrigger;
-            direction = WristDirection.TO_FRONT;
-        }
-
-        Wrist.getInstance().setWristPercentOutput(magnitude, direction);
     }
 
     /**

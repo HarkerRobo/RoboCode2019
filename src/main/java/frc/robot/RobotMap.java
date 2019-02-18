@@ -106,9 +106,11 @@ public class RobotMap {
         public static final LEDChannel GREEN_CHANNEL = LEDChannel.LEDChannelB;
         public static final LEDChannel BLUE_CHANNEL = LEDChannel.LEDChannelC;
 
+        public static final int ENCODER_TICKS_PER_REVOLUTION = 4096;
+
         public static final String LIMELIGHT_URL = "http://10.10.72.11:5802";
 
-        public static final double BAT_SATURATION_VALUE = 10;
+        public static final double BAT_SATURATION_VOLTAGE = 10;
     }
     
 }

@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -12,9 +11,7 @@ import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.elevator.MoveElevatorMotionMagicManual;
 import frc.robot.commands.elevator.MoveElevatorPosition;
-import harkerrobolib.util.Gains;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -32,8 +29,9 @@ public class Elevator extends Subsystem {
     private VictorSPX leftFrontVictor;
     private VictorSPX leftBackVictor;
     private HSTalon followerTalon;
-    public static final int SAFE_LOW_PASSTHROUGH_POSITION = 0;
-    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 1000; // tune
+    public static final int SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
+    public static final int SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
+    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
     public static final int MAX_POSITION = 22794;
 
     private static final boolean SENSOR_PHASE = true;
@@ -54,18 +52,20 @@ public class Elevator extends Subsystem {
     public static final int HATCH_INTAKING_POSITION = 0;
     public static final int CARGO_INTAKING_POSITION = 20;
 
-    public static final int RAIL_POSITION = 100; //TUNE
+    public static final int RAIL_POSITION = 20500; //TUNE
     public static final int BALL_INTAKING_HEIGHT = 100; //Tune
     
     public static final double FFGRAV = 0.1;
     public static final int ZERO_CURRENT_SPIKE = 0;
 
-    public static final int LOW_SCORING_POSITION_HATCH = 0; 
-    public static final int LOW_SCORING_POSITION_CARGO = 0; 
-    public static final int MEDIUM_SCORING_POSITION_HATCH = 0; 
-    public static final int MEDIUM_SCORING_POSITION_CARGO = 0; 
-    public static final int HIGH_SCORING_POSITION_HATCH = 0; 
-    public static final int HIGH_SCORING_POSITION_CARGO = 0; 
+    public static final int LOW_SCORING_POSITION_HATCH = 7746; 
+    public static final int LOW_ROCKET_SCORING_POSITION_CARGO = 9310; 
+    public static final int MEDIUM_SCORING_POSITION_HATCH = 12000; 
+    public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
+    public static final int HIGH_SCORING_POSITION_HATCH = 22500; 
+    public static final int HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
+    public static final int CARGO_SHIP_SCORING_POSITION_CARGO = 11000;
+    public static final int CARGO_SHIP_SCORING_POSITION_HATCH = 11000;
 
     public static final double NOMINAL_OUTPUT = 0.06;
 
@@ -86,6 +86,7 @@ public class Elevator extends Subsystem {
     public static final int MOTION_MAGIC_SLOT_INDEX = 1;
 
 
+
     private Elevator() {
         masterTalon = new HSTalon(CAN_IDs.EL_MASTER);
         leftFrontVictor = new VictorSPX(CAN_IDs.EL_VICTOR_LEFT_FRONT);
@@ -96,7 +97,7 @@ public class Elevator extends Subsystem {
     
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new MoveElevatorMotionMagicManual());
+        setDefaultCommand(new MoveElevatorManual());
     }
 
     public static Elevator getInstance() {
@@ -107,6 +108,11 @@ public class Elevator extends Subsystem {
 
 
     public void talonInit() {
+        masterTalon.configFactoryDefault();
+        leftFrontVictor.configFactoryDefault();
+        leftBackVictor.configFactoryDefault();
+        followerTalon.configFactoryDefault();
+
         leftFrontVictor.follow(masterTalon);
         leftBackVictor.follow(masterTalon);
         followerTalon.follow(masterTalon);

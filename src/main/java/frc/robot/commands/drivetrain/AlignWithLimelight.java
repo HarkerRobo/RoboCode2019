@@ -162,7 +162,6 @@ public class AlignWithLimelight extends Command {
      */
     @Override
     public void interrupted() {
-        System.out.println("Interrupted");
         end();
     }
 

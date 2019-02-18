@@ -1,5 +1,7 @@
 package frc.robot.commands.elevator;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
@@ -37,9 +39,17 @@ public class MoveElevatorMotionMagic extends Command {
     public static final boolean MOTION_MAGIC_SENSOR_PHASE = false;
     public static final int ALLOWABLE_ERROR = 100;
 
+    private Supplier<Integer> setpointLambda;
+
     public MoveElevatorMotionMagic(int setpoint) {
         requires(Elevator.getInstance());
+        //try {throw new RuntimeException();} catch (Exception e) {e.printStackTrace();}
         this.setpoint = setpoint;
+    }
+
+    public MoveElevatorMotionMagic (Supplier<Integer> setpointLambda) {
+        this(0);
+        this.setpointLambda = setpointLambda;
     }
 
     /**
@@ -47,7 +57,7 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return Math.abs(Elevator.getInstance().getMasterTalon().getClosedLoopError(Global.PID_PRIMARY)) <= ALLOWABLE_ERROR;
+        return Math.abs(setpoint - Elevator.getInstance().getMasterTalon().getSelectedSensorPosition()) <= ALLOWABLE_ERROR;
     }
 
     /**
@@ -55,11 +65,12 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected void initialize() {
-        
        
         // if(Elevator.getInstance().isBelow(Elevator.SAFE_LOW_PASSTHROUGH_POSITION)  && Arm.getInstance().getDirection() == ArmDirection.UP) {
         //         new SetArmPosition(ArmDirection.DOWN).start();
         //}
+        if (setpointLambda != null) {this.setpoint = setpointLambda.get();}
+        System.out.println("EL MOTION MAGIC " + setpoint);
         Elevator.getInstance().setUpMotionMagic();
         
     }
@@ -73,4 +84,6 @@ public class MoveElevatorMotionMagic extends Command {
         SmartDashboard.putNumber("el error", Elevator.getInstance().getMasterTalon().getClosedLoopError()) ;
     
     }
+
+    public void end () {System.out.println("command ended");}
 }
