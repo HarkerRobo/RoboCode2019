@@ -16,7 +16,7 @@ public class ConditionalCommand extends edu.wpi.first.wpilibj.command.Conditiona
     public ConditionalCommand(BooleanSupplier condition, Command trueCommand) {
         super(trueCommand);
         this.condition = condition;
-        this.
+        // this.
     }
 
     public ConditionalCommand(BooleanSupplier condition, Command trueCommand, Command falseCommand) {
