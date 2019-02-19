@@ -54,7 +54,7 @@ public class Rollers extends Subsystem {
 
     @Override
 	protected void initDefaultCommand() {
-		// setDefaultCommand(new SpinRollersManual());
+		setDefaultCommand(new SpinRollersManual());
     }
     
     /**

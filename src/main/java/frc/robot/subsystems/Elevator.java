@@ -50,7 +50,7 @@ public class Elevator extends Subsystem {
     public static final int INTAKE_POSITION = 0;
     
     public static final int HATCH_INTAKING_POSITION = 0;
-    public static final int CARGO_INTAKING_POSITION = 20;
+    public static final int CARGO_INTAKING_POSITION = 0;
 
     public static final int RAIL_POSITION = 20500; //TUNE
     public static final int BALL_INTAKING_HEIGHT = 100; //Tune
@@ -59,7 +59,7 @@ public class Elevator extends Subsystem {
     public static final int ZERO_CURRENT_SPIKE = 0;
 
     public static final int LOW_SCORING_POSITION_HATCH = 7746; 
-    public static final int LOW_ROCKET_SCORING_POSITION_CARGO = 9310; 
+    public static final int LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
     public static final int MEDIUM_SCORING_POSITION_HATCH = 12000; 
     public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
     public static final int HIGH_SCORING_POSITION_HATCH = 22500; 

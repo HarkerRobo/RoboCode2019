@@ -52,23 +52,23 @@ public class Wrist extends Subsystem {
     public static final int PEAK_CURRENT_LIMIT = 10;
     public static final int PEAK_TIME = 500;
     
-    public static final int SCORING_POSITION_FRONT_HATCH = 25;
-    public static final int SCORING_POSITION_FRONT_CARGO = 25;
+    public static final int SCORING_POSITION_FRONT_HATCH = 20;
+    public static final int SCORING_POSITION_FRONT_CARGO = 20;
     public static final int SCORING_POSITION_BACK_HATCH = 189;
-    public static final int SCORING_POSITION_BACK_CARGO = 180;
+    public static final int SCORING_POSITION_BACK_CARGO = 176;
 
     public static final double ARBITRARY_FF = 0.002;//17;
 
     public static final int ANGLE_INTAKE = 180;
     public static final int HATCH_INTAKING_POSITION = 0;
-    public static final int CARGO_INTAKING_POSITION = 180;
+    public static final int CARGO_INTAKING_POSITION = 5;
 
     public static final int ALLOWABLE_ERROR = 50;
     public static final int MAX_FORWARD_POSITION = 0;
     public static final int MAX_BACKWARD_POSITION = 185; // TUNE
     public static final int FRONT_HIGH_PASSTHROUGH_HATCH = 32;
     public static final int FRONT_HIGH_PASSTHROUGH_CARGO = 32;
-    public static final int BACK_HIGH_PASSTHROUGH_ANGLE = 184;
+    public static final int BACK_HIGH_PASSTHROUGH_ANGLE = 188;
     public static final int FRONT_LOW_PASSTHROUGH_ANGLE = 20;
     public static final int BACK_LOW_PASSTHROUGH_ANGLE = 160;
 

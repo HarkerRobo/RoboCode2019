@@ -44,11 +44,13 @@ public class SpinRollersManual extends IndefiniteCommand {
             if(OI.getInstance().getDriverGamepad().getButtonXState()) {
                 output = Rollers.getInstance().getRecommendedRollersOutput();
                 rollerDirection = RollerDirection.OUT;
-            } else {
-                if(OI.getInstance().getDriverGamepad().getLeftTrigger() > 0) {
+            } else if(OI.getInstance().getDriverGamepad().getButtonYState()) {
                     output = Rollers.DEFAULT_ROLLER_MAGNITUDE;
                     rollerDirection = RollerDirection.IN;
-                }
+
+            } else {
+                output = 0;
+                rollerDirection = RollerDirection.IN;
             }
         } else {
             if(OI.getInstance().getDriverGamepad().getButtonXState())  {

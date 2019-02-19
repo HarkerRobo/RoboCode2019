@@ -35,8 +35,8 @@ public class Drivetrain extends HSDrivetrain {
     private final static boolean LEFT_FOLLOWER_INVERTED = true;
     private final static boolean RIGHT_FOLLOWER_INVERTED = false;
 
-    private final static double MAX_FORWARD_VELOCITY = 12;
-    private final static double MAX_TURN_VELOCITY = 5;
+    private final static double MAX_FORWARD_VELOCITY = 8; //12
+    private final static double MAX_TURN_VELOCITY = 4; //5
 
     private static int TALON_PEAK_LIMIT = 20;
     private static int TALON_PEAK_TIME = 750;

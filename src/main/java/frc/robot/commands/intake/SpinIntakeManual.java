@@ -27,10 +27,15 @@ public class SpinIntakeManual extends IndefiniteCommand {
      */
     @Override
     public void execute() {
-        double driverBallIntakeOutput = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
-        Intake.getInstance().setControllerOutput(driverBallIntakeOutput);
-        if (Math.signum(driverBallIntakeOutput) == IntakeDirection.IN.getSign())  { // only actuate if pulling cargo in
-            //Intake.getInstance().setControllerOutput(operatorBallIntakeOutput);
+        // double driverBallIntakeOutput = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
+        // Intake.getInstance().setControllerOutput(driverBallIntakeOutput);
+        // if (Math.signum(driverBallIntakeOutput) == IntakeDirection.IN.getSign())  { // only actuate if pulling cargo in
+        //     //Intake.getInstance().setControllerOutput(operatorBallIntakeOutput);
+        // }
+        if(OI.getInstance().getDriverGamepad().getButtonYState()) {
+            Intake.getInstance().setControllerOutput(0.5, IntakeDirection.IN);
+        } else {
+            Intake.getInstance().setControllerOutput(0.0, IntakeDirection.IN);
         }
     }
 }

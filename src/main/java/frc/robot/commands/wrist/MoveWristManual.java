@@ -1,5 +1,6 @@
 package frc.robot.commands.wrist;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import frc.robot.OI;
@@ -60,6 +61,9 @@ public class MoveWristManual extends IndefiniteCommand {
             }
 
             Wrist.getInstance().setWristPercentOutput(magnitude, direction);
+        }
+        else {
+            //Wrist.getInstance().setWrist(ControlMode.MotionMagic, Wrist.getInstance().getCurrentAngleEncoder());
         }
     }
 

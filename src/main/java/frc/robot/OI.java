@@ -88,15 +88,14 @@ public class OI {
     public void initBindings() {
         //driverGamepad.getButtonX().whilePressed(new MoveWristPosition(170));
        // driverGamepad.getButtonY().whenPressed(new ZeroWrist());
-        driverGamepad.getButtonA().whenPressed(new ZeroElevator());
-        driverGamepad.getButtonB().whilePressed(new MoveElevatorMotionMagic(15000));
-        driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
-            
-            @Override
-            public void initialize() {
-                driverControlScheme++;
-                initBindings();
-            }
+        //driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
+        //    
+        //    @Override
+        //    public void initialize() {
+        //        driverControlScheme++;
+        //        initBindings();
+        //    }
+        // } );
         // driverGamepad.getButtonA().whenPressed(new ZeroElevator());
         
         // driverGamepad.getButtonStart().whilePressed(new InstantCommand() {
@@ -109,7 +108,7 @@ public class OI {
         //         System.out.println("START");
         //     }
 
-        });
+       //});
 
         if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
             driver = Driver.CHRIS;
@@ -124,33 +123,22 @@ public class OI {
         } else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
             driver = Driver.PRANAV;
             driverGamepad = new XboxGamepad(DRIVER_PORT);
-        driverGamepad = new XboxGamepad(DRIVER_PORT);
             
-        driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
-        driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
-        driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
-        driverGamepad.getButtonX().whenPressed(new MoveWristMotionMagic(25));
-        driverGamepad.getButtonBumperRight().whenPressed(new InstantCommand() {
-            public void initialize() {
-                driverGamepad.setRumble(RumbleType.kRightRumble, 1);
-            }
-        });
+            //driverGamepad.getButtonBumperRight().whileActive(new AlignWithLimelightDrive(Limelight.TX_SETPOINT));
 
-        driverGamepad.getButtonBumperRight().whenReleased(new InstantCommand() {
-            public void initialize() {
-                driverGamepad.setRumble(RumbleType.kRightRumble, 0);
-            }
-        });
-        
-        if(driverControlScheme % NUM_DRIVERS == CHRIS_CONTROL_SCHEME) {
-            driver = Driver.CHRIS;
-           
-        
-        } //else if(driverControlScheme % NUM_DRIVERS == PRANAV_CONTROL_SCHEME) {
-        //     driver = Driver.PRANAV;
-        //     driverGamepad = new XboxGamepad(DRIVER_PORT);
-            
-            driverGamepad.getButtonBumperRight().whileActive(new AlignWithLimelightDrive(Limelight.TX_SETPOINT));
+            driverGamepad.getButtonBumperRight().whileActive(new InstantCommand() {
+                @Override
+                public void initialize() {
+                    driverGamepad.setRumble(RumbleType.kRightRumble, 1.0);
+                }
+            });
+
+            driverGamepad.getButtonBumperRight().whenReleased(new InstantCommand() {
+                @Override
+                public void initialize() {
+                    driverGamepad.setRumble(RumbleType.kRightRumble, 0.0);
+                }
+            });
 
             driverGamepad.getButtonB().whileActive(new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN));
 
@@ -160,15 +148,15 @@ public class OI {
             driverGamepad.getButtonY().whenPressed(new ToggleExtenderState());
             
         } else if(driverControlScheme % NUM_DRIVERS == ANGELA_CONTROL_SCHEME) {
-            driver = Driver.ANGELA;
-            driverGamepad = new XboxGamepad(DRIVER_PORT);
-            driverGamepad.getButtonA().whenPressed(new ToggleFlowerState());
-            driverGamepad.getButtonBumperLeft().whenPressed(new ToggleExtenderState());
-            driverGamepad.getButtonBumperRight().whenPressed(new AlignWithLimelightDrive(Limelight.TX_SETPOINT));
-            driverGamepad.getDownDPadButton().whenPressed(new SetArmPosition(ArmDirection.UP));
-            driverGamepad.getUpDPadButton().whenPressed(new SetArmPosition(ArmDirection.DOWN));
+            // driver = Driver.ANGELA;
+            // driverGamepad = new XboxGamepad(DRIVER_PORT);
+            // driverGamepad.getButtonA().whenPressed(new ToggleFlowerState());
+            // driverGamepad.getButtonBumperLeft().whenPressed(new ToggleExtenderState());
+            // driverGamepad.getButtonBumperRight().whenPressed(new AlignWithLimelightDrive(Limelight.TX_SETPOINT));
+            // driverGamepad.getDownDPadButton().whenPressed(new SetArmPosition(ArmDirection.UP));
+            // driverGamepad.getUpDPadButton().whenPressed(new SetArmPosition(ArmDirection.DOWN));
 
-            driverGamepad.getButtonB().whenPressed(new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN));
+            // driverGamepad.getButtonB().whenPressed(new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN));
             
         } 
 
@@ -180,10 +168,10 @@ public class OI {
         customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
 
-
+        customOperatorGamepad.getOuttakeButton().whenPressed(new SetScoringPosition(Location.CARGO_INTAKE));
         customOperatorGamepad.getZeroButton().whilePressed(new ZeroWrist());
         customOperatorGamepad.getIntakeHatchButton().whilePressed(new ZeroElevator());
-         customOperatorGamepad.getStowButton().whenPressed(new SetScoringPosition(Location.F1, true));
+         customOperatorGamepad.getStowButton().whenPressed(new SetScoringPosition(Location.B1, true));
         
         // customOperatorGamepad.getOuttakeButton().whenPressed(new InstantCommand() {
         //     @Override
