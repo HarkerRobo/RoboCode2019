@@ -94,26 +94,26 @@ public class GenerateAndFollowPath extends Command
     private double leftPosition;
     private double rightPosition;
 
-    private boolean isComplete = false;
+    private boolean isGenerationComplete = false;
 
     private List<TrajectoryPoint> leftTrajectory;
     private List<TrajectoryPoint> rightTrajectory;
 	
-	// public static final double 
-	// 	LEFT_KF = 0,
-	// 	LEFT_KD = 0, 
-	// 	LEFT_KI = 0, 
-	// 	LEFT_KP = 0,
+	public static final double 
+		LEFT_KF = 0,
+		LEFT_KD = 0, 
+		LEFT_KI = 0, 
+		LEFT_KP = 0,
 
-	// 	RIGHT_KF = 0,
-	// 	RIGHT_KD = 0, 
-	// 	RIGHT_KI = 0, 
-	// 	RIGHT_KP = 0;
+		RIGHT_KF = 0,
+		RIGHT_KD = 0, 
+		RIGHT_KI = 0, 
+		RIGHT_KP = 0;
 
-	// private MotionProfileStatus status; //status of left Talon
-	// private Notifier notifier;
+	private MotionProfileStatus status; //status of left Talon
+	private Notifier notifier;
 
-	// double period;
+	double period;
 	// public static final double MIN_POINTS = 10;
 
     public GenerateAndFollowPath(Waypoint[] points)
@@ -128,19 +128,17 @@ public class GenerateAndFollowPath extends Command
 		
 		// status = new MotionProfileStatus();
 
-		// notifier = new Notifier(
-		// 	new Runnable(){
-		// 		@Override
-		// 		public void run() {
-		// 			Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
-		// 			Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
+		notifier = new Notifier(
+			new Runnable(){
+				@Override
+				public void run() {
+					Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
+					Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
 
-		// 			Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
-		// 		}
-		// 	}
-		// );
-
-        //period = dt/2;
+					Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
+				}
+			}
+        );
         
         leftTrajectory = new ArrayList<TrajectoryPoint>();
         rightTrajectory = new ArrayList<TrajectoryPoint>();
@@ -155,7 +153,6 @@ public class GenerateAndFollowPath extends Command
     {
 		this(points);
         this.dt = dt;
-        //period = dt/2;
     }
 
     /**
@@ -215,6 +212,8 @@ public class GenerateAndFollowPath extends Command
             finalDx * BASIS_DERIVATIVE_11.apply((x - initialX)/range)
         );
 
+        isGenerationComplete = false;
+
         x = initialX;
         y = initialY;
         prevHeading = Math.atan(initialDx);
@@ -231,85 +230,87 @@ public class GenerateAndFollowPath extends Command
         prevleftY = initialY - wheelBase/2 * Math.sin(Math.atan(initialDx) - Math.PI/2);
         prevRightY = initialY + wheelBase/2 * Math.sin(Math.atan(initialDx) - Math.PI/2);
 
-		//Motion Profile Setup
-		//configTalons();
-		//notifier.startPeriodic(period);
+        //Motion Profile Setup
+        period = dt/2;
+		configTalons();
+        //notifier.startPeriodic(period);
 	}
 
     @Override
-    protected void execute() { 
+    protected void execute() 
+    { 
+        if (!isGenerationComplete)
+        {
+            double distanceLeft;
+            double velocity;
+            double heading;
 
-        double distanceLeft;
-        double velocity;
-        double heading;
+            double leftX, leftY, rightX, rightY;
+            double leftVelocity, rightVelocity;
 
-        double leftX, leftY, rightX, rightY;
-        double leftVelocity, rightVelocity;
+            //estimate distance remaining and calculate robot's velocity
+            distanceLeft = Math.sqrt(Math.pow(finalX - x, 2) + Math.pow(finalY - y, 2));
+            velocity = calculateVelocityOutput(position, distanceLeft, angularVelocity);
 
-        //estimate distance remaining and calculate robot's velocity
-        distanceLeft = Math.sqrt(Math.pow(finalX - x, 2) + Math.pow(finalY - y, 2));
-        velocity = calculateVelocityOutput(position, distanceLeft, angularVelocity);
+            position += velocity * dt;
 
-        position += velocity * dt;
+            x += velocity * Math.cos(Math.atan(derivative.apply(x))) * dt; //x portion of velocity vector
+            y = function.apply(x);
 
-        x += velocity * Math.cos(Math.atan(derivative.apply(x))) * dt; //x portion of velocity vector
-        y = function.apply(x);
+            heading = Math.toDegrees(Math.atan(derivative.apply(x)));
 
-        heading = Math.toDegrees(Math.atan(derivative.apply(x)));
+            //Use robot's x and y to calculate values for left and right sides
+            leftX = x - wheelBase/2 * Math.cos(heading - Math.PI/2);
+            rightX = x + wheelBase/2 * Math.cos(heading - Math.PI/2);
 
-        //Use robot's x and y to calculate values for left and right sides
-        leftX = x - wheelBase/2 * Math.cos(heading - Math.PI/2);
-        rightX = x + wheelBase/2 * Math.cos(heading - Math.PI/2);
+            leftY = y - wheelBase/2 * Math.sin(heading - Math.PI/2);
+            rightY = y + wheelBase/2 * Math.sin(heading - Math.PI/2);
 
-        leftY = y - wheelBase/2 * Math.sin(heading - Math.PI/2);
-        rightY = y + wheelBase/2 * Math.sin(heading - Math.PI/2);
+            //recalculate, find better estimation
+            leftVelocity = Math.sqrt(Math.pow(leftX - prevLeftX, 2) + Math.pow(leftY - prevleftY, 2)) / dt;
+            rightVelocity = Math.sqrt(Math.pow(rightX - prevRightX, 2) + Math.pow(rightY - prevRightY, 2)) / dt;
 
-        //recalculate, find better estimation
-        leftVelocity = Math.sqrt(Math.pow(leftX - prevLeftX, 2) + Math.pow(leftY - prevleftY, 2)) / dt;
-        rightVelocity = Math.sqrt(Math.pow(rightX - prevRightX, 2) + Math.pow(rightY - prevRightY, 2)) / dt;
+            leftPosition += leftVelocity * dt;
+            rightPosition += rightVelocity * dt;
 
-        leftPosition += leftVelocity * dt;
-        rightPosition += rightVelocity * dt;
+            TrajectoryPoint leftPoint = createTrajectoryPoint(
+                Conversions.convert(PositionUnit.FEET, leftPosition, PositionUnit.ENCODER_UNITS), 
+                Conversions.convert(SpeedUnit.FEET_PER_SECOND, leftVelocity, SpeedUnit.ENCODER_UNITS), 
+                heading
+            );
 
-        TrajectoryPoint leftPoint = createTrajectoryPoint(
-            Conversions.convert(PositionUnit.FEET, leftPosition, PositionUnit.ENCODER_UNITS), 
-            Conversions.convert(SpeedUnit.FEET_PER_SECOND, leftVelocity, SpeedUnit.ENCODER_UNITS), 
-            heading, isComplete
-        );
+            TrajectoryPoint rightPoint = createTrajectoryPoint(
+                Conversions.convert(PositionUnit.FEET, rightPosition, PositionUnit.ENCODER_UNITS), 
+                Conversions.convert(SpeedUnit.FEET_PER_SECOND, rightVelocity, SpeedUnit.ENCODER_UNITS), 
+                heading
+            );
 
-        TrajectoryPoint rightPoint = createTrajectoryPoint(
-            Conversions.convert(PositionUnit.FEET, rightPosition, PositionUnit.ENCODER_UNITS), 
-            Conversions.convert(SpeedUnit.FEET_PER_SECOND, rightVelocity, SpeedUnit.ENCODER_UNITS), 
-            heading, isComplete
-        );
+            initialVelocity = 0; //Calculate
+            
+            angularVelocity = (heading - prevHeading)/dt;
+            prevHeading = heading;
 
-        initialVelocity = 0; //Calculate
-        
-        angularVelocity = (heading - prevHeading)/dt;
-        prevHeading = heading;
+            prevLeftX = leftX;
+            prevRightX = rightX;
 
-        prevLeftX = leftX;
-        prevRightX = rightX;
+            prevleftY = leftY;
+            prevRightY = rightY;
 
-        prevleftY = leftY;
-        prevRightY = rightY;
+            leftTrajectory.add(leftPoint);
+            rightTrajectory.add(rightPoint);
 
-        leftTrajectory.add(leftPoint);
-        rightTrajectory.add(rightPoint);
+            isGenerationComplete = x - finalX >= 0; //Past the desired x
+        }
+        else
+        {
+            leftTrajectory.get(leftTrajectory.size()).isLastPoint = true;
+        }
 
-        isComplete = x - finalX >= 0; //Past the desired x
-        
-        // SmartDashboard.putNumber("x distance left", finalX - x);
-        // SmartDashboard.putNumber("y distance left", finalY - y);
-        // System.out.println("velocity: " + velocity);
-        // SmartDashboard.putNumber("Number of points", leftTrajectory.size());
     }
 
 	@Override
 	protected void end()
 	{
-        //SmartDashboard.putBoolean("last point", leftTrajectory.get(leftTrajectory.size() - 1).isLastPoint);
-        //System.out.println(Timer.getFPGATimestamp() - startTime);
 		Drivetrain.getInstance().getLeftMaster().clearMotionProfileTrajectories();
 		Drivetrain.getInstance().getRightMaster().clearMotionProfileTrajectories();
 
@@ -319,7 +320,7 @@ public class GenerateAndFollowPath extends Command
     
     @Override
     protected boolean isFinished() {
-        return isComplete;
+        return isGenerationComplete;
     }
 
 	@Override
@@ -333,14 +334,14 @@ public class GenerateAndFollowPath extends Command
      * 
      * @return the new TrajectoryPoint
      */
-    private TrajectoryPoint createTrajectoryPoint(double position, double velocity, double headingDeg, boolean isLastPoint)        
+    private TrajectoryPoint createTrajectoryPoint(double position, double velocity, double headingDeg)        
     {
         TrajectoryPoint point = new TrajectoryPoint();
         
         point.position = position;
         point.velocity = velocity;
         point.headingDeg =  headingDeg;        
-        point.isLastPoint = isLastPoint;
+        point.isLastPoint = false;
         point.timeDur = (int)(dt * Conversions.MS_PER_SEC);
         
         return point;
@@ -370,39 +371,45 @@ public class GenerateAndFollowPath extends Command
 		return Math.abs(a - b) <= SMALL_NUMBER;
 	}
 
-	// private void configTalons()
-	// {
-	// 	Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
-	// 	Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
+	private void configTalons()
+	{
+		Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
 
-	// 	Drivetrain.getInstance().getLeftMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-	// 	Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getLeftMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
 	
-	// 	Drivetrain.getInstance().getLeftMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
-	// 	Drivetrain.getInstance().getRightMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getLeftMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getRightMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
 
-	// 	Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
-	// 	Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
+		Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
+		Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
 
-	// 	Drivetrain.getInstance().configClosedLoopConstants(Drivetrain.MOTION_PROF_SLOT, 
-	// 			new Gains()
-	// 				.kF(LEFT_KF)
-	// 				.kP(LEFT_KP)
-	// 				.kI(LEFT_KI)
-	// 				.kD(LEFT_KD), 
-	// 			new Gains()
-	// 				.kF(RIGHT_KF)
-	// 				.kP(RIGHT_KP)
-	// 				.kI(RIGHT_KI)
-	// 				.kD(RIGHT_KD));
+		Drivetrain.getInstance().configClosedLoopConstants(Drivetrain.MOTION_PROF_SLOT, 
+				new Gains()
+					.kF(LEFT_KF)
+					.kP(LEFT_KP)
+					.kI(LEFT_KI)
+					.kD(LEFT_KD), 
+				new Gains()
+					.kF(RIGHT_KF)
+					.kP(RIGHT_KP)
+					.kI(RIGHT_KI)
+					.kD(RIGHT_KD));
 
-	// 	Drivetrain.getInstance().getLeftMaster().changeMotionControlFramePeriod((int)period);
-	// 	Drivetrain.getInstance().getRightMaster().changeMotionControlFramePeriod((int)period);
+		Drivetrain.getInstance().getLeftMaster().changeMotionControlFramePeriod((int)period);
+		Drivetrain.getInstance().getRightMaster().changeMotionControlFramePeriod((int)period);
 
-	// 	Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryPeriod(0);
-	// 	Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryPeriod(0);
+		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryPeriod(0);
+		Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryPeriod(0);
 
-	// 	Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryInterpolationEnable(false);
-	// 	Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryInterpolationEnable(false);
-    // }
+		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryInterpolationEnable(false);
+		Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryInterpolationEnable(false);
+    }
+
+    private void setLastTrajectoryPoints()
+    {
+        leftTrajectory.get(leftTrajectory.size()).isLastPoint = true;
+        rightTrajectory.get(rightTrajectory.size()).isLastPoint = true;
+    }
 }
