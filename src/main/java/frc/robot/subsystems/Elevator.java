@@ -36,8 +36,8 @@ public class Elevator extends Subsystem {
 
     private static final boolean SENSOR_PHASE = true;
 
-    public static final int PEAK_CURRENT_LIMIT = 25;
-    public static final int CONT_CURRENT_LIMIT = 15;
+    public static final int PEAK_CURRENT_LIMIT = 30;
+    public static final int CONT_CURRENT_LIMIT = 20;
     public static final int PEAK_TIME = 150;
 
     private static final int RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
@@ -55,7 +55,7 @@ public class Elevator extends Subsystem {
     public static final int RAIL_POSITION = 20500; //TUNE
     public static final int BALL_INTAKING_HEIGHT = 100; //Tune
     
-    public static final double FFGRAV = 0.1;
+    public static final double FFGRAV = 0.095;
     public static final int ZERO_CURRENT_SPIKE = 0;
 
     public static final int LOW_SCORING_POSITION_HATCH = 7746; 
@@ -64,8 +64,8 @@ public class Elevator extends Subsystem {
     public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
     public static final int HIGH_SCORING_POSITION_HATCH = 22500; 
     public static final int HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
-    public static final int CARGO_SHIP_SCORING_POSITION_CARGO = 11000;
-    public static final int CARGO_SHIP_SCORING_POSITION_HATCH = 11000;
+    public static final int CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
+    public static final int CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
 
     public static final double NOMINAL_OUTPUT = 0.06;
 
@@ -227,4 +227,8 @@ public class Elevator extends Subsystem {
         return Math.abs(getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY) - position)
                             <= MoveElevatorMotionMagic.ALLOWABLE_ERROR;
     }    
+
+    public void setElevator (ControlMode mode, double value) {
+        Elevator.getInstance().getMasterTalon().set(mode, value, DemandType.ArbitraryFeedForward, FFGRAV);
+    }
 }

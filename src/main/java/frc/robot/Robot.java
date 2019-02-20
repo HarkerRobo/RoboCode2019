@@ -115,6 +115,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         wrapper.start();
         startTime = Timer.getFPGATimestamp();
+        Elevator.getInstance().setElevator(ControlMode.Disabled, 0);
+        Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
         // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         //Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     }
@@ -146,6 +148,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getCurrentAngleDegrees());
         SmartDashboard.putNumber("Encoder Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
         SmartDashboard.putNumber("LEFT Y", OI.getInstance().getDriverGamepad().getLeftY());
+        SmartDashboard.putNumber("el current", Elevator.getInstance().getMasterTalon().getOutputCurrent());
         // //System.out.println(limelight.getCamtranData());
         // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
         // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());

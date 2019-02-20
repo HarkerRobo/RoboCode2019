@@ -10,13 +10,16 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
+import frc.robot.commands.hatchpanelintake.SetExtenderManual;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Arm.ArmDirection;
+import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
+import harkerrobolib.commands.CallMethodCommand;
 
 /**
  * Passes through and moves to a desired height.
@@ -29,14 +32,14 @@ import frc.robot.util.Pair;
  */
 public class SetScoringPosition extends CommandGroup {
 	public enum Location {
-        F1(Elevator.LOW_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH), 
-        F2(Elevator.MEDIUM_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
+        F1(Elevator.LOW_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO_2, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH), 
+        F2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
         F3(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
         B1(Elevator.LOW_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
-        B2(Elevator.MEDIUM_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
+        B2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO_2, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
 		B3(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
-		CARGO_SHIP_FRONT(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_FRONT_CARGO, Elevator.CARGO_SHIP_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
-		CARGO_SHIP_BACK(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.CARGO_SHIP_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
+		CARGO_SHIP_FRONT(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_FRONT_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
+		CARGO_SHIP_BACK(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_BACK_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
 
 		ZERO(0, 0, 0, 0), 
 		HATCH_INTAKE(Integer.MAX_VALUE, Integer.MAX_VALUE, Elevator.HATCH_INTAKING_POSITION, Wrist.HATCH_INTAKING_POSITION),
@@ -83,44 +86,18 @@ public class SetScoringPosition extends CommandGroup {
 	}
 
 	public SetScoringPosition(Location desiredLocation) {
-		this.desiredLocation = desiredLocation;
-
-		Supplier<Integer> getDesiredHeight = () -> desiredLocation.getDesiredHeightAndAngle().getFirst();
-		Supplier<Integer> getDesiredAngle = () -> desiredLocation.getDesiredHeightAndAngle().getSecond();
-		Supplier<Side> getDesiredSide = () -> Wrist.getInstance().getSide(getDesiredAngle.get());
-		Supplier<Integer> getSafePassthroughHeight = () -> HatchLatcher.getInstance().hasHatch() ? Elevator.SAFE_LOW_PASSTHROUGH_POSITION_HATCH : 
-														Elevator.SAFE_LOW_PASSTHROUGH_POSITION_CARGO;
-		BooleanSupplier mustPassthroughLow = () -> Wrist.getInstance().getCurrentSide() != getDesiredSide.get();
-		BooleanSupplier mustPassthroughHigh = () -> Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) &&
-													(Wrist.getInstance().getCurrentSide() == Side.FRONT || 
-													Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS);
-
-		addSequential(new InstantCommand() {
-			@Override
-			public void initialize() {
-				Elevator.getInstance().getMasterTalon().set(ControlMode.Disabled, 0.0);
-				Wrist.getInstance().getMasterTalon().set(ControlMode.Disabled, 0.0);
-			}
-		});
-
-		addSequential(new SetArmPosition(ArmDirection.DOWN));
-		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_LOW_PASSTHROUGH_ANGLE))); 
-		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
-						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
-		 addSequential(new MoveWristMotionMagic(() -> (mustPassthroughLow.getAsBoolean() ? 
-		 												(getDesiredSide.get() == Side.FRONT ? Wrist.FRONT_LOW_PASSTHROUGH_ANGLE : Wrist.BACK_LOW_PASSTHROUGH_ANGLE) 
-														 : getDesiredAngle.get()))); // perform the passthrough OR simply move to desired angle
-		addSequential (new MoveElevatorMotionMagic(getDesiredHeight));
-		addSequential (new MoveWristMotionMagic( (desiredLocation == Location.F3) ? (() -> (HatchLatcher.getInstance().hasHatch() ? Wrist.FRONT_HIGH_PASSTHROUGH_HATCH : Wrist.FRONT_HIGH_PASSTHROUGH_CARGO)) : getDesiredAngle));
+		this(desiredLocation, () -> HatchLatcher.getInstance().hasHatch());
 	}
 
-	public SetScoringPosition(Location desiredLocation, boolean doHatch) {
+
+	public SetScoringPosition(Location desiredLocation, Supplier<Boolean> doHatch) {
+
 		this.desiredLocation = desiredLocation;
 
-		Supplier<Integer> getDesiredHeight = () -> doHatch ? desiredLocation.getHatchHeight() : desiredLocation.getCargoHeight();
-		Supplier<Integer> getDesiredAngle = () -> doHatch ? desiredLocation.getHatchAngle() : desiredLocation.getCargoAngle();
+		Supplier<Integer> getDesiredHeight = () -> doHatch.get() ? desiredLocation.getHatchHeight() : desiredLocation.getCargoHeight();
+		Supplier<Integer> getDesiredAngle = () -> doHatch.get() ? desiredLocation.getHatchAngle() : desiredLocation.getCargoAngle();
 		Supplier<Side> getDesiredSide = () -> Wrist.getInstance().getSide(getDesiredAngle.get());
-		Supplier<Integer> getSafePassthroughHeight = () -> doHatch ? Elevator.SAFE_LOW_PASSTHROUGH_POSITION_HATCH : 
+		Supplier<Integer> getSafePassthroughHeight = () -> doHatch.get() ? Elevator.SAFE_LOW_PASSTHROUGH_POSITION_HATCH : 
 														Elevator.SAFE_LOW_PASSTHROUGH_POSITION_CARGO;
 		BooleanSupplier mustPassthroughLow = () -> Wrist.getInstance().getCurrentSide() != getDesiredSide.get();
 		BooleanSupplier mustPassthroughHigh = () -> Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) &&
@@ -135,7 +112,9 @@ public class SetScoringPosition extends CommandGroup {
 			}
 		});
 		
+		addSequential(new CallMethodCommand(() -> System.out.println(doHatch.get() + " " + getDesiredAngle.get())));
 		addSequential(new SetArmPosition(ArmDirection.DOWN));
+		addSequential(new SetExtenderManual(ExtenderDirection.IN));
 		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
 						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
@@ -143,6 +122,15 @@ public class SetScoringPosition extends CommandGroup {
 		 												(getDesiredSide.get() == Side.FRONT ? Wrist.FRONT_LOW_PASSTHROUGH_ANGLE : Wrist.BACK_LOW_PASSTHROUGH_ANGLE) 
 														 : getDesiredAngle.get()))); // perform the passthrough OR simply move to desired angle
 		addSequential (new MoveElevatorMotionMagic(getDesiredHeight));
-		addSequential (new MoveWristMotionMagic( (desiredLocation == Location.F3) ? (() -> (doHatch ? Wrist.FRONT_HIGH_PASSTHROUGH_HATCH : Wrist.FRONT_HIGH_PASSTHROUGH_CARGO)) : getDesiredAngle));
+		if (desiredLocation == Location.F3) {
+			addSequential (new MoveWristMotionMagic(() -> (doHatch.get() ? Wrist.FRONT_HIGH_PASSTHROUGH_HATCH : Wrist.SCORING_POSITION_FRONT_CARGO_3)));
+		}
+		else if (desiredLocation == Location.F2) {
+			addSequential (new MoveWristMotionMagic(() -> (doHatch.get() ? Wrist.SCORING_POSITION_FRONT_HATCH : Wrist.SCORING_POSITION_FRONT_CARGO_2)));
+		}
+		else {
+			addSequential (new MoveWristMotionMagic(getDesiredAngle));
+		}
+		
 	}
 }

@@ -21,7 +21,7 @@ import frc.robot.subsystems.Elevator;
  */
 public class ZeroElevator extends Command {
 
-    private static final double ZERO_SPEED = -0.26;
+    private static final double ZERO_SPEED = -0.34;
     private static final double CURRENT_SPIKE = 2.8;
     private static final double TIMEOUT = 5000;
     
@@ -40,7 +40,7 @@ public class ZeroElevator extends Command {
 
     @Override
     public void execute() {
-        Elevator.getInstance().getMasterTalon().set(ControlMode.PercentOutput, ZERO_SPEED);
+        Elevator.getInstance().setElevator(ControlMode.PercentOutput, ZERO_SPEED);
     }
 
     /**
@@ -52,18 +52,7 @@ public class ZeroElevator extends Command {
             return true;
         }
 
-        if ((Robot.getTime() - startTime) > Elevator.PEAK_TIME) {
-            System.out.println(Elevator.getInstance().getMasterTalon().getOutputCurrent());
-            currentVals.add(Elevator.getInstance().getMasterTalon().getOutputCurrent());
-            if (currentVals.size() >= VALUES_TO_SAMPLE) {
-                currentVals.remove(0);
-                
-                boolean isAllValid = true;
-                for (double currentVal : currentVals) {isAllValid = isAllValid && currentVal > CURRENT_SPIKE;}
-                return isAllValid;
-            }
-        }
-		return false; 
+		return Elevator.getInstance().getMasterTalon().getSensorCollection().isRevLimitSwitchClosed(); 
     }    
 
     protected void end () {

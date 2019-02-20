@@ -80,7 +80,7 @@ public class MoveElevatorMotionMagic extends Command {
      */
     @Override
     protected void execute() {
-        Elevator.getInstance().getMasterTalon().set(ControlMode.MotionMagic, setpoint);  
+        Elevator.getInstance().setElevator(ControlMode.MotionMagic, setpoint);
         SmartDashboard.putNumber("el error", Elevator.getInstance().getMasterTalon().getClosedLoopError()) ;
     
     }

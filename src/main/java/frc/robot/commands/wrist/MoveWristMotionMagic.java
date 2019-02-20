@@ -27,8 +27,8 @@ public class MoveWristMotionMagic extends Command {
 	public static final double KI = 0.0025;
     public static final double KD = 100;
     public static final int IZONE = 150;
-    public static final int ACCELERATION = 450;
-    public static final int CRUISE_VELOCITY = 400;
+    public static final int ACCELERATION = 325;
+    public static final int CRUISE_VELOCITY = 300;
 
     public MoveWristMotionMagic (double angle) {
         requires (Wrist.getInstance());
@@ -55,7 +55,6 @@ public class MoveWristMotionMagic extends Command {
      */
     @Override
     public void execute() {
-        SmartDashboard.putNumber("Wrist Error", position - Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
         Wrist.getInstance().setWrist(ControlMode.MotionMagic, position);
     }        
         

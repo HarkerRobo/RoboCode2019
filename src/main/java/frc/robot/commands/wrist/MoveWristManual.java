@@ -3,6 +3,7 @@ package frc.robot.commands.wrist;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Wrist;
@@ -17,6 +18,8 @@ import harkerrobolib.util.MathUtil;
  * @since 1/10/19
  */
 public class MoveWristManual extends IndefiniteCommand {
+    private boolean isHolding;
+    private double lastPos;
     public MoveWristManual () {
         requires (Wrist.getInstance());
     }
@@ -26,7 +29,10 @@ public class MoveWristManual extends IndefiniteCommand {
      */
     @Override
     public void initialize () {
+        isHolding = false;
+        lastPos = Integer.MIN_VALUE;
         Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+        Wrist.getInstance().setupMotionMagic();
     }
 
     /**
@@ -41,6 +47,7 @@ public class MoveWristManual extends IndefiniteCommand {
         WristDirection direction;
         //double currentPosition = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
         if (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER) {
+            isHolding = false;;
             if (leftOperatorTrigger > rightOperatorTrigger) {
                 /*double distFromBack = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
 
@@ -63,7 +70,14 @@ public class MoveWristManual extends IndefiniteCommand {
             Wrist.getInstance().setWristPercentOutput(magnitude, direction);
         }
         else {
-            //Wrist.getInstance().setWrist(ControlMode.MotionMagic, Wrist.getInstance().getCurrentAngleEncoder());
+            if (!isHolding) {lastPos = Wrist.getInstance().getCurrentAngleEncoder();}
+            isHolding = true;
+        }
+
+        if (isHolding) {
+            if (lastPos != Integer.MIN_VALUE)
+                Wrist.getInstance().setWrist(ControlMode.MotionMagic, lastPos);
+            SmartDashboard.putNumber("Wrist Error",  Wrist.getInstance().getMasterTalon().getClosedLoopError());
         }
     }
 
