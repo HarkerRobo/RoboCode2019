@@ -11,15 +11,12 @@ import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
-import harkerrobolib.commands.CallMethodCommand;
-import harkerrobolib.commands.PrintCommand;
 
 /**
  * Passes through and moves to a desired height.
@@ -105,7 +102,7 @@ public class SetScoringPosition extends CommandGroup {
 				Wrist.getInstance().getMasterTalon().set(ControlMode.Disabled, 0.0);
 			}
 		});
-		
+
 		addSequential(new SetArmPosition(ArmDirection.DOWN));
 		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_LOW_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
@@ -139,7 +136,7 @@ public class SetScoringPosition extends CommandGroup {
 		});
 		
 		addSequential(new SetArmPosition(ArmDirection.DOWN));
-		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_LOW_PASSTHROUGH_ANGLE))); 
+		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
 						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
 		 addSequential(new MoveWristMotionMagic(() -> (mustPassthroughLow.getAsBoolean() ? 
