@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
     private static OI oi;
     private static double startTime;
+    private static HSTalon talon;
 
     private CommandGroupWrapper wrapper;
     // private CANSparkMax talon;
@@ -73,21 +74,22 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         System.out.println("robotinit");
         drivetrain = Drivetrain.getInstance();
-        arm = Arm.getInstance();
-        elevator = Elevator.getInstance();
-        intake = Intake.getInstance();
-        rollers = Rollers.getInstance();
-        wrist = Wrist.getInstance();
-        hatchLatcher = HatchLatcher.getInstance();
-        oi = OI.getInstance();        
+        // arm = Arm.getInstance();
+        // elevator = Elevator.getInstance();
+        // intake = Intake.getInstance();
+        // rollers = Rollers.getInstance();
+        // wrist = Wrist.getInstance();
+        // hatchLatcher = HatchLatcher.getInstance();
+        // oi = OI.getInstance();        
         //limelight = Limelight.getInstance();        
        
-        drivetrain.talonInit();
-        elevator.talonInit();
-        wrist.talonInit();
-        rollers.talonInit();
-        intake.controllerInit();
+        // drivetrain.talonInit();
+        // elevator.talonInit();
+        // wrist.talonInit();
+        // rollers.talonInit();
+        // intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
+        talon = new HSTalon(CAN_IDs.DT_LEFT_MASTER);
         // elevator.getMasterTalon().get
         wrapper = new CommandGroupWrapper().sequential(new WaitCommand(1)).sequential(new WaitCommand(2));
     }
@@ -128,6 +130,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+        talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
         // System.out.println("completed: " + cgw.isCompleted() + " " + cgw.isRunning());
         //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
 
@@ -225,10 +228,10 @@ public class Robot extends TimedRobot {
     }
     @Override
     public void disabledInit() {
-        drivetrain.setNeutralMode(Global.DISABLED_NEUTRAL_MODE);
+        // drivetrain.setNeutralMode(Global.DISABLED_NEUTRAL_MODE);
 
-        elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
-        wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
+        // elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
+        // wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
     }
     
 }

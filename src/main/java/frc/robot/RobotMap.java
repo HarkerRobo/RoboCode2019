@@ -13,7 +13,7 @@ public class RobotMap {
         COMP, PRACTICE
     }
 
-    public static final RobotType ROBOT_TYPE = RobotType.COMP;
+    public static final RobotType ROBOT_TYPE = RobotType.PRACTICE;
 
     public static class CAN_IDs {
         public static final int DT_LEFT_MASTER, DT_RIGHT_MASTER, DT_LEFT_FOLLOWER, DT_RIGHT_FOLLOWER;
@@ -60,23 +60,23 @@ public class RobotMap {
                 PCM = 0;
             } else {
                 DT_LEFT_MASTER = 4;
-                DT_RIGHT_MASTER = 1;
-                DT_LEFT_FOLLOWER = 4;
+                DT_RIGHT_MASTER = 6;
+                DT_LEFT_FOLLOWER = 2;
                 DT_RIGHT_FOLLOWER = 1;
 
                 EL_MASTER = 2;
                 EL_VICTOR_LEFT_FRONT = 3;
                 EL_VICTOR_LEFT_BACK = 5; 
-                EL_TALON_FOLLOWER = 6;
+                EL_TALON_FOLLOWER = 3;
 
-                WRIST_MASTER = 9;
-                WRIST_FOLLOWER = 9;
+                WRIST_MASTER = 5;
+                WRIST_FOLLOWER = 7;
 
                 BALL_INTAKE_MASTER = 1;
                 ARM_MASTER = 0;
 
-                RO_TOP = 3;
-                RO_BOTTOM = 7;
+                RO_TOP = 0;
+                RO_BOTTOM = 1;
 
                 ARM_FORWARD_CHANNEL = 2;
                 ARM_REVERSE_CHANNEL = 3;

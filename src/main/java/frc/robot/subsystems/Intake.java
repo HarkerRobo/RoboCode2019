@@ -4,7 +4,9 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.intake.SpinIntakeManual;
 import harkerrobolib.util.Constants;
@@ -34,8 +36,17 @@ public class Intake extends Subsystem {
     private final static int STALL_LIMIT = 40; // current limit (amps) when the robot is stopped
     private final static int FREE_LIMIT = 30; // current limit (amps) when the robot is moving freely
 
-    private final static boolean CONTROLLER_INVERTED = true;
+    private final static boolean CONTROLLER_INVERTED;
 
+    static {
+        if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            CONTROLLER_INVERTED = true;
+        }
+        else {
+            CONTROLLER_INVERTED = true;
+        }
+
+    }
     public final static double DEFAULT_INTAKE_MAGNITUDE = 0.4;
 
     public CANSparkMax getController() {

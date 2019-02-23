@@ -6,7 +6,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Wrist;
 
 /**
@@ -21,14 +23,35 @@ import frc.robot.subsystems.Wrist;
 public class MoveWristMotionMagic extends Command {
     private double position;
     private Supplier<Integer> setpointLambda;
-    
-    public static final double KF = 2.6;
-    public static final double KP = 1.1;
-	public static final double KI = 0.0025;
-    public static final double KD = 100;
-    public static final int IZONE = 150;
-    public static final int ACCELERATION = 325;
-    public static final int CRUISE_VELOCITY = 300;
+
+    public static final double KF;
+    public static final double KP;
+	public static final double KI;
+    public static final double KD;
+    public static final int IZONE;
+    public static final int ACCELERATION;
+    public static final int CRUISE_VELOCITY;
+
+    static {
+        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            KF = 2.6;
+            KP = 1.1;
+            KI = 0.0025;
+            KD = 100;
+            IZONE = 150;
+            ACCELERATION = 325;
+            CRUISE_VELOCITY = 300;
+        }
+        else {
+            KF = 2.6;
+            KP = 1.1;
+            KI = 0.0025;
+            KD = 100;
+            IZONE = 150;
+            ACCELERATION = 325;
+            CRUISE_VELOCITY = 300;
+        }
+    }
 
     public MoveWristMotionMagic (double angle) {
         requires (Wrist.getInstance());

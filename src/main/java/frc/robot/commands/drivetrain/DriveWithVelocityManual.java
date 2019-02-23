@@ -5,7 +5,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
@@ -18,15 +20,39 @@ import harkerrobolib.util.MathUtil;
  * @since February 2, 2019
  */
 public class DriveWithVelocityManual extends IndefiniteCommand {
-    private static final double LEFT_KP = 0.4;
-    private static final double LEFT_KI = 0.0;
-    private static final double LEFT_KD = 0.0;
-    private static final double LEFT_KF = 0.18;
+    private static final double LEFT_KP;
+    private static final double LEFT_KI;
+    private static final double LEFT_KD;
+    private static final double LEFT_KF;
 
-    private static final double RIGHT_KP = 0.4;
-    private static final double RIGHT_KI = 0.0;
-    private static final double RIGHT_KD = 0.0;
-    private static final double RIGHT_KF = 0.25;
+    private static final double RIGHT_KP;
+    private static final double RIGHT_KI;
+    private static final double RIGHT_KD;
+    private static final double RIGHT_KF;
+
+    static {
+        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            LEFT_KP = 0.4;
+            LEFT_KI = 0.0;
+            LEFT_KD = 0.0;
+            LEFT_KF = 0.18;
+            
+            RIGHT_KP = 0.4;
+            RIGHT_KI = 0.0;
+            RIGHT_KD = 0.0;
+            RIGHT_KF = 0.25;
+        } else {
+            LEFT_KP = 0.4;
+            LEFT_KI = 0.0;
+            LEFT_KD = 0.0;
+            LEFT_KF = 0.18;
+            
+            RIGHT_KP = 0.4;
+            RIGHT_KI = 0.0;
+            RIGHT_KD = 0.0;
+            RIGHT_KF = 0.25; 
+        }
+    }
 
     public DriveWithVelocityManual() {
         requires(Drivetrain.getInstance());

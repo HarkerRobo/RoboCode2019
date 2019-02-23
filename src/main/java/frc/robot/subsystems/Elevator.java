@@ -7,8 +7,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.MoveElevatorPosition;
@@ -42,10 +44,25 @@ public class Elevator extends Subsystem {
 
     private static final int RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
 
-    private static final boolean INVERTED_MASTER = true;
-    private static final boolean INVERTED_VICT_LEFT_FRONT = true;
-    private static final boolean INVERTED_VICT_LEFT_BACK = true;
-    private static final boolean INVERTED_VICT_RIGHT = true;
+    private static final boolean INVERTED_MASTER;
+    private static final boolean INVERTED_VICT_LEFT_FRONT;
+    private static final boolean INVERTED_VICT_LEFT_BACK;
+    private static final boolean INVERTED_VICT_RIGHT;
+
+    static {
+        if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            INVERTED_MASTER = true;
+            INVERTED_VICT_LEFT_FRONT = true;
+            INVERTED_VICT_LEFT_BACK = true;
+            INVERTED_VICT_RIGHT = true;
+        } 
+        else {
+            INVERTED_MASTER = true;
+            INVERTED_VICT_LEFT_FRONT = true;
+            INVERTED_VICT_LEFT_BACK = true;
+            INVERTED_VICT_RIGHT = true;
+        }
+    }
 
     public static final int INTAKE_POSITION = 0;
     

@@ -5,8 +5,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.drivetrain.DriveWithVelocityManual;
 import frc.robot.util.Pair;
 import harkerrobolib.subsystems.HSDrivetrain;
@@ -30,10 +32,25 @@ import harkerrobolib.wrappers.HSTalon;
 public class Drivetrain extends HSDrivetrain {
     private static Drivetrain instance;
 
-    private final static boolean LEFT_MASTER_INVERTED = true;
-    private final static boolean RIGHT_MASTER_INVERTED = false;
-    private final static boolean LEFT_FOLLOWER_INVERTED = true;
-    private final static boolean RIGHT_FOLLOWER_INVERTED = false;
+    private final static boolean LEFT_MASTER_INVERTED;
+    private final static boolean RIGHT_MASTER_INVERTED;
+    private final static boolean LEFT_FOLLOWER_INVERTED;
+    private final static boolean RIGHT_FOLLOWER_INVERTED;
+
+    static { 
+        if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            LEFT_MASTER_INVERTED = true;
+            RIGHT_MASTER_INVERTED = false;
+            LEFT_FOLLOWER_INVERTED = true;
+            RIGHT_FOLLOWER_INVERTED = false;
+        }
+        else {
+            LEFT_MASTER_INVERTED = true;
+            RIGHT_MASTER_INVERTED = false;
+            LEFT_FOLLOWER_INVERTED = true;
+            RIGHT_FOLLOWER_INVERTED = false;
+        }
+    }
 
     private final static double MAX_FORWARD_VELOCITY = 8; //12
     private final static double MAX_TURN_VELOCITY = 4; //5
