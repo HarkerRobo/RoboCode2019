@@ -3,7 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.RobotType;
 
 /**
  * Represents the arm of the robot, 
@@ -15,8 +17,20 @@ import frc.robot.RobotMap.CAN_IDs;
  * @since 1/11/19
  */
 public class Arm extends Subsystem {
+    public static final DoubleSolenoid.Value ARM_UP_VALUE;
+    public static final DoubleSolenoid.Value ARM_DOWN_VALUE;
+    
+    static {
+        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+           ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
+           ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
+        } else {
+            ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
+            ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
+        }
+    }
     public enum ArmDirection {        
-        UP (DoubleSolenoid.Value.kReverse), DOWN (DoubleSolenoid.Value.kForward);
+        UP (ARM_UP_VALUE), DOWN (ARM_DOWN_VALUE);
         private DoubleSolenoid.Value state;
         private ArmDirection(DoubleSolenoid.Value state) {
             this.state = state;
