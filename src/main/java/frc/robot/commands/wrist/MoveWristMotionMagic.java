@@ -5,9 +5,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-import frc.robot.RobotMap.Global;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Wrist;
 
@@ -31,6 +29,7 @@ public class MoveWristMotionMagic extends Command {
     public static final int IZONE;
     public static final int ACCELERATION;
     public static final int CRUISE_VELOCITY;
+    
 
     static {
         if (RobotMap.ROBOT_TYPE == RobotType.COMP) {

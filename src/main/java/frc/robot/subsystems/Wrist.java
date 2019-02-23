@@ -12,8 +12,10 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot.Side;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.commands.wrist.MoveWristPosition;
@@ -45,43 +47,122 @@ public class Wrist extends Subsystem {
 
     private CANifier canifier;
 
-    private static final boolean MASTER_INVERTED = true;
-    private static final boolean FOLLOWER_INVERTED = true;
+    private static final boolean MASTER_INVERTED;
+    private static final boolean FOLLOWER_INVERTED;
 
-    public static final int CONTINUOUS_CURRENT_LIMIT = 7;
-    public static final int PEAK_CURRENT_LIMIT = 10;
-    public static final int PEAK_TIME = 500;
+    public static final int CONTINUOUS_CURRENT_LIMIT;
+    public static final int PEAK_CURRENT_LIMIT;
+    public static final int PEAK_TIME;
     
-    public static final int PARALLEL_FRONT = 6;
-    public static final int PARALLEL_BACK = 189;
-    public static final int SCORING_POSITION_FRONT_HATCH = PARALLEL_FRONT;
-    public static final int SCORING_POSITION_FRONT_CARGO_2 = 20;
-    public static final int SCORING_POSITION_FRONT_CARGO_3 = 57;
-    public static final int SCORING_POSITION_BACK_HATCH = PARALLEL_BACK;
-    public static final int SCORING_POSITION_BACK_CARGO = 187;
-    public static final int SCORING_POSITION_BACK_CARGO_2 = 178;
-    public static final int SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 2;
-    public static final int SCORING_POSITION_BACK_CARGO_SHIP = 184;
+    public static final int PARALLEL_FRONT;
+    public static final int PARALLEL_BACK;
+    public static final int SCORING_POSITION_FRONT_HATCH;
+    public static final int SCORING_POSITION_FRONT_CARGO_2;
+    public static final int SCORING_POSITION_FRONT_CARGO_3;
+    public static final int SCORING_POSITION_BACK_HATCH;
+    public static final int SCORING_POSITION_BACK_CARGO;
+    public static final int SCORING_POSITION_BACK_CARGO_2;
+    public static final int SCORING_POSITION_FRONT_CARGO_SHIP;
+    public static final int SCORING_POSITION_BACK_CARGO_SHIP;
 
-    public static final double ARBITRARY_FF = 0.002;//17;
+    public static final double ARBITRARY_FF;
 
-    public static final int ANGLE_INTAKE = 180;
-    public static final int HATCH_INTAKING_POSITION = 0;
-    public static final int CARGO_INTAKING_POSITION = 2;
+    public static final int ANGLE_INTAKE;
+    public static final int HATCH_INTAKING_POSITION;
+    public static final int CARGO_INTAKING_POSITION;
 
-    public static final int ALLOWABLE_ERROR = 50;
-    public static final int MAX_FORWARD_POSITION = 0;
-    public static final int MAX_BACKWARD_POSITION = 185; // TUNE
-    public static final int FRONT_HIGH_PASSTHROUGH_HATCH = 32;
-    public static final int FRONT_HIGH_PASSTHROUGH_CARGO = 32;
-    public static final int BACK_HIGH_PASSTHROUGH_ANGLE = 188;
-    public static final int FRONT_LOW_PASSTHROUGH_ANGLE = 20;
-    public static final int BACK_LOW_PASSTHROUGH_ANGLE = 160;
+    public static final int ALLOWABLE_ERROR;
+    public static final int MAX_FORWARD_POSITION;
+    public static final int MAX_BACKWARD_POSITION;
+    public static final int FRONT_HIGH_PASSTHROUGH_HATCH;
+    public static final int FRONT_HIGH_PASSTHROUGH_CARGO;
+    public static final int BACK_HIGH_PASSTHROUGH_ANGLE;
+    public static final int FRONT_LOW_PASSTHROUGH_ANGLE;
+    public static final int BACK_LOW_PASSTHROUGH_ANGLE;
 
-    public static final int MID_POSITION = (MAX_FORWARD_POSITION + MAX_BACKWARD_POSITION)/2;
-    public static final int SAFE_FORWARD_POSITION = 70;
-    public static final int SAFE_BACKWARD_POSITION = 110;
-    public static final int RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+    public static final int MID_POSITION;
+    public static final int SAFE_FORWARD_POSITION;
+    public static final int SAFE_BACKWARD_POSITION;
+    public static final int RANGE_OF_MOTION;
+
+    static{
+        if(RobotMap.ROBOT_TYPE==RobotType.COMP) {
+            MASTER_INVERTED = true;
+            FOLLOWER_INVERTED = true;
+        
+            CONTINUOUS_CURRENT_LIMIT = 7;
+            PEAK_CURRENT_LIMIT = 10;
+            PEAK_TIME = 50;
+            PARALLEL_FRONT = 6;
+            PARALLEL_BACK = 189;
+            SCORING_POSITION_FRONT_HATCH = PARALLEL_FRONT;
+            SCORING_POSITION_FRONT_CARGO_2 = 20;
+            SCORING_POSITION_FRONT_CARGO_3 = 57;
+            SCORING_POSITION_BACK_HATCH = PARALLEL_BACK;
+            SCORING_POSITION_BACK_CARGO = 187;
+            SCORING_POSITION_BACK_CARGO_2 = 178;
+            SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 2;
+            SCORING_POSITION_BACK_CARGO_SHIP = 184;
+        
+            ARBITRARY_FF = 0.002;//17;
+        
+            ANGLE_INTAKE = 180;
+            HATCH_INTAKING_POSITION = 0;
+            CARGO_INTAKING_POSITION = 2;
+
+            ALLOWABLE_ERROR = 50;
+            MAX_FORWARD_POSITION = 0;
+            MAX_BACKWARD_POSITION = 185; // TUNE
+            FRONT_HIGH_PASSTHROUGH_HATCH = 32;
+            FRONT_HIGH_PASSTHROUGH_CARGO = 32;
+            BACK_HIGH_PASSTHROUGH_ANGLE = 188;
+            FRONT_LOW_PASSTHROUGH_ANGLE = 20;
+            BACK_LOW_PASSTHROUGH_ANGLE = 160;
+
+            MID_POSITION = (MAX_FORWARD_POSITION + MAX_BACKWARD_POSITION)/2;
+            SAFE_FORWARD_POSITION = 70;
+            SAFE_BACKWARD_POSITION = 110;
+            RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+        }
+        else {
+            MASTER_INVERTED = true;
+            FOLLOWER_INVERTED = true;
+        
+            CONTINUOUS_CURRENT_LIMIT = 7;
+            PEAK_CURRENT_LIMIT = 10;
+            PEAK_TIME = 50;
+            PARALLEL_FRONT = 6;
+            PARALLEL_BACK = 189;
+            SCORING_POSITION_FRONT_HATCH = PARALLEL_FRONT;
+            SCORING_POSITION_FRONT_CARGO_2 = 20;
+            SCORING_POSITION_FRONT_CARGO_3 = 57;
+            SCORING_POSITION_BACK_HATCH = PARALLEL_BACK;
+            SCORING_POSITION_BACK_CARGO = 187;
+            SCORING_POSITION_BACK_CARGO_2 = 178;
+            SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 2;
+            SCORING_POSITION_BACK_CARGO_SHIP = 184;
+        
+            ARBITRARY_FF = 0.002;//17;
+        
+            ANGLE_INTAKE = 180;
+            HATCH_INTAKING_POSITION = 0;
+            CARGO_INTAKING_POSITION = 2;
+
+            ALLOWABLE_ERROR = 50;
+            MAX_FORWARD_POSITION = 0;
+            MAX_BACKWARD_POSITION = 185; // TUNE
+            FRONT_HIGH_PASSTHROUGH_HATCH = 32;
+            FRONT_HIGH_PASSTHROUGH_CARGO = 32;
+            BACK_HIGH_PASSTHROUGH_ANGLE = 188;
+            FRONT_LOW_PASSTHROUGH_ANGLE = 20;
+            BACK_LOW_PASSTHROUGH_ANGLE = 160;
+
+            MID_POSITION = (MAX_FORWARD_POSITION + MAX_BACKWARD_POSITION)/2;
+            SAFE_FORWARD_POSITION = 70;
+            SAFE_BACKWARD_POSITION = 110;
+            RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+        }
+    }
 
     /**
      * The percentage distance from either the front or the back after which precautionary measures must be taken to limit max operable speed.

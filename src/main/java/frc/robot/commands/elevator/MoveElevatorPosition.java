@@ -1,11 +1,11 @@
 package frc.robot.commands.elevator;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Elevator;
 
 /**
@@ -26,14 +26,33 @@ public class MoveElevatorPosition extends Command
      /**
      * Elevator position PID constants
      */
-    public static final double KF = 0.0;
-    public static final double KP = 0.09;
-    public static final double KI = 0.0007;
-    public static final double KD = 0.0;
-    public static final int IZONE = 1500;
+    public static final double KF;
+    public static final double KP;
+    public static final double KI;
+    public static final double KD;
+    public static final int IZONE;
 
-    private static final int ALLOWABLE_ERROR = 0;
-
+    private static final int ALLOWABLE_ERROR;
+    static {
+        if(RobotMap.ROBOT_TYPE == RobotType.COMP){
+            KF = 0.0;
+            KP = 0.09;
+            KI = 0.0007;
+            KD = 0.0;
+            IZONE = 1500;
+            
+            ALLOWABLE_ERROR = 0;
+        }
+        else {
+            KF = 0.0;
+            KP = 0.09;
+            KI = 0.0007;
+            KD = 0.0;
+            IZONE = 1500;
+    
+            ALLOWABLE_ERROR = 0;
+        }
+    }
     public MoveElevatorPosition(double setpoint)
     {
         requires(Elevator.getInstance());

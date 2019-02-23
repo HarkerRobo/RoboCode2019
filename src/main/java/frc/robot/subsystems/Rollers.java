@@ -4,7 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.rollers.SpinRollersManual;
 import harkerrobolib.wrappers.HSTalon;
 
@@ -30,8 +32,20 @@ public class Rollers extends Subsystem {
         }
     }
 
-    private static final boolean TOP_INVERTED = false;
-    private static final boolean BOTTOM_INVERTED = true;
+    private static final boolean TOP_INVERTED;
+    private static final boolean BOTTOM_INVERTED;
+
+    static { 
+        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            TOP_INVERTED = false;
+            BOTTOM_INVERTED = true;
+        }
+        else {
+            TOP_INVERTED = false;
+            BOTTOM_INVERTED = true;
+        }
+    }
+    
     private static final int CONTINUOUS_CURRENT_LIMIT = 7;
     private static final int PEAK_CURRENT_LIMIT = 10;
     private static final int PEAK_TIME = 500;

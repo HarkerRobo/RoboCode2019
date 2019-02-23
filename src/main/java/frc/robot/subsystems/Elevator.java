@@ -31,23 +31,45 @@ public class Elevator extends Subsystem {
     private VictorSPX leftFrontVictor;
     private VictorSPX leftBackVictor;
     private HSTalon followerTalon;
-    public static final int SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
-    public static final int SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
-    public static final int SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
-    public static final int MAX_POSITION = 22794;
+    public static final int SAFE_LOW_PASSTHROUGH_POSITION_HATCH;
+    public static final int SAFE_LOW_PASSTHROUGH_POSITION_CARGO;
+    public static final int SAFE_HIGH_PASSTHROUGH_POSITION; // tune
+    public static final int MAX_POSITION;
 
-    private static final boolean SENSOR_PHASE = true;
+    private static final boolean SENSOR_PHASE;
 
-    public static final int PEAK_CURRENT_LIMIT = 30;
-    public static final int CONT_CURRENT_LIMIT = 20;
-    public static final int PEAK_TIME = 150;
+    public static final int PEAK_CURRENT_LIMIT;
+    public static final int CONT_CURRENT_LIMIT;
+    public static final int PEAK_TIME;
 
-    private static final int RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
+    private static final int RIGHT_TALON_FEEDBACK_COEFFICIENT;
 
     private static final boolean INVERTED_MASTER;
     private static final boolean INVERTED_VICT_LEFT_FRONT;
     private static final boolean INVERTED_VICT_LEFT_BACK;
     private static final boolean INVERTED_VICT_RIGHT;
+
+    public static final int INTAKE_POSITION;
+    
+    public static final int HATCH_INTAKING_POSITION;
+    public static final int CARGO_INTAKING_POSITION;
+
+    public static final int RAIL_POSITION; //TUNE
+    public static final int BALL_INTAKING_HEIGHT; //Tune
+    
+    public static final double FFGRAV;
+    public static final int ZERO_CURRENT_SPIKE;
+
+    public static final int LOW_SCORING_POSITION_HATCH; 
+    public static final int LOW_ROCKET_SCORING_POSITION_CARGO; 
+    public static final int MEDIUM_SCORING_POSITION_HATCH; 
+    public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO; 
+    public static final int HIGH_SCORING_POSITION_HATCH; 
+    public static final int HIGH_ROCKET_SCORING_POSITION_CARGO; 
+    public static final int CARGO_SHIP_SCORING_POSITION_CARGO_FRONT;
+    public static final int CARGO_SHIP_SCORING_POSITION_CARGO_BACK;
+
+    public static final double NOMINAL_OUTPUT = 0.06;
 
     static {
         if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
@@ -55,36 +77,82 @@ public class Elevator extends Subsystem {
             INVERTED_VICT_LEFT_FRONT = true;
             INVERTED_VICT_LEFT_BACK = true;
             INVERTED_VICT_RIGHT = true;
-        } 
+            
+            SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
+            SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
+            SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
+            MAX_POSITION = 22794;
+
+            SENSOR_PHASE = true;
+
+            PEAK_CURRENT_LIMIT = 30;
+            CONT_CURRENT_LIMIT = 20;
+            PEAK_TIME = 150;
+
+            RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
+            
+
+            INTAKE_POSITION = 0;
+
+            HATCH_INTAKING_POSITION = 0;
+            CARGO_INTAKING_POSITION = 0;
+
+            RAIL_POSITION = 20500; //TUNE
+            BALL_INTAKING_HEIGHT = 100; //Tune
+
+            FFGRAV = 0.095;
+            ZERO_CURRENT_SPIKE = 0;
+
+            LOW_SCORING_POSITION_HATCH = 7746; 
+            LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
+            MEDIUM_SCORING_POSITION_HATCH = 12000; 
+            MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
+            HIGH_SCORING_POSITION_HATCH = 22500; 
+            HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
+            CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
+            CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
+                } 
         else {
             INVERTED_MASTER = true;
             INVERTED_VICT_LEFT_FRONT = true;
             INVERTED_VICT_LEFT_BACK = true;
             INVERTED_VICT_RIGHT = true;
+                
+            SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
+            SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
+            SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
+            MAX_POSITION = 22794;
+                
+            SENSOR_PHASE = true;
+                
+            PEAK_CURRENT_LIMIT = 30;
+            CONT_CURRENT_LIMIT = 20;
+            PEAK_TIME = 150;
+                
+            RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
+                
+                
+            INTAKE_POSITION = 0;
+                
+            HATCH_INTAKING_POSITION = 0;
+            CARGO_INTAKING_POSITION = 0;
+                
+            RAIL_POSITION = 20500; //TUNE
+            BALL_INTAKING_HEIGHT = 100; //Tune
+                
+            FFGRAV = 0.095;
+            ZERO_CURRENT_SPIKE = 0;
+                
+            LOW_SCORING_POSITION_HATCH = 7746; 
+            LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
+            MEDIUM_SCORING_POSITION_HATCH = 12000; 
+            MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
+            HIGH_SCORING_POSITION_HATCH = 22500; 
+            HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
+            CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
+            CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
         }
     }
-
-    public static final int INTAKE_POSITION = 0;
-    
-    public static final int HATCH_INTAKING_POSITION = 0;
-    public static final int CARGO_INTAKING_POSITION = 0;
-
-    public static final int RAIL_POSITION = 20500; //TUNE
-    public static final int BALL_INTAKING_HEIGHT = 100; //Tune
-    
-    public static final double FFGRAV = 0.095;
-    public static final int ZERO_CURRENT_SPIKE = 0;
-
-    public static final int LOW_SCORING_POSITION_HATCH = 7746; 
-    public static final int LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
-    public static final int MEDIUM_SCORING_POSITION_HATCH = 12000; 
-    public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
-    public static final int HIGH_SCORING_POSITION_HATCH = 22500; 
-    public static final int HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
-    public static final int CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
-    public static final int CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
-
-    public static final double NOMINAL_OUTPUT = 0.06;
 
     /**
      * Constants used to ramp down past elevator soft limit
