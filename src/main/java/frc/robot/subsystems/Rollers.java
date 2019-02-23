@@ -42,7 +42,7 @@ public class Rollers extends Subsystem {
         }
         else {
             TOP_INVERTED = false;
-            BOTTOM_INVERTED = true;
+            BOTTOM_INVERTED = false;
         }
     }
     

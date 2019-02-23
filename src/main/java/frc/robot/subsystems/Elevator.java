@@ -47,7 +47,7 @@ public class Elevator extends Subsystem {
     private static final boolean INVERTED_MASTER;
     private static final boolean INVERTED_VICT_LEFT_FRONT;
     private static final boolean INVERTED_VICT_LEFT_BACK;
-    private static final boolean INVERTED_VICT_RIGHT;
+    private static final boolean INVERTED_TALON_FOLLOWER;
 
     public static final int INTAKE_POSITION;
     
@@ -76,7 +76,7 @@ public class Elevator extends Subsystem {
             INVERTED_MASTER = true;
             INVERTED_VICT_LEFT_FRONT = true;
             INVERTED_VICT_LEFT_BACK = true;
-            INVERTED_VICT_RIGHT = true;
+            INVERTED_TALON_FOLLOWER = true;
             
             SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
             SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
@@ -113,17 +113,17 @@ public class Elevator extends Subsystem {
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
                 } 
         else {
-            INVERTED_MASTER = true;
-            INVERTED_VICT_LEFT_FRONT = true;
+            INVERTED_MASTER = false;
+            INVERTED_VICT_LEFT_FRONT = false;
             INVERTED_VICT_LEFT_BACK = true;
-            INVERTED_VICT_RIGHT = true;
+            INVERTED_TALON_FOLLOWER = true;
                 
             SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
             SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
             SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
             MAX_POSITION = 22794;
                 
-            SENSOR_PHASE = true;
+            SENSOR_PHASE = false;
                 
             PEAK_CURRENT_LIMIT = 30;
             CONT_CURRENT_LIMIT = 20;
@@ -147,8 +147,8 @@ public class Elevator extends Subsystem {
             LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
             MEDIUM_SCORING_POSITION_HATCH = 12000; 
             MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
-            HIGH_SCORING_POSITION_HATCH = 22500; 
-            HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
+            HIGH_SCORING_POSITION_HATCH = 22000; 
+            HIGH_ROCKET_SCORING_POSITION_CARGO = 22000; 
             CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
         }
@@ -210,7 +210,7 @@ public class Elevator extends Subsystem {
         masterTalon.setInverted(INVERTED_MASTER);
         leftFrontVictor.setInverted(INVERTED_VICT_LEFT_FRONT);
         leftBackVictor.setInverted(INVERTED_VICT_LEFT_BACK);
-        followerTalon.setInverted(INVERTED_VICT_RIGHT);
+        followerTalon.setInverted(INVERTED_TALON_FOLLOWER);
         
         masterTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         masterTalon.setSensorPhase(SENSOR_PHASE);

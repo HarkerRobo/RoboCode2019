@@ -12,7 +12,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -58,9 +61,11 @@ public class Robot extends TimedRobot {
     private static Limelight limelight;
     private static OI oi;
     private static double startTime;
-    private static HSTalon talon;
+    private static TalonSRX talon;
+    private static CANSparkMax sparkMax;
 
     private CommandGroupWrapper wrapper;
+
     // private CANSparkMax talon;
 
     public enum Side {
@@ -75,21 +80,25 @@ public class Robot extends TimedRobot {
         System.out.println("robotinit");
         drivetrain = Drivetrain.getInstance();
         // arm = Arm.getInstance();
-        // elevator = Elevator.getInstance();
-        // intake = Intake.getInstance();
-        // rollers = Rollers.getInstance();
-        // wrist = Wrist.getInstance();
+        elevator = Elevator.getInstance();
+        intake = Intake.getInstance();
+        rollers = Rollers.getInstance();
+        wrist = Wrist.getInstance();
         // hatchLatcher = HatchLatcher.getInstance();
         // oi = OI.getInstance();        
         //limelight = Limelight.getInstance();        
        
-        // drivetrain.talonInit();
-        // elevator.talonInit();
-        // wrist.talonInit();
-        // rollers.talonInit();
-        // intake.controllerInit();
+        drivetrain.talonInit();
+        elevator.talonInit();
+        wrist.talonInit();
+        rollers.talonInit();
+        intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
-        talon = new HSTalon(CAN_IDs.DT_LEFT_MASTER);
+
+        // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);
+        sparkMax = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
+        // talon.configFactoryDefault();
+
         // elevator.getMasterTalon().get
         wrapper = new CommandGroupWrapper().sequential(new WaitCommand(1)).sequential(new WaitCommand(2));
     }
@@ -117,8 +126,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         wrapper.start();
         startTime = Timer.getFPGATimestamp();
-        Elevator.getInstance().setElevator(ControlMode.Disabled, 0);
-        Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
+        // Elevator.getInstance().setElevator(ControlMode.Disabled, 0);
+        // Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
         // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         //Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     }
@@ -130,9 +139,10 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
-        talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
+        // talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
         // System.out.println("completed: " + cgw.isCompleted() + " " + cgw.isRunning());
         //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
+        sparkMax.set(OI.getInstance().getDriverGamepad().getRightX());
 
         // SmartDashboard.putNumber("el current ", Elevator.getInstance().getFollowerTalon().getOutputCurrent());
         // System.out.println("Elevator position: " + Elevator.getInstance().getMasterTalon().getSelectedSensorPosition() + " Wrist position: " + Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
@@ -152,6 +162,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Encoder Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
         SmartDashboard.putNumber("LEFT Y", OI.getInstance().getDriverGamepad().getLeftY());
         SmartDashboard.putNumber("el current", Elevator.getInstance().getMasterTalon().getOutputCurrent());
+
         // //System.out.println(limelight.getCamtranData());
         // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
         // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());

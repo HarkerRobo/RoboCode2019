@@ -85,6 +85,8 @@ public class Wrist extends Subsystem {
     public static final int SAFE_BACKWARD_POSITION;
     public static final int RANGE_OF_MOTION;
 
+    public static final boolean SENSOR_PHASE;
+
     static{
         if(RobotMap.ROBOT_TYPE==RobotType.COMP) {
             MASTER_INVERTED = true;
@@ -123,10 +125,12 @@ public class Wrist extends Subsystem {
             SAFE_FORWARD_POSITION = 70;
             SAFE_BACKWARD_POSITION = 110;
             RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+
+            SENSOR_PHASE = false;
         }
         else {
-            MASTER_INVERTED = true;
-            FOLLOWER_INVERTED = true;
+            MASTER_INVERTED = false;
+            FOLLOWER_INVERTED = false;
         
             CONTINUOUS_CURRENT_LIMIT = 7;
             PEAK_CURRENT_LIMIT = 10;
@@ -142,7 +146,7 @@ public class Wrist extends Subsystem {
             SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 2;
             SCORING_POSITION_BACK_CARGO_SHIP = 184;
         
-            ARBITRARY_FF = 0.002;//17;
+            ARBITRARY_FF = 0;//0.002;//17;
         
             ANGLE_INTAKE = 180;
             HATCH_INTAKING_POSITION = 0;
@@ -161,6 +165,7 @@ public class Wrist extends Subsystem {
             SAFE_FORWARD_POSITION = 70;
             SAFE_BACKWARD_POSITION = 110;
             RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+            SENSOR_PHASE = true;
         }
     }
 
@@ -180,7 +185,6 @@ public class Wrist extends Subsystem {
     public static final int POSITION_SLOT = 0;
     public static final int MOTION_MAGIC_SLOT = 1;
 
-    public static final boolean SENSOR_PHASE = false;
     public static final double WRIST_PARALLEL_FORWARD_DEG = 5.0;
     public static Supplier<Double> feedForwardLambda = () -> (ARBITRARY_FF * 
                                                                 Math.cos(Wrist.getInstance().convertEncoderToRadians

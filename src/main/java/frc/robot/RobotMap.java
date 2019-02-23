@@ -72,20 +72,20 @@ public class RobotMap {
                 WRIST_MASTER = 5;
                 WRIST_FOLLOWER = 7;
 
-                BALL_INTAKE_MASTER = 1;
+                BALL_INTAKE_MASTER = 3;
                 ARM_MASTER = 0;
 
                 RO_TOP = 0;
                 RO_BOTTOM = 1;
 
-                ARM_FORWARD_CHANNEL = 2;
-                ARM_REVERSE_CHANNEL = 3;
+                ARM_FORWARD_CHANNEL = 4;
+                ARM_REVERSE_CHANNEL = 0;
 
-                EXTENDER_FORWARD_CHANNEL = 4;
-                EXTENDER_REVERSE_CHANNEL = 5;
+                EXTENDER_FORWARD_CHANNEL = 5;
+                EXTENDER_REVERSE_CHANNEL = 1;
             
                 FLOWER_FORWARD_CHANNEL = 6; 
-                FLOWER_REVERSE_CHANNEL = 7;
+                FLOWER_REVERSE_CHANNEL = 2;
 
                 PIGEON = 1;
                 PCM = 0;
