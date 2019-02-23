@@ -3,7 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.RobotType;
 
 /**
  * Controls the Hatch Panel Intake
@@ -18,8 +20,31 @@ import frc.robot.RobotMap.CAN_IDs;
  * @since 1/14/19
  */
 public class HatchLatcher extends Subsystem {
+    public static final DoubleSolenoid.Value EXTENDER_IN_VALUE;
+    public static final DoubleSolenoid.Value EXTENDER_OUT_VALUE;
+
+    public static final DoubleSolenoid.Value FLOWER_OPEN_VALUE;
+    public static final DoubleSolenoid.Value FLOWER_CLOSED_VALUE;
+
+    static {
+        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            EXTENDER_IN_VALUE = DoubleSolenoid.Value.kForward;
+            EXTENDER_OUT_VALUE = DoubleSolenoid.Value.kReverse;
+
+            
+            FLOWER_OPEN_VALUE = DoubleSolenoid.Value.kReverse;
+            FLOWER_CLOSED_VALUE = DoubleSolenoid.Value.kForward;
+        } else {
+            EXTENDER_IN_VALUE = DoubleSolenoid.Value.kForward;
+            EXTENDER_OUT_VALUE = DoubleSolenoid.Value.kReverse;
+
+            FLOWER_OPEN_VALUE = DoubleSolenoid.Value.kReverse;
+            FLOWER_CLOSED_VALUE = DoubleSolenoid.Value.kForward;
+        }
+    }
+    
     public enum ExtenderDirection {
-        IN(DoubleSolenoid.Value.kForward), OUT(DoubleSolenoid.Value.kReverse);
+        IN(EXTENDER_IN_VALUE), OUT(EXTENDER_OUT_VALUE);
         private DoubleSolenoid.Value value;
 
         private ExtenderDirection(DoubleSolenoid.Value value) {
@@ -36,7 +61,7 @@ public class HatchLatcher extends Subsystem {
     }
 
     public enum FlowerDirection {
-        OPEN(DoubleSolenoid.Value.kReverse), CLOSED(DoubleSolenoid.Value.kForward);
+        OPEN(FLOWER_OPEN_VALUE), CLOSED(FLOWER_CLOSED_VALUE);
         private DoubleSolenoid.Value value;
 
         private FlowerDirection(DoubleSolenoid.Value value) {
