@@ -1,15 +1,13 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
-import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.intake.SpinIntakeManual;
-import harkerrobolib.util.Constants;
 
 /**
  * Intakes the cargo into the robot.
@@ -31,7 +29,7 @@ public class Intake extends Subsystem {
     }
 
     private static Intake instance;
-    private CANSparkMax intakeSparkMax;
+    private VictorSPX intakeVictor;
 
     private final static int STALL_LIMIT = 40; // current limit (amps) when the robot is stopped
     private final static int FREE_LIMIT = 30; // current limit (amps) when the robot is moving freely
@@ -49,8 +47,8 @@ public class Intake extends Subsystem {
     }
     public final static double DEFAULT_INTAKE_MAGNITUDE = 0.4;
 
-    public CANSparkMax getController() {
-        return intakeSparkMax;
+    public VictorSPX getController() {
+        return intakeVictor;
     }
 
     public void setControllerOutput(double magnitude, IntakeDirection direction) {
@@ -58,18 +56,19 @@ public class Intake extends Subsystem {
     }
 
     public void setControllerOutput(double percentOutput) {
-        getController().set(percentOutput);
+        // getController().set(percentOutput);
+        intakeVictor.set(ControlMode.PercentOutput, percentOutput);
     }
 
     private Intake() {
         System.out.println(CAN_IDs.BALL_INTAKE_MASTER + " ball intake");
-        intakeSparkMax = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
+        intakeVictor = new VictorSPX(CAN_IDs.BALL_INTAKE_MASTER);//CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
     }
 
     public void controllerInit() {
-        intakeSparkMax.setInverted(CONTROLLER_INVERTED);
-        intakeSparkMax.setSmartCurrentLimit(STALL_LIMIT, FREE_LIMIT);
-        intakeSparkMax.setCANTimeout(Constants.DEFAULT_TIMEOUT);
+        intakeVictor.setInverted(CONTROLLER_INVERTED);
+        // intakeSparkMax.setSmartCurrentLimit(STALL_LIMIT, FREE_LIMIT);
+        // intakeSparkMax.setCANTimeout(Constants.DEFAULT_TIMEOUT);
     }
 
     public static Intake getInstance() {
@@ -84,11 +83,11 @@ public class Intake extends Subsystem {
         setDefaultCommand(new SpinIntakeManual());
     }
 
-    public double getEncoderPosition () {
-        return Intake.getInstance().getController().getEncoder().getPosition();
-    }
+    // public double getEncoderPosition () {
+    //     return Intake.getInstance().getController().getEncoder().getPosition();
+    // }
 
-    public double getEncoderVelocity () {
-        return Intake.getInstance().getController().getEncoder().getVelocity();
-    }
+    // public double getEncoderVelocity () {
+    //     return Intake.getInstance().getController().getEncoder().getVelocity();
+    // }
 }

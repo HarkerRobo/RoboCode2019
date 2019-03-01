@@ -7,23 +7,13 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.RobotMap.CAN_IDs;
-import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -32,10 +22,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
-import frc.robot.util.TestGroup;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
-import harkerrobolib.wrappers.HSTalon;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -62,7 +50,6 @@ public class Robot extends TimedRobot {
     private static OI oi;
     private static double startTime;
     private static TalonSRX talon;
-    private static CANSparkMax sparkMax;
 
     private CommandGroupWrapper wrapper;
 
