@@ -5,6 +5,7 @@ import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
 import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
+import frc.robot.util.Pair;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
@@ -28,28 +29,17 @@ public class SpinRollersManual extends IndefiniteCommand {
      */
     @Override
 	public void execute() {
-        double output = 0;
+        Pair<Double, Double> output = new Pair<Double, Double> (0.0 , 0.0);
         RollerDirection rollerDirection = RollerDirection.IN;
-        if(OI.getInstance().getDriver() == OI.Driver.PRANAV) {
-            double driverRightTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND);      
-            double driverLeftTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND);    
-            if(driverRightTrigger > 0) {
-                output = Rollers.getInstance().getRecommendedRollersOutput();
-                rollerDirection = RollerDirection.OUT;
-            } else {
-                output = driverLeftTrigger;
-                rollerDirection = RollerDirection.IN;
-            }
-        } else if(OI.getInstance().getDriver() == OI.Driver.CHRIS){
+        if(OI.getInstance().getDriver() == OI.Driver.CHRIS){
             if(OI.getInstance().getDriverGamepad().getButtonXState()) {
                 output = Rollers.getInstance().getRecommendedRollersOutput();
                 rollerDirection = RollerDirection.OUT;
             } else if(OI.getInstance().getDriverGamepad().getButtonYState()) {
-                    output = Rollers.DEFAULT_ROLLER_MAGNITUDE;
-                    rollerDirection = RollerDirection.IN;
-
+                    output = Rollers.getInstance().getRecommendedRollersOutput();
+                rollerDirection = RollerDirection.IN;
             } else {
-                output = 0;
+                output = new Pair<Double, Double>(0.0, 0.0);
                 rollerDirection = RollerDirection.IN;
             }
         } else {
@@ -64,8 +54,9 @@ public class SpinRollersManual extends IndefiniteCommand {
             }
         }
         
-        if((int) Math.signum(output) == RollerDirection.IN.getSign() && Math.abs(output) > Rollers.HATCH_STOW_SPEED)
-            new LoadOrScoreHatch(ScoreState.LOAD);
-        Rollers.getInstance().moveRollers(output, rollerDirection);
+        if(rollerDirection == RollerDirection.IN && (Math.abs(output.getFirst()) > Rollers.HATCH_STOW_SPEED || 
+                                                     Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED))
+            (new LoadOrScoreHatch(ScoreState.LOAD)).start();
+        Rollers.getInstance().moveRollers(output.getFirst(), output.getSecond(), rollerDirection);
 	}
 }

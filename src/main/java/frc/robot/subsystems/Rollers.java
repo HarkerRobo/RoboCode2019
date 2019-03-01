@@ -5,9 +5,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
+import frc.robot.Robot.Side;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.rollers.SpinRollersManual;
+import frc.robot.util.Pair;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -49,9 +51,11 @@ public class Rollers extends Subsystem {
     private static final int CONTINUOUS_CURRENT_LIMIT = 7;
     private static final int PEAK_CURRENT_LIMIT = 10;
     private static final int PEAK_TIME = 500;
+    private static final double ROCKET_HIGH_SCORING_SPEED = 0.8;
+    private static final double TOP_SPIN = 0.1;
 
-    public static final double DEFAULT_ROLLER_MAGNITUDE = 0.5;
-    public static final double ROLLER_SHOOTING_SPEED = 0.8;
+    public static final double DEFAULT_ROLLER_MAGNITUDE = 0.8;
+    public static final double ROLLER_SHOOTING_SPEED = 0.65;
     public static final double HATCH_STOW_SPEED = 0.75;
 
     private static Rollers instance;
@@ -114,16 +118,31 @@ public class Rollers extends Subsystem {
         rTalonBottom.set(ControlMode.Disabled, 0);
     }
 
-    public void moveRollers(double magnitude, RollerDirection direction) {
-        rTalonTop.set(ControlMode.PercentOutput, magnitude * direction.getSign());
-        rTalonBottom.set(ControlMode.PercentOutput, -1 * magnitude * direction.getSign());
+    public void moveRollers(double output, RollerDirection direction) {
+        rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign());
+        rTalonBottom.set(ControlMode.PercentOutput, -1 * output * direction.getSign());
     }
 
-    public double getRecommendedRollersOutput() {
-        //  int wristAngle = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition();
+    /**
+     * Pair<top output, bottom output>
+     */
+    public Pair<Double, Double> getRecommendedRollersOutput() {
+        double wristAngle = Wrist.getInstance().getCurrentAngleDegrees();
+        if((Wrist.getInstance().getCurrentSide() == Side.FRONT ||
+            Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS) && 
+            Wrist.getInstance().isFurtherBackward(wristAngle, Wrist.SCORING_POSITION_FRONT_CARGO_2) ||
+            (Wrist.getInstance().getCurrentSide() == Side.BACK) &&
+            Wrist.getInstance().isFurtherForward(wristAngle, Wrist.SCORING_POSITION_BACK_CARGO_2)) {
+            return new Pair<Double, Double> (DEFAULT_ROLLER_MAGNITUDE + TOP_SPIN, DEFAULT_ROLLER_MAGNITUDE - TOP_SPIN);
+        }
         //  if(Math.abs(wristAngle - 90)
         //      return ROLLER_SHOOTING_SPEED;
-        return DEFAULT_ROLLER_MAGNITUDE;
+        return new Pair<Double, Double> (DEFAULT_ROLLER_MAGNITUDE, DEFAULT_ROLLER_MAGNITUDE);
+    }
+
+    public void moveRollers(double topMagnitude, double bottomMagnitude, RollerDirection direction) {
+        rTalonTop.set(ControlMode.PercentOutput, topMagnitude * direction.getSign());
+        rTalonBottom.set(ControlMode.PercentOutput, bottomMagnitude * direction.getSign());
     }
 
      /**
