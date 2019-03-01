@@ -62,6 +62,7 @@ public class Intake extends Subsystem {
     }
 
     private Intake() {
+        System.out.println(CAN_IDs.BALL_INTAKE_MASTER + " ball intake");
         intakeSparkMax = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
     }
 

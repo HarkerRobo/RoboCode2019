@@ -25,6 +25,7 @@ import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.commands.wrist.ZeroWrist;
+import frc.robot.util.ConditionalCommand;
 import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.Limelight;
 import harkerrobolib.wrappers.HSGamepad;
@@ -70,7 +71,7 @@ public class OI {
 
     private static Driver driver;
 
-    private static boolean cargoBayToggleMode;
+    public static boolean cargoBayToggleMode;
 
     private OI() {
         driver = Driver.CHRIS;
@@ -108,18 +109,15 @@ public class OI {
                  @Override
                 public void initialize() {
                     cargoBayToggleMode = !cargoBayToggleMode;
-                    if(cargoBayToggleMode) {
-                        customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.CARGO_SHIP_FRONT));
-                        customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.CARGO_SHIP_BACK));
-                    } else {
-                        customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
-                        customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
-                    }}});
+                    }});
         
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
             //driverGamepad.getButtonBumperRight().whenPressed(new StowHatchIntake());
+
+        customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> OI.cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_FRONT), new SetScoringPosition(Location.F1)));
+        customOperatorGamepad.getBackwardOneButton().whenPressed(new ConditionalCommand(() -> OI.cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_BACK), new SetScoringPosition(Location.B1)));
 
         customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
         customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));

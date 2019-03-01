@@ -114,7 +114,7 @@ public class Elevator extends Subsystem {
                 } 
         else {
             INVERTED_MASTER = false;
-            INVERTED_VICT_LEFT_FRONT = false;
+            INVERTED_VICT_LEFT_FRONT = true;
             INVERTED_VICT_LEFT_BACK = true;
             INVERTED_TALON_FOLLOWER = true;
                 
@@ -143,13 +143,13 @@ public class Elevator extends Subsystem {
             FFGRAV = 0.095;
             ZERO_CURRENT_SPIKE = 0;
                 
-            LOW_SCORING_POSITION_HATCH = 7746; 
+            LOW_SCORING_POSITION_HATCH = 10338; 
             LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
             MEDIUM_SCORING_POSITION_HATCH = 12000; 
             MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
             HIGH_SCORING_POSITION_HATCH = 22000; 
             HIGH_ROCKET_SCORING_POSITION_CARGO = 22000; 
-            CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
+            CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 17800;
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
         }
     }

@@ -7,7 +7,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Elevator;
 
 /**
@@ -21,7 +23,14 @@ import frc.robot.subsystems.Elevator;
  */
 public class ZeroElevator extends Command {
 
-    private static final double ZERO_SPEED = -0.34;
+    private static final double ZERO_SPEED;
+    static {
+        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            ZERO_SPEED = -0.34;
+        } else {
+            ZERO_SPEED = -0.25;
+        }
+    }
     private static final double CURRENT_SPIKE = 2.8;
     private static final double TIMEOUT = 5000;
     
