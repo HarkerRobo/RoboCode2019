@@ -4,8 +4,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.RobotMap;
 import frc.robot.Robot.Side;
+import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.rollers.SpinRollersManual;
@@ -36,6 +36,7 @@ public class Rollers extends Subsystem {
 
     private static final boolean TOP_INVERTED;
     private static final boolean BOTTOM_INVERTED;
+
 
     static { 
         if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
