@@ -19,10 +19,10 @@ public class CustomOperatorGamepad extends Joystick {
     private static final int FORWARD_ONE_PORT = 5;
     private static final int BACKWARD_ONE_PORT = 6;
 
-    private static final int ZERO_PORT = 7;
-    private static final int OUTTAKE_BALL_OR_HATCH_PORT= 9;
-    private static final int INTAKE_HATCH_PORT = 8; 
-    private static final int BRING_ALL_IN_PORT = 10;
+    private static final int ZERO_WRIST_PORT = 7;
+    private static final int CARGO_INTAKING_PORT= 9;
+    private static final int ZERO_ELEVATOR_PORT = 8; 
+    private static final int HATCH_INTAKING_PORT = 10;
 
     private HSJoystickButton forwardOneButton;
     private HSJoystickButton forwardTwoButton;
@@ -31,10 +31,10 @@ public class CustomOperatorGamepad extends Joystick {
     private HSJoystickButton backwardTwoButton;
     private HSJoystickButton backwardThreeButton; 
 
-    private HSJoystickButton zeroButton; 
-    private HSJoystickButton outtakeButton;
-    private HSJoystickButton intakeHatchButton;
-    private HSJoystickButton stowButton; 
+    private HSJoystickButton zeroWristButton; 
+    private HSJoystickButton cargoIntakingButton;
+    private HSJoystickButton zeroElevatorButton;
+    private HSJoystickButton hatchIntakingButton; 
     
     /**
      * Creates a new custom operator gamepad with a specific port.
@@ -48,10 +48,10 @@ public class CustomOperatorGamepad extends Joystick {
         forwardOneButton = new HSJoystickButton(this, FORWARD_ONE_PORT);
         backwardOneButton = new HSJoystickButton(this, BACKWARD_ONE_PORT);
 
-        zeroButton = new HSJoystickButton(this, ZERO_PORT);
-        outtakeButton = new HSJoystickButton(this, OUTTAKE_BALL_OR_HATCH_PORT); 
-        intakeHatchButton  = new HSJoystickButton(this, INTAKE_HATCH_PORT);
-        stowButton = new HSJoystickButton(this, BRING_ALL_IN_PORT);
+        zeroWristButton = new HSJoystickButton(this, ZERO_WRIST_PORT);
+        cargoIntakingButton = new HSJoystickButton(this, CARGO_INTAKING_PORT); 
+        zeroElevatorButton  = new HSJoystickButton(this, ZERO_ELEVATOR_PORT);
+        hatchIntakingButton = new HSJoystickButton(this, HATCH_INTAKING_PORT);
     }
 
 
@@ -109,29 +109,29 @@ public class CustomOperatorGamepad extends Joystick {
      * Gets the zero button.
      * @return the zero button 
      */
-    public HSJoystickButton getZeroButton() {
-        return zeroButton;
+    public HSJoystickButton getZeroWristButton() {
+        return zeroWristButton;
     }
     /**
      * Gets the outtake ball or hatch button.
      * @return the outtake ball or hatch button 
      */
-    public HSJoystickButton getOuttakeButton() {
-        return outtakeButton;
+    public HSJoystickButton getCargoIntakingButton() {
+        return cargoIntakingButton;
     }
     /**
      * Gets the intake and hatch button.
      * @return the intake and hatch button 
      */
-    public HSJoystickButton getIntakeHatchButton() {
-        return intakeHatchButton;
+    public HSJoystickButton getZeroElevatorButton() {
+        return zeroElevatorButton;
     }
     /**
      * Gets the stow button.
      * @return the stow button
      */
-    public HSJoystickButton getStowButton() {
-        return stowButton;
+    public HSJoystickButton getHatchIntakingButton() {
+        return hatchIntakingButton;
     }
 
 
@@ -189,7 +189,7 @@ public class CustomOperatorGamepad extends Joystick {
      * @return whether the zero button is pressed
      */
     public boolean getZeroPressed(){
-        return zeroButton.get();
+        return zeroWristButton.get();
     }
 
     /**
@@ -198,7 +198,7 @@ public class CustomOperatorGamepad extends Joystick {
      */
 
     public boolean getOuttakeBallOrHatchPressed(){
-        return outtakeButton.get();
+        return cargoIntakingButton.get();
     }
 
     /**
@@ -206,7 +206,7 @@ public class CustomOperatorGamepad extends Joystick {
      * @return whether the intake Hatch button is pressed
      */
     public boolean getIntakeHatchPressed(){
-        return intakeHatchButton.get();
+        return zeroElevatorButton.get();
     }
 
     /**
@@ -214,7 +214,7 @@ public class CustomOperatorGamepad extends Joystick {
      * @return whether the bring all in is pressed
      */
     public boolean getBringAllInPressed(){
-        return stowButton.get();
+        return hatchIntakingButton.get();
     }
 
     

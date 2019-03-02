@@ -45,7 +45,7 @@ public class Rollers extends Subsystem {
         }
         else {
             TOP_INVERTED = false;
-            BOTTOM_INVERTED = false;
+            BOTTOM_INVERTED = true;
         }
     }
     
@@ -88,6 +88,8 @@ public class Rollers extends Subsystem {
 
         rTalonTop.setInverted(TOP_INVERTED);
         rTalonBottom.setInverted(BOTTOM_INVERTED);
+        System.out.println(TOP_INVERTED);
+        System.out.println(BOTTOM_INVERTED);
 
         setupCurrentLimits();
     }

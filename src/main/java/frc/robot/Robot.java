@@ -21,6 +21,7 @@ import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.util.Limelight;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
@@ -68,7 +69,7 @@ public class Robot extends TimedRobot {
         drivetrain = Drivetrain.getInstance();
         // arm = Arm.getInstance();
         elevator = Elevator.getInstance();
-        // intake = Intake.getInstance();
+        intake = Intake.getInstance();
         rollers = Rollers.getInstance();
         wrist = Wrist.getInstance();
         // hatchLatcher = HatchLatcher.getInstance();
@@ -79,7 +80,7 @@ public class Robot extends TimedRobot {
         elevator.talonInit();
         wrist.talonInit();
         rollers.talonInit();
-        // intake.controllerInit();
+        intake.controllerInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
         // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);
@@ -149,6 +150,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("Encoder Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
         SmartDashboard.putNumber("LEFT Y", OI.getInstance().getDriverGamepad().getLeftY());
         SmartDashboard.putNumber("el current", Elevator.getInstance().getMasterTalon().getOutputCurrent());
+        
+        SmartDashboard.putBoolean("Is extended?", HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT);
 
         SmartDashboard.putBoolean("Has hatch?", HatchLatcher.getInstance().hasHatch());
         SmartDashboard.putBoolean("Is scoring on cargo ship?", OI.cargoBayToggleMode);

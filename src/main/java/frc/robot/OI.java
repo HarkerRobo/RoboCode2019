@@ -127,10 +127,10 @@ public class OI {
         customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
 
-        customOperatorGamepad.getOuttakeButton().whenPressed(new SetScoringPosition(Location.CARGO_INTAKE));
-        customOperatorGamepad.getZeroButton().whilePressed(new ZeroWrist());
-        customOperatorGamepad.getIntakeHatchButton().whilePressed(new ZeroElevator());
-         customOperatorGamepad.getStowButton().whenPressed(new SetScoringPosition(Location.B1, () -> true));
+        customOperatorGamepad.getCargoIntakingButton().whenPressed(new SetScoringPosition(Location.CARGO_INTAKE));
+        customOperatorGamepad.getZeroWristButton().whilePressed(new ZeroWrist());
+        customOperatorGamepad.getZeroElevatorButton().whilePressed(new ZeroElevator());
+        customOperatorGamepad.getHatchIntakingButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE, () -> true));
         
         // customOperatorGamepad.getOuttakeButton().whenPressed(new InstantCommand() {
         //     @Override

@@ -150,7 +150,7 @@ public class Wrist extends Subsystem {
             ARBITRARY_FF = 0;//0.002;//17;
         
             ANGLE_INTAKE = 180;
-            HATCH_INTAKING_POSITION = 0;
+            HATCH_INTAKING_POSITION = PARALLEL_BACK;
             CARGO_INTAKING_POSITION = 2;
 
             ALLOWABLE_ERROR = 50;

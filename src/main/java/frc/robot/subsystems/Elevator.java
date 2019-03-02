@@ -134,7 +134,7 @@ public class Elevator extends Subsystem {
                 
             INTAKE_POSITION = 0;
                 
-            HATCH_INTAKING_POSITION = 0;
+            HATCH_INTAKING_POSITION = 7000;
             CARGO_INTAKING_POSITION = 0;
                 
             RAIL_POSITION = 20500; //TUNE

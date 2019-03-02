@@ -55,8 +55,8 @@ public class SpinRollersManual extends IndefiniteCommand {
         }
         
         if(rollerDirection == RollerDirection.IN && (Math.abs(output.getFirst()) > Rollers.HATCH_STOW_SPEED || 
-                                                     Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED))
-            (new LoadOrScoreHatch(ScoreState.LOAD)).start();
+                                                     Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED)){}
+            // (new LoadOrScoreHatch(ScoreState.LOAD)).start();
         Rollers.getInstance().moveRollers(output.getFirst(), output.getSecond(), rollerDirection);
 	}
 }
