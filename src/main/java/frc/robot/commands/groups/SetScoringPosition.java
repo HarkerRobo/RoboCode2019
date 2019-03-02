@@ -84,10 +84,8 @@ public class SetScoringPosition extends CommandGroup {
 	private Location desiredLocation;
 
 	private Side desiredSide;
-	
-	public SetScoringPosition () {
 
-	}
+	public static final double PASSTHROUGH_WAIT_TIME = 0.25;
 
 	public SetScoringPosition(Location desiredLocation) {
 		this(desiredLocation, () -> HatchLatcher.getInstance().hasHatch());
@@ -130,6 +128,7 @@ public class SetScoringPosition extends CommandGroup {
 		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
 						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
+		addSequential(new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean(), new WaitCommand(PASSTHROUGH_WAIT_TIME)));
 		addSequential(new MoveWristMotionMagic(() -> (mustPassthroughLow.getAsBoolean() ? 
 		 												(getDesiredSide.get() == Side.FRONT ? Wrist.FRONT_LOW_PASSTHROUGH_ANGLE : Wrist.BACK_LOW_PASSTHROUGH_ANGLE) 
 														 : getDesiredAngle.get()))); // perform the passthrough OR simply move to desired angle

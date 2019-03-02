@@ -4,8 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import frc.robot.OI;
+import frc.robot.Robot.Side;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Wrist;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
@@ -52,8 +54,11 @@ public class MoveElevatorManual extends IndefiniteCommand {
             isHolding = true;   
         }
 
-        if (isHolding && shouldClosedLoop) {
+        boolean isWristPullingUp = Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) && Wrist.getInstance().getCurrentSide() == Side.FRONT;
+        if (isHolding && shouldClosedLoop && !isWristPullingUp) {
             Elevator.getInstance().setElevator(ControlMode.MotionMagic, lastPos);
+        } else if (isWristPullingUp) {
+            Elevator.getInstance().setElevator(ControlMode.Disabled, 0.0);
         }
     }
 
