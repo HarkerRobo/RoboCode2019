@@ -22,5 +22,7 @@ const updateText = (cargoEnabled, hatchEnabled) => {
 const interval = setInterval(() => {
     let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
     let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
+    let elevatorPosition = NetworkTables.getValue("/SmartDashboard/Elevator Position");
+    let wristPosition = NetworkTables.getValue("/SmartDashboard/Wrist Position");
     updateText(isCargoShipEnabled, isHatchEnabled);
 }, 100);
