@@ -3,21 +3,24 @@ const ge = (element) => {
 }
 
 const updateText = (cargoEnabled, hatchEnabled) => {
-    ge("cshipm").innerHTML = `
-        <img src=${cargoEnabled ? "cargo_ship.png" : "rocket.png"} style="height: 30vh"/>
-        <span class="big">${cargoEnabled ? "Cargo ship" : "Rocket"} mode</span><br /><br /><br /><br /><br/><br/><br /><br/>
-        <img src=${hatchEnabled ? "hatchpanel.png" : "cargo.png"} style="height: 30vh"/>
-        <span class="big">Has ${hatchEnabled ? "hatch panel" : "cargo"}</span>`;
-    //ge("cshipm").innerHTML = `${cargoEnabled ? "Cargo ship" : "Rocket"} mode`;
-    //if(document.getElementById("cshipm").classList.contains("green") && !cargoEnabled)
-    //    document.getElementById("cshipm").classList.toggle("green");
-    //else if(!document.getElementById("cshipm").classList.contains("green") && cargoEnabled)
-    //    document.getElementById("cshipm").classList.toggle("green");
-    
+    if(cargoEnabled) {
+        ge("cargoship").style.display = "inline-block";
+        ge("rocket").style.display = "none";
+    } else {
+        ge("rocket").style.display = "inline-block";
+        ge("cargo_ship").style.display = "none";
+    }
+    if(hatchEnabled) {
+        ge("hatch").style.display = "inline-block";
+        ge("cargo").style.display = "none";
+    } else {
+        ge("cargo").style.display = "inline-block";
+        ge("hatch").style.display = "none";
+    }
 } 
 
 const interval = setInterval(() => {
     let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
     let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
     updateText(isCargoShipEnabled, isHatchEnabled);
-}, 500);
+}, 100);
