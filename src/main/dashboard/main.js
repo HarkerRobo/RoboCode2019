@@ -8,7 +8,7 @@ const updateText = (cargoEnabled, hatchEnabled) => {
         ge("rocket").style.display = "none";
     } else {
         ge("rocket").style.display = "inline-block";
-        ge("cargo_ship").style.display = "none";
+        ge("cargoship").style.display = "none";
     }
     if(hatchEnabled) {
         ge("hatch").style.display = "inline-block";
