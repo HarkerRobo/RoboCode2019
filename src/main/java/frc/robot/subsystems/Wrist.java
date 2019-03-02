@@ -60,6 +60,7 @@ public class Wrist extends Subsystem {
     public static final int SCORING_POSITION_FRONT_CARGO_2;
     public static final int SCORING_POSITION_FRONT_CARGO_3;
     public static final int SCORING_POSITION_BACK_HATCH;
+    public static final int SCORING_POSITION_BACK_HATCH_2;
     public static final int SCORING_POSITION_BACK_CARGO;
     public static final int SCORING_POSITION_BACK_CARGO_2;
     public static final int SCORING_POSITION_FRONT_CARGO_SHIP;
@@ -102,6 +103,7 @@ public class Wrist extends Subsystem {
             SCORING_POSITION_FRONT_CARGO_2 = 20;
             SCORING_POSITION_FRONT_CARGO_3 = 57;
             SCORING_POSITION_BACK_HATCH = PARALLEL_BACK;
+            SCORING_POSITION_BACK_HATCH_2 = PARALLEL_BACK;
             SCORING_POSITION_BACK_CARGO = 187;
             SCORING_POSITION_BACK_CARGO_2 = 178;
             SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 5;
@@ -142,6 +144,7 @@ public class Wrist extends Subsystem {
             SCORING_POSITION_FRONT_CARGO_2 = 20;
             SCORING_POSITION_FRONT_CARGO_3 = 68;//57;
             SCORING_POSITION_BACK_HATCH = PARALLEL_BACK;
+            SCORING_POSITION_BACK_HATCH_2 = PARALLEL_BACK - 10;
             SCORING_POSITION_BACK_CARGO = 187;
             SCORING_POSITION_BACK_CARGO_2 = 178;
             SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 2;

@@ -20,6 +20,6 @@ public class StowHatchIntake extends CommandGroupWrapper {
                return oldFlowerDirection == FlowerDirection.OPEN;
            }
         });
-        sequential(new SetExtenderManual(ExtenderDirection.IN));
+        sequential(new SetExtenderState(ExtenderDirection.IN));
     }
 }

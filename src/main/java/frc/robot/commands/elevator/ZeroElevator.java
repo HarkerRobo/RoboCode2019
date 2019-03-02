@@ -67,6 +67,7 @@ public class ZeroElevator extends Command {
     protected void end () {
         Elevator.getInstance().getMasterTalon().set(ControlMode.Disabled, 0);
         Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
+        ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition(0);
         System.out.println("command over");
     }
 }

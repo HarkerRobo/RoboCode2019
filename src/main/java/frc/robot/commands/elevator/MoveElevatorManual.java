@@ -42,14 +42,14 @@ public class MoveElevatorManual extends IndefiniteCommand {
     @Override
     public void execute() {
         double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
-        if (desiredSpeed > 0) {
+        if (Math.abs(desiredSpeed) > 0) {
             isHolding = false;
             shouldClosedLoop = true;
-            
+
             Elevator.getInstance().setElevator(ControlMode.PercentOutput, desiredSpeed);
         } else {
             if (!isHolding) {lastPos = Elevator.getInstance().getCurrentPositionEncoder();}
-            isHolding = true;
+            isHolding = true;   
         }
 
         if (isHolding && shouldClosedLoop) {
@@ -61,5 +61,14 @@ public class MoveElevatorManual extends IndefiniteCommand {
         shouldClosedLoop = false;
     }
         
+    public void setLastPosition (double lastPos) {
+        this.lastPos = lastPos;
+    }
     
+    /**
+     * Sets the last position to be the current elevator position.
+     */
+    public void setLastPosition () {
+        this.setLastPosition(Elevator.getInstance().getCurrentPositionEncoder());
+    }
 }

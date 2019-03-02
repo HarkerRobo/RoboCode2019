@@ -63,11 +63,13 @@ public class Elevator extends Subsystem {
     public static final int LOW_SCORING_POSITION_HATCH; 
     public static final int LOW_ROCKET_SCORING_POSITION_CARGO; 
     public static final int MEDIUM_SCORING_POSITION_HATCH; 
+    public static final int MEDIUM_SCORING_POSITION_HATCH_BACK;
     public static final int MEDIUM_ROCKET_SCORING_POSITION_CARGO; 
     public static final int HIGH_SCORING_POSITION_HATCH; 
     public static final int HIGH_ROCKET_SCORING_POSITION_CARGO; 
     public static final int CARGO_SHIP_SCORING_POSITION_CARGO_FRONT;
     public static final int CARGO_SHIP_SCORING_POSITION_CARGO_BACK;
+    public static final int ARM_COLLISION_HEIGHT;
 
     public static final double NOMINAL_OUTPUT = 0.06;
 
@@ -106,11 +108,14 @@ public class Elevator extends Subsystem {
             LOW_SCORING_POSITION_HATCH = 7746; 
             LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
             MEDIUM_SCORING_POSITION_HATCH = 12000; 
+            MEDIUM_SCORING_POSITION_HATCH_BACK = MEDIUM_SCORING_POSITION_HATCH;
             MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
             HIGH_SCORING_POSITION_HATCH = 22500; 
             HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
             CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
+
+            ARM_COLLISION_HEIGHT = 10000; // TUNE
                 } 
         else {
             INVERTED_MASTER = false;
@@ -146,11 +151,14 @@ public class Elevator extends Subsystem {
             LOW_SCORING_POSITION_HATCH = 10338; 
             LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
             MEDIUM_SCORING_POSITION_HATCH = 12000; 
+            MEDIUM_SCORING_POSITION_HATCH_BACK = 22000;
             MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
             HIGH_SCORING_POSITION_HATCH = 22000; 
             HIGH_ROCKET_SCORING_POSITION_CARGO = 22000; 
             CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 17800;
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
+
+            ARM_COLLISION_HEIGHT = 10000;
         }
     }
 

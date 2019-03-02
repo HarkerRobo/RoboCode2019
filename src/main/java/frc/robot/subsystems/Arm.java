@@ -19,6 +19,8 @@ import frc.robot.RobotMap.RobotType;
 public class Arm extends Subsystem {
     public static final DoubleSolenoid.Value ARM_UP_VALUE;
     public static final DoubleSolenoid.Value ARM_DOWN_VALUE;
+
+    public static final double DOWN_SAFE_ACTUATION_TIME = 0.32;
     
     static {
         if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
@@ -66,7 +68,7 @@ public class Arm extends Subsystem {
     }
 
     public ArmDirection getDirection() {
-        return getState() == DoubleSolenoid.Value.kForward ? ArmDirection.UP : ArmDirection.DOWN;
+        return getState() == ArmDirection.UP.getState() ? ArmDirection.UP : ArmDirection.DOWN;
     }
 
     public Compressor getCompressor() {

@@ -7,18 +7,22 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.hatchpanelintake.SetExtenderManual;
+import frc.robot.commands.hatchpanelintake.SetExtenderState;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
+import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
 
 /**
@@ -36,7 +40,7 @@ public class SetScoringPosition extends CommandGroup {
         F2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
         F3(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
         B1(Elevator.LOW_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
-        B2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO_2, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
+        B2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO_2, Elevator.MEDIUM_SCORING_POSITION_HATCH_BACK, Wrist.SCORING_POSITION_BACK_HATCH), 
 		B3(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
 		CARGO_SHIP_FRONT(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_FRONT_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
 		CARGO_SHIP_BACK(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_BACK_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
@@ -113,15 +117,24 @@ public class SetScoringPosition extends CommandGroup {
 		});
 		
 		addSequential(new CallMethodCommand(() -> System.out.println(doHatch.get() + " " + getDesiredAngle.get())));
-		addSequential(new SetArmPosition(ArmDirection.DOWN));
-		addSequential(new SetExtenderManual(ExtenderDirection.IN));
+		addSequential(new ConditionalCommand(
+						() -> Arm.getInstance().getDirection() == ArmDirection.UP, 
+						new ConditionalCommand(
+							() -> Wrist.getInstance().getCurrentSide() == Side.FRONT && Elevator.getInstance().isBelow(Elevator.ARM_COLLISION_HEIGHT),
+							new SequentialCommandGroup(
+								new SetArmPosition(ArmDirection.DOWN), 
+								new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)),
+							new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN)))));
+
+		addSequential(new SetExtenderState(ExtenderDirection.IN));
 		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
 						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
-		 addSequential(new MoveWristMotionMagic(() -> (mustPassthroughLow.getAsBoolean() ? 
+		addSequential(new MoveWristMotionMagic(() -> (mustPassthroughLow.getAsBoolean() ? 
 		 												(getDesiredSide.get() == Side.FRONT ? Wrist.FRONT_LOW_PASSTHROUGH_ANGLE : Wrist.BACK_LOW_PASSTHROUGH_ANGLE) 
 														 : getDesiredAngle.get()))); // perform the passthrough OR simply move to desired angle
 		addSequential (new MoveElevatorMotionMagic(getDesiredHeight));
+
 		if (desiredLocation == Location.F3) {
 			addSequential (new MoveWristMotionMagic(() -> (doHatch.get() ? Wrist.FRONT_HIGH_PASSTHROUGH_HATCH : Wrist.SCORING_POSITION_FRONT_CARGO_3)));
 		}
@@ -131,6 +144,16 @@ public class SetScoringPosition extends CommandGroup {
 		else {
 			addSequential (new MoveWristMotionMagic(getDesiredAngle));
 		}
+
+		addSequential (new MoveElevatorMotionMagic(getDesiredHeight));
+		if (desiredLocation == Location.F1 || desiredLocation == Location.F2 || desiredLocation == Location.F3 || desiredLocation == Location.CARGO_SHIP_FRONT) { 
+			addSequential (new SetArmPosition(ArmDirection.UP));
+		}
 		
+		addSequential(new ConditionalCommand(() -> HatchLatcher.getInstance().hasHatch() || desiredLocation == Location.HATCH_INTAKE, new SetExtenderState(ExtenderDirection.OUT)));
+	}
+
+	public void end() {
+		((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition();
 	}
 }
