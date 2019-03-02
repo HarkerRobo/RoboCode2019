@@ -1,0 +1,25 @@
+div {
+    vertical-align: top;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  img {
+      float:left;
+  }
+  
+  .big {
+      font-size: 40pt;
+  }
+
+  .green {
+      background-color: green;
+  }
+  
+  #limelight {
+      width: 40vw;
+  }
+
+  #cshipm {
+      width: 30vw;
+  }
