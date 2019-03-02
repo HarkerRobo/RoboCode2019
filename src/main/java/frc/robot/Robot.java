@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -25,6 +26,8 @@ import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.util.Limelight;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
+import frc.robot.commands.elevator.MoveElevatorManual;
+import frc.robot.commands.wrist.*;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -232,10 +235,13 @@ public class Robot extends TimedRobot {
     }
     @Override
     public void disabledInit() {
-        // drivetrain.setNeutralMode(Global.DISABLED_NEUTRAL_MODE);
+        drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
 
-        // elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
-        // wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
+        elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
+        wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
+
+        ((MoveWristManual) Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
+        ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).disableClosedLoop();
     }
     
 }

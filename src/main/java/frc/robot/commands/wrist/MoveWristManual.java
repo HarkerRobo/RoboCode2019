@@ -14,14 +14,20 @@ import harkerrobolib.util.MathUtil;
 /**
  * Moves the wrist manually.
  * @author Finn Frankis
+    private static final double LAST_POSITION_DEFAULT = Integer.MIN_VALUE;
  * 
  * @since 1/10/19
  */
 public class MoveWristManual extends IndefiniteCommand {
     private boolean isHolding;
+    private boolean shouldClosedLoop;
     private double lastPos;
+
     public MoveWristManual () {
         requires (Wrist.getInstance());
+        isHolding = false;
+        shouldClosedLoop = false;
+        lastPos = 0;
     }
     
     /**
@@ -29,8 +35,6 @@ public class MoveWristManual extends IndefiniteCommand {
      */
     @Override
     public void initialize () {
-        isHolding = false;
-        lastPos = Integer.MIN_VALUE;
         Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
         Wrist.getInstance().setupMotionMagic();
     }
@@ -47,7 +51,9 @@ public class MoveWristManual extends IndefiniteCommand {
         WristDirection direction;
         //double currentPosition = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
         if (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER) {
-            isHolding = false;;
+            isHolding = false;
+            shouldClosedLoop = true;
+            
             if (leftOperatorTrigger > rightOperatorTrigger) {
                 /*double distFromBack = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
 
@@ -74,17 +80,13 @@ public class MoveWristManual extends IndefiniteCommand {
             isHolding = true;
         }
 
-        if (isHolding) {
-            if (lastPos != Integer.MIN_VALUE)
-                Wrist.getInstance().setWrist(ControlMode.MotionMagic, lastPos);
+        if (isHolding && shouldClosedLoop) {
+            Wrist.getInstance().setWrist(ControlMode.MotionMagic, lastPos);
             SmartDashboard.putNumber("Wrist Error",  Wrist.getInstance().getMasterTalon().getClosedLoopError());
         }
     }
 
-    /**
-     * Gets the factor by which the output should be scaled down given the distance from an endpoint (assuming it has entered the slow-down zone).
-     */
-    private double getOutputFactorFromEndpointDistance (double dist) {
-        return MathUtil.map(dist, 0, Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT, Wrist.MIN_PERCENT_OUTPUT, Wrist.MAX_PERCENT_OUTPUT); // when the distance from the endpoint is zero, wrist should be moving at minimum speed (stopped); when it is just entering the slow-down zone, wrist should be moving at maximum speed, with linear mapping in between
+    public void disableClosedLoop () {
+        shouldClosedLoop = false;
     }
 }

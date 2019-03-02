@@ -316,4 +316,8 @@ public class Elevator extends Subsystem {
     public void setElevator (ControlMode mode, double value) {
         Elevator.getInstance().getMasterTalon().set(mode, value, DemandType.ArbitraryFeedForward, FFGRAV);
     }
+
+    public int getCurrentPositionEncoder() {
+        return getMasterTalon().getSelectedSensorPosition();
+    }
 }
