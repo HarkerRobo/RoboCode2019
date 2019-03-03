@@ -2,7 +2,7 @@ const ge = (element) => {
     return document.getElementById(element);
 }
 
-const updateText = (cargoEnabled, hatchEnabled) => {
+const updateScoringModes = (cargoEnabled, hatchEnabled) => {
     if(cargoEnabled) {
         ge("cargoship").style.display = "inline-block";
         ge("rocket").style.display = "none";
@@ -19,10 +19,18 @@ const updateText = (cargoEnabled, hatchEnabled) => {
     }
 } 
 
+const updateSmartDashFields = () => {
+    let elevatorPosition = NetworkTables.getValue("/SmartDashboard/Elevator Position");
+    let wristPosition = NetworkTables.getValue("/SmartDashboard/Wrist Position");
+
+    ge("elevatorPos").innerHTML = elevatorPosition;
+    ge("wristPos").innerHTML = Math.round(wristPosition * 10) / 10 + " degrees";
+}
+
 const interval = setInterval(() => {
     let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
     let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
-    let elevatorPosition = NetworkTables.getValue("/SmartDashboard/Elevator Position");
-    let wristPosition = NetworkTables.getValue("/SmartDashboard/Wrist Position");
-    updateText(isCargoShipEnabled, isHatchEnabled);
+
+    updateScoringModes(isCargoShipEnabled, isHatchEnabled);
+    updateSmartDashFields();
 }, 100);

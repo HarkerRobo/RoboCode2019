@@ -10,24 +10,25 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.elevator.MoveElevatorManual;
+import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
+import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.util.Limelight;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
-import frc.robot.commands.elevator.MoveElevatorManual;
-import frc.robot.commands.wrist.*;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
@@ -130,6 +131,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+        DriverStation.getInstance().
         // talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
         // System.out.println("completed: " + cgw.isCompleted() + " " + cgw.isRunning());
         //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
