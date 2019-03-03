@@ -131,7 +131,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
-        DriverStation.getInstance().
+ 
         // talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
         // System.out.println("completed: " + cgw.isCompleted() + " " + cgw.isRunning());
         //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
