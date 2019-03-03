@@ -25,15 +25,14 @@ import harkerrobolib.util.MathUtil;
  * @since 1/12/19
  */
 public class AlignWithLimelightDrive extends Command {
-    private Limelight limelight;
 
     public static final double TURN_KP, TURN_KI, TURN_KD, TURN_KF;
     public static final double FORWARD_KP, FORWARD_KI, FORWARD_KD, FORWARD_KF;
 
     static {
         if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
-            TURN_KP = .07; //0.09
-            TURN_KI = 0.001;
+            TURN_KP = .03; //0.09
+            TURN_KI = 0.0001;
             TURN_KD = 0.3;
             TURN_KF = 0;
             FORWARD_KF = 0;
@@ -73,10 +72,10 @@ public class AlignWithLimelightDrive extends Command {
      */
     @Override
     public void initialize() {
-
+        System.out.println("align with limelight");
         turnController = new PIDController(
             TURN_KP, TURN_KI, TURN_KD, TURN_KF, 
-            new PIDSourceCustomGet(() -> limelight.getTx(), PIDSourceType.kDisplacement), 
+            new PIDSourceCustomGet(() -> Limelight.getInstance().getTx(), PIDSourceType.kDisplacement), 
             turnOutput
         );
 

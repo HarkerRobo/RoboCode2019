@@ -73,6 +73,8 @@ public class Elevator extends Subsystem {
 
     public static final double NOMINAL_OUTPUT = 0.06;
 
+    public static final int LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT;
+
     static {
         if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
             INVERTED_MASTER = true;
@@ -116,8 +118,9 @@ public class Elevator extends Subsystem {
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
 
             ARM_COLLISION_HEIGHT = 10000; // TUNE
-                } 
-        else {
+
+            LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT = 7000;
+            } else {
             INVERTED_MASTER = false;
             INVERTED_VICT_LEFT_FRONT = true;
             INVERTED_VICT_LEFT_BACK = true;
@@ -159,6 +162,7 @@ public class Elevator extends Subsystem {
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
 
             ARM_COLLISION_HEIGHT = 10000;
+            LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT = 7000;
         }
     }
 

@@ -49,7 +49,7 @@ public class MoveWristManual extends IndefiniteCommand {
         double magnitude = 0;
         WristDirection direction;
         //double currentPosition = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
-        if (OI.getInstance().getCargoBayToggleMode() && (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
+        if (OI.getInstance().getWristToggleMode() && (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
             isHolding = false;
             shouldClosedLoop = true;
             

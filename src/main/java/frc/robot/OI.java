@@ -3,16 +3,19 @@ package frc.robot;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
+import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.wrist.ZeroWrist;
+import frc.robot.subsystems.Elevator;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.TriggerButton;
 import frc.robot.util.TriggerButton.TriggerSide;
+import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
@@ -107,9 +110,13 @@ public class OI {
             }
         });
         
-        new TriggerButton(driverGamepad, TriggerSide.RIGHT).whenActive(new ConditionalCommand(
-                                                                        () -> wristToggleMode, 
-                                                                        new AlignWithLimelightDrive(0.0))); // align to center
+        new TriggerButton(driverGamepad, TriggerSide.RIGHT).whileActive(new ConditionalCommand(
+                                                                        () -> !wristToggleMode, 
+                                                                        new SequentialCommandGroup (
+                                                                            new ConditionalCommand(
+                                                                                () -> Elevator.getInstance().isBelow(Elevator.LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT),
+                                                                                new MoveElevatorMotionMagic(Elevator.LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT)),
+                                                                            new AlignWithLimelightDrive(0.0)))); // align to center
 
             //driverGamepad.getButtonBumperRight().whenPressed(new StowHatchIntake());
 
