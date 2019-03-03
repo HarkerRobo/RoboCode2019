@@ -9,7 +9,6 @@ import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Wrist.WristDirection;
 import harkerrobolib.commands.IndefiniteCommand;
-import harkerrobolib.util.MathUtil;
 
 /**
  * Moves the wrist manually.
@@ -50,25 +49,15 @@ public class MoveWristManual extends IndefiniteCommand {
         double magnitude = 0;
         WristDirection direction;
         //double currentPosition = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
-        if (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER) {
+        if (OI.getInstance().getCargoBayToggleMode() && (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
             isHolding = false;
             shouldClosedLoop = true;
             
             if (leftOperatorTrigger > rightOperatorTrigger) {
-                /*double distFromBack = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
-
-                if (distFromBack <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
-                    leftOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromBack);
-                }*/
-                
                 magnitude = 0.35 * leftOperatorTrigger;
                 direction = WristDirection.TO_BACK;
             }
             else {
-                /*double distFromFront = Math.abs(currentPosition - Wrist.MAX_BACKWARD_POSITION);
-
-                if (distFromFront <= Wrist.SLOW_DOWN_DISTANCE_FROM_ENDPOINT) {
-                    rightOperatorTrigger *= getOutputFactorFromEndpointDistance(distFromFront);*/
                 magnitude = 0.35 * rightOperatorTrigger;
                 direction = WristDirection.TO_FRONT;
             }
