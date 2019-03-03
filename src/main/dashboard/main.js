@@ -1,21 +1,31 @@
-const ge = (element) => {
-    return document.getElementById(element);
-}
+const updateToggleModes = () => {
+    let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
+    let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
+    let isWristEnabled = NetworkTables.getValue("/SmartDashboard/Has wrist manual control?");
 
-const updateScoringModes = (cargoEnabled, hatchEnabled) => {
-    if(cargoEnabled) {
-        ge("cargoship").style.display = "inline-block";
-        ge("rocket").style.display = "none";
+    if(isCargoShipEnabled) {
+        document.getElementById("cargoship").style.display = "inline-block";
+        document.getElementById("rocket").style.display = "none";
     } else {
-        ge("rocket").style.display = "inline-block";
-        ge("cargoship").style.display = "none";
+        document.getElementById("cargoship").style.display = "none";
+        document.getElementById("rocket").style.display = "inline-block";
     }
-    if(hatchEnabled) {
-        ge("hatch").style.display = "inline-block";
-        ge("cargo").style.display = "none";
+
+    if(isHatchEnabled) {
+        document.getElementById("hatch").style.display = "inline-block";
+        document.getElementById("cargo").style.display = "none";
     } else {
-        ge("cargo").style.display = "inline-block";
-        ge("hatch").style.display = "none";
+        document.getElementById("hatch").style.display = "none";
+        document.getElementById("cargo").style.display = "inline-block";
+    }
+
+    if (isWristEnabled) {
+        document.getElementById("wrist").style.display = "inline-block";
+        document.getElementById("align").style.display = "none";
+    }
+    else {
+        document.getElementById("wrist").style.display = "none";
+        document.getElementById("align").style.display = "inline-block";
     }
 } 
 
@@ -23,14 +33,11 @@ const updateSmartDashFields = () => {
     let elevatorPosition = NetworkTables.getValue("/SmartDashboard/Elevator Position");
     let wristPosition = NetworkTables.getValue("/SmartDashboard/Wrist Position");
 
-    ge("elevatorPos").innerHTML = elevatorPosition;
-    ge("wristPos").innerHTML = Math.round(wristPosition * 10) / 10 + " degrees";
+    document.getElementById("elevatorPos").innerHTML = elevatorPosition;
+    document.getElementById("wristPos").innerHTML = Math.round(wristPosition * 10) / 10 + " degrees";
 }
 
 const interval = setInterval(() => {
-    let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
-    let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
-
-    updateScoringModes(isCargoShipEnabled, isHatchEnabled);
+    updateToggleModes();
     updateSmartDashFields();
 }, 100);

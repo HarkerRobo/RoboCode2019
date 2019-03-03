@@ -23,3 +23,9 @@ div {
   #cshipm {
       width: 30vw;
   }
+
+  #message img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
