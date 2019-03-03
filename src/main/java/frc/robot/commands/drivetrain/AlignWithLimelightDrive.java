@@ -55,30 +55,15 @@ public class AlignWithLimelightDrive extends Command {
     public static final double TURN_ALLOWABLE_ERROR = 0.054;
     public static final double FORWARD_ALLOWABLE_ERROR = 0.05;
 
-    private static final double POS_TX_SETPOINT = 1.0; 
-    private static final double MAX_ALLOWABLE_TX = 7.5;   
-
-    private static final double THOR_SWITCH_POINT = 50.0;
-
     private PIDOutputGetter turnOutput;
 
     private PIDController turnController;
-
-    private double thorSetpoint;
     private double txSetpoint;
-
-    private static boolean LEFT_MASTER_INVERTED = true;
-    private static boolean RIGHT_MASTER_INVERTED = false;
-    private static boolean LEFT_FOLLOWER_INVERTED = true;
-    private static boolean RIGHT_FOLLOWER_INVERTED = false;
 
     public AlignWithLimelightDrive(double txSetpoint) {
         requires(Drivetrain.getInstance());
 
         this.txSetpoint = txSetpoint;
-        //this.thorSetpoint = Limelight.THOR_LINEARIZATION_FUNCTION.apply(thorSetpoint);
-
-        limelight = Limelight.getInstance();
 
         turnOutput = new PIDOutputGetter();
     }
@@ -94,37 +79,17 @@ public class AlignWithLimelightDrive extends Command {
             new PIDSourceCustomGet(() -> limelight.getTx(), PIDSourceType.kDisplacement), 
             turnOutput
         );
-     
-    //    targetHeading = (int)Drivetrain.getInstance().getPigeon().getFusedHeading() % 360;
-    //    if (targetHeading < 0 ) targetHeading += 360;
-    //    targetHeading = Math.round(targetHeading / 90.0) * 90;
-    //    isRobotRightOfTarget = Drivetrain.getInstance().getPigeon().getFusedHeading() > targetHeading;
 
         turnController.enable();
     
         turnController.setSetpoint(txSetpoint);
-
-        Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
 
     /**
      * {@inheritDoc}
      */
     public void execute () {
-        // boolean isTxPositive = limelight.getTx() >= 0;
-        // boolean hasReachedThorSwitchpoint = limelight.getThor() >= THOR_SWITCH_POINT;   
-        // boolean isTxWithinAllowableRange = MAX_ALLOWABLE_TX < limelight.getTx();     
-
-        // double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
         double turnOutputVal = turnOutput.getOutput();
-
-        // turnController.setSetpoint(
-        //     isTxPositive || hasReachedThorSwitchpoint ? txSetpoint : POS_TX_SETPOINT
-        // );
-
-        // turnOutputVal = isTxPositive && isTxWithinAllowableRange &&(Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR || 
-        //                             !hasReachedThorSwitchpoint)
-        //                             ? 0 : turnOutput.getOutput();
 
         SmartDashboard.putNumber("Turn Error", turnController.getError());
 
@@ -141,7 +106,6 @@ public class AlignWithLimelightDrive extends Command {
     public void end() {
         Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0);
         turnController.disable();
-        Drivetrain.getInstance().resetTalonInverts();
     }
 
     /**
@@ -157,8 +121,6 @@ public class AlignWithLimelightDrive extends Command {
      */
     @Override
     public boolean isFinished() {
-        return false;/* Math.abs(forwardController.getError()) <= FORWARD_ALLOWABLE_ERROR && 
-                Math.abs(turnController.getError()) <= TURN_ALLOWABLE_ERROR; */
-                //Math.abs(angleController.getError()) <= ANGLE_ALLOWABLE_ERROR ;
+        return false;
     }
 }

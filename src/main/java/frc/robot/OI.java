@@ -1,33 +1,18 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.Robot.Side;
-import frc.robot.commands.TestCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
-import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
-import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
-import frc.robot.commands.hatchpanelintake.StowHatchIntake;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
-import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
-import frc.robot.commands.intake.SpinIntakeIndefinite;
-import frc.robot.commands.rollers.SpinRollersManual;
-import frc.robot.commands.wrist.MoveWristPosition;
-import frc.robot.commands.wrist.ZeroWrist;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.Intake.IntakeDirection;
-import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.CustomOperatorGamepad;
-import frc.robot.util.Limelight;
+import frc.robot.util.TriggerButton;
+import frc.robot.util.TriggerButton.TriggerSide;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
@@ -71,13 +56,15 @@ public class OI {
 
     private static Driver driver;
 
-    public static boolean cargoBayToggleMode;
+    private boolean cargoBayToggleMode;
+    private boolean wristToggleMode;
 
     private OI() {
         driver = Driver.CHRIS;
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
         cargoBayToggleMode = false;
+        wristToggleMode = false;
         initBindings();
     }
     
@@ -114,10 +101,20 @@ public class OI {
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+        driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
+            public void initialize() {
+                wristToggleMode = !wristToggleMode;
+            }
+        });
+        
+        new TriggerButton(driverGamepad, TriggerSide.RIGHT).whenActive(new ConditionalCommand(
+                                                                        () -> wristToggleMode, 
+                                                                        new AlignWithLimelightDrive(0.0))); // align to center
+
             //driverGamepad.getButtonBumperRight().whenPressed(new StowHatchIntake());
 
-        customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> OI.cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_FRONT), new SetScoringPosition(Location.F1)));
-        customOperatorGamepad.getBackwardOneButton().whenPressed(new ConditionalCommand(() -> OI.cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_BACK), new SetScoringPosition(Location.B1)));
+        customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_FRONT), new SetScoringPosition(Location.F1)));
+        customOperatorGamepad.getBackwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_BACK), new SetScoringPosition(Location.B1)));
 
         customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
         customOperatorGamepad.getForwardTwoButton().whenPressed(new SetScoringPosition(Location.F2));
@@ -166,5 +163,13 @@ public class OI {
             instance = new OI();
         }
         return instance;
+    }
+
+    public boolean getCargoBayToggleMode() {
+        return cargoBayToggleMode;
+    }
+
+    public boolean getWristToggleMode() {
+        return wristToggleMode;
     }
 }
