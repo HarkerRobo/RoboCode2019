@@ -1,3 +1,5 @@
+const ctx = document.getElementById("canvas").getContext("2d");
+
 const updateToggleModes = () => {
     let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
     let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
@@ -37,7 +39,41 @@ const updateSmartDashFields = () => {
     document.getElementById("wristPos").innerHTML = Math.round(wristPosition * 10) / 10 + " degrees";
 }
 
-const interval = setInterval(() => {
+const redrawLimelightFeed = () => {
+    ctx.drawImage(document.getElementById("limelight"), 0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
+const drawArrow = (direction, length) => {
+    const arrowColor = "black";
+    const centerMargin = 80; // How far offset the arrow is from the center of the canvas
+    const arrowBodyHeight = 100; // The height of the linear part of the arrow
+    const arrowHeadHeight = 150; // The max height of the triangular part of the arrow
+    const bodyHeadRatio = 0.5; // The ratio of the length of the body to the length of the  head
+
+    const sign = ((direction * 2 - 1) > 0) - ((direction * 2 - 1) < 0); // Safe signum
+    const startX = ctx.canvas.width;
+    const startY = ctx.canvas.height / 2;
+    ctx.fillStyle = arrowColor;
+    ctx.beginPath();
+    ctx.moveTo(startX / 2 + centerMargin * sign, startY + arrowBodyHeight / 2);
+    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY + arrowBodyHeight / 2);
+    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY + arrowHeadHeight / 2);
+    ctx.lineTo(startX / 2 + centerMargin * sign + length * sign, startY);
+    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY - arrowHeadHeight / 2);
+    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY - arrowBodyHeight / 2);
+    ctx.lineTo(startX / 2 + centerMargin * sign, startY - arrowBodyHeight / 2);
+    ctx.closePath()
+    ctx.fill();
+}
+
+const networkTableInterval = setInterval(() => {
     updateToggleModes();
     updateSmartDashFields();
 }, 100);
+
+
+const limelightDrawInterval = setInterval(() => {
+    redrawLimelightFeed();
+    drawArrow(false, 500)
+    drawArrow(true, 500)
+}, 50);

@@ -2,30 +2,30 @@ div {
     vertical-align: top;
     display: inline-block;
     white-space: nowrap;
-  }
+}
+img {
+    float:left;
+}
 
-  img {
-      float:left;
-  }
-  
-  .big {
-      font-size: 40pt;
-  }
+.big {
+    font-size: 40pt;
+}
 
-  .green {
-      background-color: green;
-  }
-  
-  #limelight {
-      width: 40vw;
-  }
+.hidden {
+    display: none;
+}
 
-  #cshipm {
-      width: 30vw;
-  }
+#limelight, #canvas {
+    width: 40vw;
+    height: 30vw;
+}
 
-  #message img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
+#canvas {
+    border: 1px solid black;
+}
+
+#message img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
