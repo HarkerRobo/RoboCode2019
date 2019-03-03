@@ -33,7 +33,7 @@ public class SpinIntakeManual extends IndefiniteCommand {
         //     //Intake.getInstance().setControllerOutput(operatorBallIntakeOutput);
         // }
         if(OI.getInstance().getDriverGamepad().getButtonYState()) {
-            Intake.getInstance().setControllerOutput(0.5, IntakeDirection.IN);
+            Intake.getInstance().setControllerOutput(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN);
         } else {
             Intake.getInstance().setControllerOutput(0.0, IntakeDirection.IN);
         }

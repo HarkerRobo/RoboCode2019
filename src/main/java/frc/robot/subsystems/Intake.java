@@ -43,7 +43,7 @@ public class Intake extends Subsystem {
   
     private final static boolean SPARK_INVERTED;
     private final static boolean VICTOR_INVERTED;
-    private final static NeutralMode VICTOR_NEUTRAL_MODE = NeutralMode.Coast;
+    private final static NeutralMode VICTOR_NEUTRAL_MODE = NeutralMode.Brake;
 
     static {
         if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
@@ -56,7 +56,7 @@ public class Intake extends Subsystem {
         }
 
     }
-    public final static double DEFAULT_INTAKE_MAGNITUDE = 0.4;
+    public final static double DEFAULT_INTAKE_MAGNITUDE = 0.8;
 
     public void setControllerOutput(double magnitude, IntakeDirection direction) {
         setControllerOutput (magnitude * direction.getSign());

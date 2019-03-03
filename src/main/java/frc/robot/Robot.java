@@ -150,7 +150,7 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("Right Error", drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
     
         SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getCurrentAngleDegrees());
-        SmartDashboard.putNumber("Encoder Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+        SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
         SmartDashboard.putNumber("LEFT Y", OI.getInstance().getDriverGamepad().getLeftY());
         SmartDashboard.putNumber("el current", Elevator.getInstance().getMasterTalon().getOutputCurrent());
         

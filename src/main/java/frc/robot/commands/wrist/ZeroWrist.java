@@ -7,7 +7,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Wrist.WristDirection;
 
 /**
@@ -34,6 +37,7 @@ public class ZeroWrist extends Command {
     public void initialize() {
         startTime = Robot.getTime();
         Wrist.getInstance().getMasterTalon().configReverseSoftLimitEnable(false);
+        Arm.getInstance().setState(ArmDirection.DOWN.getState());
         //Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     }
 

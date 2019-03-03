@@ -20,7 +20,7 @@ public class Arm extends Subsystem {
     public static final DoubleSolenoid.Value ARM_UP_VALUE;
     public static final DoubleSolenoid.Value ARM_DOWN_VALUE;
 
-    public static final double DOWN_SAFE_ACTUATION_TIME = 0.32;
+    public static final double DOWN_SAFE_ACTUATION_TIME = 0.5;
     
     static {
         if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
