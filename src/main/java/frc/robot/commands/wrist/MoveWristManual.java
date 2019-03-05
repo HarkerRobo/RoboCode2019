@@ -13,7 +13,7 @@ import harkerrobolib.commands.IndefiniteCommand;
 /**
  * Moves the wrist manually.
  * @author Finn Frankis
-    private static final double LAST_POSITION_DEFAULT = Integer.MIN_VALUE;
+ * @author Angela Jia 
  * 
  * @since 1/10/19
  */

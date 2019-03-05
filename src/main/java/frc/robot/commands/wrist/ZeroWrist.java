@@ -71,6 +71,7 @@ public class ZeroWrist extends Command {
         Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
         Wrist.getInstance().getMasterTalon().setSelectedSensorPosition(0);
         Wrist.getInstance().getMasterTalon().configReverseSoftLimitEnable(true);
+        ((MoveWristManual) Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
         System.out.println("command over");
     }
     
