@@ -67,7 +67,7 @@ public class OI {
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
         cargoBayToggleMode = false;
-        wristToggleMode = false;
+        wristToggleMode = true;
         initBindings();
     }
     
@@ -104,11 +104,11 @@ public class OI {
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
-        driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
-            public void initialize() {
-                wristToggleMode = !wristToggleMode;
-            }
-        });
+        // driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
+        //     public void initialize() {
+        //         wristToggleMode = !wristToggleMode;
+        //     }
+        // });
         
         new TriggerButton(driverGamepad, TriggerSide.RIGHT).whileActive(new ConditionalCommand(
                                                                         () -> !wristToggleMode, 

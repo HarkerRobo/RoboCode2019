@@ -40,9 +40,9 @@ public class AlignWithLimelightDrive extends Command {
             FORWARD_KI = 0;//0.001;
             FORWARD_KD = 0.2;   
         } else {
-            TURN_KP = .07; //0.09
-            TURN_KI = 0.001;
-            TURN_KD = 0.3;
+            TURN_KP = .05; //0.09
+            TURN_KI = 0;// 0.001;
+            TURN_KD = 0.1;
             TURN_KF = 0;
             FORWARD_KF = 0;
             FORWARD_KP = 0.045;
