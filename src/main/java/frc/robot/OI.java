@@ -1,8 +1,10 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
+import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
@@ -61,6 +63,7 @@ public class OI {
 
     private boolean cargoBayToggleMode;
     private boolean wristToggleMode;
+    private boolean driveStraightMode;
 
     private OI() {
         driver = Driver.CHRIS;
@@ -68,6 +71,7 @@ public class OI {
         customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
         cargoBayToggleMode = false;
         wristToggleMode = true;
+        driveStraightMode = false;
         initBindings();
     }
     
@@ -104,11 +108,11 @@ public class OI {
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
-        // driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
-        //     public void initialize() {
-        //         wristToggleMode = !wristToggleMode;
-        //     }
-        // });
+        driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
+            public void initialize() {
+                wristToggleMode = !wristToggleMode;
+            }
+        });
         
         new TriggerButton(driverGamepad, TriggerSide.RIGHT).whileActive(new ConditionalCommand(
                                                                         () -> !wristToggleMode, 
@@ -117,7 +121,23 @@ public class OI {
                                                                                 () -> Elevator.getInstance().isBelow(Elevator.LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT),
                                                                                 new MoveElevatorMotionMagic(Elevator.LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT)),
                                                                             new AlignWithLimelightDrive(0.0)))); // align to center
+        Trigger leftTrigger = new TriggerButton(driverGamepad, TriggerSide.LEFT);
+        leftTrigger.whenActive(new InstantCommand() {
+            public void initialize() {
+                if (!wristToggleMode) {
+                    driveStraightMode = true;
+                }
+            }
+        });
 
+        leftTrigger.whenInactive(new InstantCommand() {
+            public void initialize() {
+                if (!wristToggleMode) {
+                    driveStraightMode = false;
+                }
+            }
+        });
+        driverGamepad.getButtonSelect().whenPressed(new ToggleLimelightLEDMode());
             //driverGamepad.getButtonBumperRight().whenPressed(new StowHatchIntake());
 
         customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_FRONT), new SetScoringPosition(Location.F1)));
@@ -178,5 +198,9 @@ public class OI {
 
     public boolean getWristToggleMode() {
         return wristToggleMode;
+    }
+
+    public boolean getDriveStraightMode() {
+        return driveStraightMode;
     }
 }
