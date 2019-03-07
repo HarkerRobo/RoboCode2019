@@ -73,6 +73,7 @@ public class Intake extends Subsystem {
 
     private Intake() {
         if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+            System.out.println("Spark: " + CAN_IDs.BALL_INTAKE_MASTER_SPARK);
             intakeSpark = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER_SPARK, MotorType.kBrushless);
         }
         else {

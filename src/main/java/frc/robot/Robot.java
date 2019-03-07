@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.elevator.MoveElevatorManual;
+import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -92,6 +93,7 @@ public class Robot extends TimedRobot {
         // talon.configFactoryDefault();
 
         // elevator.getMasterTalon().get
+        System.out.println("var vals " + Location.CARGO_INTAKE.getHasVariableValues());
         wrapper = new CommandGroupWrapper().sequential(new WaitCommand(1)).sequential(new WaitCommand(2));
     }
 

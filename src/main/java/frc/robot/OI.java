@@ -114,7 +114,6 @@ public class OI {
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
-        driverGamepad.getButtonX().whenPressed(new StowHatchAndCargoIntake());
         driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
             public void initialize() {
                 wristToggleMode = !wristToggleMode;
@@ -157,7 +156,7 @@ public class OI {
         customOperatorGamepad.getBackwardThreeButton().whenPressed(new SetScoringPosition(Location.B3));
 
 
-        customOperatorGamepad.getCargoIntakingButton().whenPressed(new SetScoringPosition(Location.CARGO_INTAKE));
+        customOperatorGamepad.getCargoIntakingButton().whenPressed(new SetScoringPosition(Location.CARGO_INTAKE, () -> false));
         customOperatorGamepad.getZeroWristButton().whilePressed(new ZeroWrist());
         customOperatorGamepad.getZeroElevatorButton().whilePressed(new ZeroElevator());
         customOperatorGamepad.getHatchIntakingButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE, () -> true));

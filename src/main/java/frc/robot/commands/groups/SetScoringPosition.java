@@ -76,8 +76,7 @@ public class SetScoringPosition extends CommandGroup {
 			boolean hasHatch = HatchLatcher.getInstance().hasHatch();
 			if (hasVariableValues) {desiredPair = hasHatch ? new Pair<Integer, Integer>(hatchHeight, hatchAngle) : 
 															  new Pair<Integer, Integer>(cargoHeight, cargoAngle);}
-			else {desiredPair = (hatchHeight == Integer.MAX_VALUE && hatchAngle == Integer.MAX_VALUE) ? new Pair<Integer, Integer>(cargoHeight, cargoAngle) :
-																									   new Pair<Integer, Integer> (hatchHeight, hatchAngle);}
+			else {desiredPair = (hatchHeight == Integer.MAX_VALUE && hatchAngle == Integer.MAX_VALUE) ? new Pair<Integer, Integer>(cargoHeight, cargoAngle) : new Pair<Integer, Integer> (hatchHeight, hatchAngle);}
 			return desiredPair;
 		}
     }
@@ -115,6 +114,7 @@ public class SetScoringPosition extends CommandGroup {
 			}
 		});
 		
+		addSequential(new CallMethodCommand(() -> System.out.println("desired height " + getDesiredHeight.get() + " desired angle: " + getDesiredAngle.get() + " must passthrough:" + mustPassthroughLow.getAsBoolean() + " safe passthrough height: " + getSafePassthroughHeight.get())));
 		addSequential(new ConditionalCommand(
 						() -> Arm.getInstance().getDirection() == ArmDirection.UP, 
 						new ConditionalCommand(
