@@ -39,6 +39,15 @@ const updateSmartDashFields = () => {
     document.getElementById("wristPos").innerHTML = Math.round(wristPosition * 10) / 10 + " degrees";
 }
 
+const updateKangarooBatteryPercentage = () => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://10.10.72.12:5802", true);
+    xhr.onload = () => {
+        document.getElementById("kangaroo_battery").innerHTML = xhr.responseText;
+    }
+    xhr.send();
+}
+
 const redrawLimelightFeed = () => {
     ctx.drawImage(document.getElementById("limelight"), 0, 0, ctx.canvas.width, ctx.canvas.height);
 }
@@ -69,11 +78,12 @@ const drawArrow = (direction, length) => {
 const networkTableInterval = setInterval(() => {
     updateToggleModes();
     updateSmartDashFields();
+    updateKangarooBatteryPercentage();
 }, 100);
 
 
 const limelightDrawInterval = setInterval(() => {
     redrawLimelightFeed();
-    drawArrow(false, 500)
-    drawArrow(true, 500)
+    // drawArrow(false, 500)
+    // drawArrow(true, 500)
 }, 50);
