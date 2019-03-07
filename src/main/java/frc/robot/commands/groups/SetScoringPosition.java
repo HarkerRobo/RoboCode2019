@@ -123,8 +123,7 @@ public class SetScoringPosition extends CommandGroup {
 								new SetArmPosition(ArmDirection.DOWN), 
 								new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)),
 							new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN)))));
-
-		addSequential(new ConditionalCommand(() -> (mustPassthroughHigh.getAsBoolean() || mustPassthroughLow.getAsBoolean()), new SetExtenderState(ExtenderDirection.IN)));
+		addSequential(new ConditionalCommand(() -> (mustPassthroughHigh.getAsBoolean() || mustPassthroughLow.getAsBoolean() || desiredLocation == Location.HATCH_INTAKE), new SetExtenderState(ExtenderDirection.IN)));
 		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
 						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
@@ -149,7 +148,7 @@ public class SetScoringPosition extends CommandGroup {
 			addSequential (new SetArmPosition(ArmDirection.UP));
 		}
 		
-		addSequential(new ConditionalCommand(() -> HatchLatcher.getInstance().hasHatch() || desiredLocation == Location.HATCH_INTAKE, new SetExtenderState(ExtenderDirection.OUT)));
+		addSequential(new ConditionalCommand(() -> HatchLatcher.getInstance().hasHatch(), new SetExtenderState(ExtenderDirection.OUT)));
 	}
 
 	public void end() {

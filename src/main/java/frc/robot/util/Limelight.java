@@ -34,6 +34,9 @@ public class Limelight {
     public static final String CORNERY_KEY = "tcorny";
     public static final String CAMTRAN_KEY = "camtran";
 
+    public static final int LED_OFF = 1;
+    public static final int LED_ON = 3;
+
     public static final int VISION_MODE = 0;
     public static final int DRIVER_MODE = 1;
 

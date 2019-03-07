@@ -40,7 +40,7 @@ public class AlignWithLimelightDrive extends Command {
             FORWARD_KI = 0;//0.001;
             FORWARD_KD = 0.2;   
         } else {
-            TURN_KP = .05; //0.09
+            TURN_KP = .03; //0.09
             TURN_KI = 0;// 0.001;
             TURN_KD = 0.1;
             TURN_KF = 0;
@@ -88,7 +88,7 @@ public class AlignWithLimelightDrive extends Command {
      * {@inheritDoc}
      */
     public void execute () {
-        double turnOutputVal = turnOutput.getOutput();
+        double turnOutputVal = turnOutput.getOutput(); 
 
         SmartDashboard.putNumber("Turn Error", turnController.getError());
 

@@ -89,7 +89,7 @@ public class Wrist extends Subsystem {
     public static final boolean SENSOR_PHASE;
 
     static{
-        if(RobotMap.ROBOT_TYPE==RobotType.COMP) {
+        if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
             MASTER_INVERTED = true;
             FOLLOWER_INVERTED = true;
 
@@ -97,22 +97,22 @@ public class Wrist extends Subsystem {
             CONTINUOUS_CURRENT_LIMIT = 7;
             PEAK_CURRENT_LIMIT = 10;
             PEAK_TIME = 50;
-            PARALLEL_FRONT = 6;
+            PARALLEL_FRONT = 12;//6;
             PARALLEL_BACK = 189;
             SCORING_POSITION_FRONT_HATCH = PARALLEL_FRONT;
-            SCORING_POSITION_FRONT_CARGO_2 = 20;
-            SCORING_POSITION_FRONT_CARGO_3 = 57;
+            SCORING_POSITION_FRONT_CARGO_2 = 25;
+            SCORING_POSITION_FRONT_CARGO_3 = 68;//57;
             SCORING_POSITION_BACK_HATCH = PARALLEL_BACK;
-            SCORING_POSITION_BACK_HATCH_2 = PARALLEL_BACK;
+            SCORING_POSITION_BACK_HATCH_2 = PARALLEL_BACK-5;
             SCORING_POSITION_BACK_CARGO = 187;
             SCORING_POSITION_BACK_CARGO_2 = 178;
-            SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 5;
-            SCORING_POSITION_BACK_CARGO_SHIP = 184;
+            SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 10;
+            SCORING_POSITION_BACK_CARGO_SHIP = 188;
         
             ARBITRARY_FF = 0.002;//17;
         
             ANGLE_INTAKE = 180;
-            HATCH_INTAKING_POSITION = 0;
+            HATCH_INTAKING_POSITION = PARALLEL_BACK;
             CARGO_INTAKING_POSITION = 2;
 
             ALLOWABLE_ERROR = 50;
@@ -121,8 +121,8 @@ public class Wrist extends Subsystem {
             FRONT_HIGH_PASSTHROUGH_HATCH = 32;
             FRONT_HIGH_PASSTHROUGH_CARGO = 32;
             BACK_HIGH_PASSTHROUGH_ANGLE = 188;
-            FRONT_LOW_PASSTHROUGH_ANGLE = 20;
-            BACK_LOW_PASSTHROUGH_ANGLE = 160;
+            FRONT_LOW_PASSTHROUGH_ANGLE = 2;
+            BACK_LOW_PASSTHROUGH_ANGLE = 190;
 
             MID_POSITION = (MAX_FORWARD_POSITION + MAX_BACKWARD_POSITION)/2;
             SAFE_FORWARD_POSITION = 70;
@@ -144,7 +144,7 @@ public class Wrist extends Subsystem {
             SCORING_POSITION_FRONT_CARGO_2 = 25;
             SCORING_POSITION_FRONT_CARGO_3 = 68;//57;
             SCORING_POSITION_BACK_HATCH = PARALLEL_BACK;
-            SCORING_POSITION_BACK_HATCH_2 = PARALLEL_BACK - 10;
+            SCORING_POSITION_BACK_HATCH_2 = PARALLEL_BACK-5;
             SCORING_POSITION_BACK_CARGO = 187;
             SCORING_POSITION_BACK_CARGO_2 = 178;
             SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 10;

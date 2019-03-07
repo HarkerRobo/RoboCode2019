@@ -4,10 +4,15 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
+import frc.robot.commands.drivetrain.SetLimelightLEDMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
+import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
+import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
@@ -31,12 +36,14 @@ public class OI {
         CHRIS(0), PRANAV(1), ANGELA(0);
 
         private int id;
+
         private Driver(int id) {
             this.id = id;
         }
+
         public int getId() {
             return id;
-        }  
+        }
     }
 
     private HSGamepad driverGamepad;
@@ -53,7 +60,7 @@ public class OI {
 
     public static final boolean HAS_TWO_CONTROLLERS = true;
 
-    //DPad angles in degrees
+    // DPad angles in degrees
     public static final int DPAD_UP_ANGLE = 0;
     public static final int DPAD_LEFT_ANGLE = 270;
     public static final int DPAD_RIGHT_ANGLE = 90;
@@ -74,53 +81,53 @@ public class OI {
         driveStraightMode = false;
         initBindings();
     }
-    
+
     public void initBindings() {
-        //driverGamepad.getButtonX().whilePressed(new MoveWristPosition(170));
-       // driverGamepad.getButtonY().whenPressed(new ZeroWrist());
-        //driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
-        //    
-        //    @Override
-        //    public void initialize() {
-        //        driverControlScheme++;
-        //        initBindings();
-        //    }
+        // driverGamepad.getButtonX().whilePressed(new MoveWristPosition(170));
+        // driverGamepad.getButtonY().whenPressed(new ZeroWrist());
+        // driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
+        //
+        // @Override
+        // public void initialize() {
+        // driverControlScheme++;
+        // initBindings();
+        // }
         // } );
         // driverGamepad.getButtonA().whenPressed(new ZeroElevator());
-        
+
         // driverGamepad.getButtonStart().whilePressed(new InstantCommand() {
-            
 
-        //     @Override
-        //     public void initialize() {
-        //         driverControlScheme++;
-        //         initBindings();
-        //         System.out.println("START");
-        //     }
-
+        // @Override
+        // public void initialize() {
+        // driverControlScheme++;
+        // initBindings();
+        // System.out.println("START");
+        // }
 
         driverGamepad.getButtonBumperRight().whenPressed(new InstantCommand() {
-                 @Override
-                public void initialize() {
-                    cargoBayToggleMode = !cargoBayToggleMode;
-                    }});
-        
+            @Override
+            public void initialize() {
+                cargoBayToggleMode = !cargoBayToggleMode;
+            }
+        });
+
         driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
         driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
         driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+        driverGamepad.getButtonX().whenPressed(new StowHatchAndCargoIntake());
         driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
             public void initialize() {
                 wristToggleMode = !wristToggleMode;
             }
         });
+        driverGamepad.getUpDPadButton().whenPressed(new StowHatchAndCargoIntake());
         
-        new TriggerButton(driverGamepad, TriggerSide.RIGHT).whileActive(new ConditionalCommand(
-                                                                        () -> !wristToggleMode, 
-                                                                        new SequentialCommandGroup (
-                                                                            new ConditionalCommand(
-                                                                                () -> Elevator.getInstance().isBelow(Elevator.LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT),
-                                                                                new MoveElevatorMotionMagic(Elevator.LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT)),
+        Trigger rightTrigger = new TriggerButton(driverGamepad, TriggerSide.RIGHT);
+        rightTrigger.whileActive(new ConditionalCommand(() -> !wristToggleMode, 
+                                                                        new SequentialCommandGroup (new SetLimelightLEDMode(LEDMode.ON),
+                                                                            new SetLimelightViewMode(ViewMode.VISION),
                                                                             new AlignWithLimelightDrive(0.0)))); // align to center
+        rightTrigger.whenInactive(new SequentialCommandGroup(new SetLimelightViewMode(ViewMode.DRIVER), new SetLimelightLEDMode(LEDMode.OFF)));
         Trigger leftTrigger = new TriggerButton(driverGamepad, TriggerSide.LEFT);
         leftTrigger.whenActive(new InstantCommand() {
             public void initialize() {
@@ -137,8 +144,7 @@ public class OI {
                 }
             }
         });
-        driverGamepad.getButtonSelect().whenPressed(new ToggleLimelightLEDMode());
-            //driverGamepad.getButtonBumperRight().whenPressed(new StowHatchIntake());
+
 
         customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_FRONT), new SetScoringPosition(Location.F1)));
         customOperatorGamepad.getBackwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode, new SetScoringPosition(Location.CARGO_SHIP_BACK), new SetScoringPosition(Location.B1)));

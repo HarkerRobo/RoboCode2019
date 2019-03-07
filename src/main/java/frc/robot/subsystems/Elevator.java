@@ -107,50 +107,16 @@ public class Elevator extends Subsystem {
             FFGRAV = 0.095;
             ZERO_CURRENT_SPIKE = 0;
 
-            LOW_SCORING_POSITION_HATCH = 7746; 
-            LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
-            MEDIUM_SCORING_POSITION_HATCH = 12000; 
-            MEDIUM_SCORING_POSITION_HATCH_BACK = MEDIUM_SCORING_POSITION_HATCH;
-            MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
-            HIGH_SCORING_POSITION_HATCH = 22500; 
-            HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
-            CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
-            CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
+            // LOW_SCORING_POSITION_HATCH = 7746; 
+            // LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
+            // MEDIUM_SCORING_POSITION_HATCH = 12000; 
+            // MEDIUM_SCORING_POSITION_HATCH_BACK = MEDIUM_SCORING_POSITION_HATCH;
+            // MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
+            // HIGH_SCORING_POSITION_HATCH = 22500; 
+            // HIGH_ROCKET_SCORING_POSITION_CARGO = 22500; 
+            // CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
+            // CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
 
-            ARM_COLLISION_HEIGHT = 10000; // TUNE
-
-            LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT = 7000;
-            } else {
-            INVERTED_MASTER = false;
-            INVERTED_VICT_LEFT_FRONT = true;
-            INVERTED_VICT_LEFT_BACK = true;
-            INVERTED_TALON_FOLLOWER = true;
-                
-            SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
-            SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
-            SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
-            MAX_POSITION = 22794;
-                
-            SENSOR_PHASE = false;
-                
-            PEAK_CURRENT_LIMIT = 30;
-            CONT_CURRENT_LIMIT = 20;
-            PEAK_TIME = 150;
-                
-            RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
-                
-                
-            INTAKE_POSITION = 0;
-                
-            HATCH_INTAKING_POSITION = 7000;
-            CARGO_INTAKING_POSITION = 0;
-                
-            RAIL_POSITION = 20500; //TUNE
-            BALL_INTAKING_HEIGHT = 100; //Tune
-                
-            FFGRAV = 0.095;
-            ZERO_CURRENT_SPIKE = 0;
-                
             LOW_SCORING_POSITION_HATCH = 10338; 
             LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
             MEDIUM_SCORING_POSITION_HATCH = 13020; 
@@ -161,8 +127,52 @@ public class Elevator extends Subsystem {
             CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18200;
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
 
-            ARM_COLLISION_HEIGHT = 10000;
+            ARM_COLLISION_HEIGHT = 10000; // TUNE
+
             LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT = 7000;
+            } else {
+                INVERTED_MASTER = false;
+                INVERTED_VICT_LEFT_FRONT = true;
+                INVERTED_VICT_LEFT_BACK = true;
+                INVERTED_TALON_FOLLOWER = true;
+                    
+                SAFE_LOW_PASSTHROUGH_POSITION_HATCH = 0;
+                SAFE_LOW_PASSTHROUGH_POSITION_CARGO = 0;
+                SAFE_HIGH_PASSTHROUGH_POSITION = 6000; // tune
+                MAX_POSITION = 22794;
+                    
+                SENSOR_PHASE = false;
+                    
+                PEAK_CURRENT_LIMIT = 30;
+                CONT_CURRENT_LIMIT = 20;
+                PEAK_TIME = 150;
+                    
+                RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
+                    
+                    
+                INTAKE_POSITION = 0;
+                    
+                HATCH_INTAKING_POSITION = 7000;
+                CARGO_INTAKING_POSITION = 0;
+                    
+                RAIL_POSITION = 20500; //TUNE
+                BALL_INTAKING_HEIGHT = 100; //Tune
+                    
+                FFGRAV = 0.095;
+                ZERO_CURRENT_SPIKE = 0;
+                    
+                LOW_SCORING_POSITION_HATCH = 10338; 
+                LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
+                MEDIUM_SCORING_POSITION_HATCH = 13020; 
+                MEDIUM_SCORING_POSITION_HATCH_BACK = 22830;
+                MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000; 
+                HIGH_SCORING_POSITION_HATCH = 22830; 
+                HIGH_ROCKET_SCORING_POSITION_CARGO = 22700; 
+                CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18200;
+                CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
+                
+                ARM_COLLISION_HEIGHT = 10000;
+                LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT = 7000;
         }
     }
 
