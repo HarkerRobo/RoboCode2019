@@ -123,7 +123,7 @@ public class SetScoringPosition extends CommandGroup {
 								new SetArmPosition(ArmDirection.DOWN), 
 								new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)),
 							new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN)))));
-		addSequential(new ConditionalCommand(() -> (mustPassthroughHigh.getAsBoolean() || mustPassthroughLow.getAsBoolean() || desiredLocation == Location.HATCH_INTAKE), new SetExtenderState(ExtenderDirection.IN)));
+		addSequential(new ConditionalCommand(() -> (mustPassthroughHigh.getAsBoolean() || mustPassthroughLow.getAsBoolean() || desiredLocation == Location.HATCH_INTAKE || desiredLocation == Location.CARGO_INTAKE), new SetExtenderState(ExtenderDirection.IN)));
 		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
 						new MoveElevatorMotionMagic(getSafePassthroughHeight))); 
