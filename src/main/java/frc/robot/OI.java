@@ -9,16 +9,16 @@ import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
 import frc.robot.commands.drivetrain.ToggleLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
-import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
-import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.groups.SetScoringPosition.Location;
+import frc.robot.commands.groups.StowHatchAndCargoIntake;
+import frc.robot.commands.groups.ZeroForMatch;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.wrist.ZeroWrist;
-import frc.robot.subsystems.Elevator;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.TriggerButton;
@@ -84,27 +84,6 @@ public class OI {
     }
 
     public void initBindings() {
-        // driverGamepad.getButtonX().whilePressed(new MoveWristPosition(170));
-        // driverGamepad.getButtonY().whenPressed(new ZeroWrist());
-        // driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
-        //
-        // @Override
-        // public void initialize() {
-        // driverControlScheme++;
-        // initBindings();
-        // }
-        // } );
-        // driverGamepad.getButtonA().whenPressed(new ZeroElevator());
-
-        // driverGamepad.getButtonStart().whilePressed(new InstantCommand() {
-
-        // @Override
-        // public void initialize() {
-        // driverControlScheme++;
-        // initBindings();
-        // System.out.println("START");
-        // }
-
         driverGamepad.getButtonBumperRight().whenPressed(new InstantCommand() {
             @Override
             public void initialize() {
@@ -122,6 +101,7 @@ public class OI {
         });
         driverGamepad.getButtonSelect().whenPressed(new ToggleLimelightViewMode());
         driverGamepad.getUpDPadButton().whenPressed(new StowHatchAndCargoIntake());
+        driverGamepad.getDownDPadButton().whenPressed(new ZeroForMatch());
         
         Trigger rightTrigger = new TriggerButton(driverGamepad, TriggerSide.RIGHT);
         rightTrigger.whileActive(new ConditionalCommand(() -> !wristToggleMode, 
@@ -162,22 +142,6 @@ public class OI {
         customOperatorGamepad.getZeroWristButton().whilePressed(new ZeroWrist());
         customOperatorGamepad.getZeroElevatorButton().whilePressed(new ZeroElevator());
         customOperatorGamepad.getHatchIntakingButton().whenPressed(new SetScoringPosition(Location.HATCH_INTAKE, () -> true));
-        
-        // customOperatorGamepad.getOuttakeButton().whenPressed(new InstantCommand() {
-        //     @Override
-        //     public void initialize() {
-        //         cargoBayToggleMode = !cargoBayToggleMode;
-        //         if(cargoBayToggleMode) {
-        //             customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.CARGO_SHIP_FRONT));
-        //             customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.CARGO_SHIP_BACK));
-        //         } else {
-        //             customOperatorGamepad.getForwardOneButton().whenPressed(new SetScoringPosition(Location.F1));
-        //             customOperatorGamepad.getBackwardOneButton().whenPressed(new SetScoringPosition(Location.B1));
-        //         }
-        //     }
-        // });
-
-
     }  
     
     public HSGamepad getDriverGamepad() {
