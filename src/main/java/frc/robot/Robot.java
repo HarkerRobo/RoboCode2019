@@ -17,6 +17,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.drivetrain.SetLimelightLEDMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode;
+import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
@@ -105,6 +109,9 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
          startTime = Timer.getFPGATimestamp();
+
+         new SetLimelightLEDMode(LEDMode.OFF).start();
+         new SetLimelightViewMode(ViewMode.DRIVER).start();
     }
 
     /**

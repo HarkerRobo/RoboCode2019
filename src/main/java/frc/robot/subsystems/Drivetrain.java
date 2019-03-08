@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -114,14 +116,37 @@ public class Drivetrain extends HSDrivetrain {
         setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT); 
         getLeftMaster().enableCurrentLimit(true);
         getRightMaster().enableCurrentLimit(true);
+
+        configVelocityClosedLoop();
     }
 
+    public void configVelocityClosedLoop() {
+        Drivetrain.getInstance().getLeftMaster().config_kP(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.LEFT_KP);
+        Drivetrain.getInstance().getLeftMaster().config_kI(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.LEFT_KI);
+        Drivetrain.getInstance().getLeftMaster().config_kD(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.LEFT_KD);
+        Drivetrain.getInstance().getLeftMaster().config_kF(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.LEFT_KF);
+
+        Drivetrain.getInstance().getRightMaster().config_kP(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.RIGHT_KP);
+        Drivetrain.getInstance().getRightMaster().config_kI(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.RIGHT_KI);
+        Drivetrain.getInstance().getRightMaster().config_kD(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.RIGHT_KD);
+        Drivetrain.getInstance().getRightMaster().config_kF(Drivetrain.VELOCITY_SLOT_INDEX, DriveWithVelocityManual.RIGHT_KF);
+
+        Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.VELOCITY_SLOT_INDEX, Global.PID_PRIMARY);
+        Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.VELOCITY_SLOT_INDEX, Global.PID_PRIMARY);
+        Drivetrain.getInstance().configBothFeedbackSensors(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+        Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
+        Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
+    }
     public void resetTalonInverts() {
         invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
     }
 
-    public void arcadeDrivePercentOutput(double speed, double turn) {
-        arcadeDrivePercentOutput(getTalonOutputs(speed, turn));
+    public void arcadeDrivePercentOutput(double forwardPercent, double turnPercent) {
+        double forwardSpeed = Conversions.convertSpeed(SpeedUnit.FEET_PER_SECOND, forwardPercent * MAX_FORWARD_VELOCITY, SpeedUnit.ENCODER_UNITS);
+        double turnSpeed = Conversions.convertSpeed(SpeedUnit.FEET_PER_SECOND, turnPercent * MAX_TURN_VELOCITY, SpeedUnit.ENCODER_UNITS);
+
+        getLeftMaster().set(ControlMode.PercentOutput, (forwardSpeed + turnSpeed) * DriveWithVelocityManual.LEFT_KF / 1023.0);
+        getRightMaster().set(ControlMode.PercentOutput, (forwardSpeed - turnSpeed) * DriveWithVelocityManual.RIGHT_KF / 1023.0);
     }
 
     public void arcadeDriveVelocity(double forwardPercent, double turnPercent) {

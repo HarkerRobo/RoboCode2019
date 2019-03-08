@@ -7,6 +7,7 @@ import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
+import frc.robot.commands.drivetrain.ToggleLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
@@ -119,6 +120,7 @@ public class OI {
                 wristToggleMode = !wristToggleMode;
             }
         });
+        driverGamepad.getButtonSelect().whenPressed(new ToggleLimelightViewMode());
         driverGamepad.getUpDPadButton().whenPressed(new StowHatchAndCargoIntake());
         
         Trigger rightTrigger = new TriggerButton(driverGamepad, TriggerSide.RIGHT);

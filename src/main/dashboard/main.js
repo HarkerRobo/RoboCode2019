@@ -1,4 +1,5 @@
 const ctx = document.getElementById("canvas").getContext("2d");
+let limelightLoaded = false;
 
 const updateToggleModes = () => {
     let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
@@ -45,10 +46,18 @@ const updateKangarooBatteryPercentage = () => {
     xhr.onload = () => {
         document.getElementById("kangaroo_battery").innerHTML = xhr.responseText;
     }
+    xhr.onerror = () => {
+        document.getElementById("kangaroo_battery").innerHTML = "<span style='color:red'>Kangaroo Not Connected</span>";
+    }
     xhr.send();
 }
 
 const redrawLimelightFeed = () => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.font = "100pt Arial";
+    ctx.textAlign = "center"
+    ctx.fillStyle = "red";
+    ctx.fillText("No Limelight Feed", ctx.canvas.width / 2, ctx.canvas.height / 2);
     ctx.drawImage(document.getElementById("limelight"), 0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
@@ -87,3 +96,7 @@ const limelightDrawInterval = setInterval(() => {
     // drawArrow(false, 500)
     // drawArrow(true, 500)
 }, 50);
+
+document.getElementById("limelight").onprogress = () => {
+    limelightLoaded = true;
+}

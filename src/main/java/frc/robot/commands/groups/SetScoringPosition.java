@@ -105,6 +105,7 @@ public class SetScoringPosition extends CommandGroup {
 		BooleanSupplier mustPassthroughHigh = () -> Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) &&
 													(Wrist.getInstance().getCurrentSide() == Side.FRONT || 
 													Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS);
+		BooleanSupplier isDefenseMode = () -> Wrist.getInstance().isAmbiguous() && Arm.getInstance().getDirection() == ArmDirection.UP;
 
 		addSequential(new InstantCommand() {
 			@Override
@@ -115,6 +116,9 @@ public class SetScoringPosition extends CommandGroup {
 		});
 		
 		addSequential(new CallMethodCommand(() -> System.out.println("desired height " + getDesiredHeight.get() + " desired angle: " + getDesiredAngle.get() + " must passthrough:" + mustPassthroughLow.getAsBoolean() + " safe passthrough height: " + getSafePassthroughHeight.get())));
+		
+		addSequential(new ConditionalCommand(isDefenseMode, new MoveWristMotionMagic(Wrist.SAFE_BACKWARD_POSITION)));
+		
 		addSequential(new ConditionalCommand(
 						() -> Arm.getInstance().getDirection() == ArmDirection.UP, 
 						new ConditionalCommand(
