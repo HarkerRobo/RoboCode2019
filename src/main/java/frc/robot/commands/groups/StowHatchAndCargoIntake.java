@@ -26,7 +26,7 @@ import harkerrobolib.auto.SequentialCommandGroup;
 public class StowHatchAndCargoIntake extends SequentialCommandGroup {
 
     public StowHatchAndCargoIntake () {
-        super(new SetScoringPosition(Location.CARGO_INTAKE),
+        super(new SetScoringPosition(Location.CARGO_INTAKE, () -> false),
               new MoveWristMotionMagic(Wrist.MID_POSITION),
               new SetArmPosition(ArmDirection.UP));
     }

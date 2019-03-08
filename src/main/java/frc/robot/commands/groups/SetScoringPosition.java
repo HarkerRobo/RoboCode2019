@@ -152,6 +152,7 @@ public class SetScoringPosition extends CommandGroup {
 	}
 
 	public void end() {
+		System.out.println("Set scoring position end");
 		((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition();
 	}
 }

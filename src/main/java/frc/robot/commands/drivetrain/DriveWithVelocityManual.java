@@ -9,6 +9,7 @@ import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Rollers;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
@@ -80,7 +81,13 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     public void execute() {
         double leftX = OI.getInstance().getDriveStraightMode() ? 0 : MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
         double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);        
-        Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+        if(Drivetrain.getInstance().getRightMaster().getSensorCollection().getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION ||
+            Drivetrain.getInstance().getLeftMaster().getSensorCollection().getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION) {
+                Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+            } else {
+                Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+            }
+        
         // if(OI.getInstance().getDriverGamepad().getLeftY() > 0.5)
         //     Drivetrain.getInstance().arcadeDriveVelocity(0.8, OI.getInstance().getDriverGamepad().getLeftX());
         // else if(OI.getInstance().getDriverGamepad().getLeftY() < -0.5)
@@ -91,6 +98,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
         SmartDashboard.putNumber("Right reading", Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition());
         SmartDashboard.putNumber("Error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(0));
         //Drivetrain.getInstance().getLeftMaster().set(ControlMode.Velocity, )
+        SmartDashboard.putNumber("sensor health", Drivetrain.getInstance().getRightMaster().getSensorCollection().getPulseWidthPosition());
 
     }
 

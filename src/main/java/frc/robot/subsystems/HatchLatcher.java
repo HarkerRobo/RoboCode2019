@@ -28,12 +28,12 @@ public class HatchLatcher extends Subsystem {
 
     static {
         if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-            EXTENDER_IN_VALUE = DoubleSolenoid.Value.kForward;
-            EXTENDER_OUT_VALUE = DoubleSolenoid.Value.kReverse;
+            EXTENDER_IN_VALUE = DoubleSolenoid.Value.kReverse;
+            EXTENDER_OUT_VALUE = DoubleSolenoid.Value.kForward;
 
             
-            FLOWER_OPEN_VALUE = DoubleSolenoid.Value.kReverse;
-            FLOWER_CLOSED_VALUE = DoubleSolenoid.Value.kForward;
+            FLOWER_OPEN_VALUE = DoubleSolenoid.Value.kForward;
+            FLOWER_CLOSED_VALUE = DoubleSolenoid.Value.kReverse;
         } else {
             EXTENDER_IN_VALUE = DoubleSolenoid.Value.kForward;
             EXTENDER_OUT_VALUE = DoubleSolenoid.Value.kReverse;

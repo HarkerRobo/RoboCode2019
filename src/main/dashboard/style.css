@@ -8,7 +8,7 @@ img {
 }
 
 .big {
-    font-size: 40pt;
+    font-size: 30pt;
 }
 
 .hidden {
@@ -16,8 +16,8 @@ img {
 }
 
 #limelight, #canvas {
-    width: 40vw;
-    height: 30vw;
+    width: 30vw;
+    height: 22.5vw;
 }
 
 #canvas {

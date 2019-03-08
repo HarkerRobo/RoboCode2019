@@ -107,6 +107,7 @@ public class RobotMap {
         public static final LEDChannel RED_CHANNEL= LEDChannel.LEDChannelA;
         public static final LEDChannel GREEN_CHANNEL = LEDChannel.LEDChannelB;
         public static final LEDChannel BLUE_CHANNEL = LEDChannel.LEDChannelC;
+        public static final int DISCONNECTED_PULSE_WIDTH_POSITION = 0;
 
         public static final int ENCODER_TICKS_PER_REVOLUTION = 4096;
 
