@@ -32,8 +32,8 @@ public class AlignWithLimelightDrive extends Command {
     static {
         if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
             TURN_KP = .03; //0.09
-            TURN_KI = 0.0001;
-            TURN_KD = 0.3;
+            TURN_KI = 0;// 0.001;
+            TURN_KD = 0.1;
             TURN_KF = 0;
             FORWARD_KF = 0;
             FORWARD_KP = 0.045;
