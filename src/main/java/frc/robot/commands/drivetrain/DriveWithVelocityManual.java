@@ -79,7 +79,6 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     }
 
     public void execute() {
-        System.out.println(OI.getInstance().getDriveStraightMode());
         double leftX = OI.getInstance().getDriveStraightMode() ? 0 : MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
         double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
         // Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));

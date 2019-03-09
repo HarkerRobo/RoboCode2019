@@ -80,4 +80,15 @@ public class MoveWristManual extends IndefiniteCommand {
     public void disableClosedLoop () {
         shouldClosedLoop = false;
     }
+
+    public void setLastPosition (double lastPos) {
+        this.lastPos = lastPos;
+    }
+
+        /**
+     * Sets the last position to be the current wrist position.
+     */
+    public void setLastPosition () {
+        this.setLastPosition(Wrist.getInstance().getCurrentAngleEncoder());
+    }
 }

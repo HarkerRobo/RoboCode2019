@@ -25,6 +25,7 @@ import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
+import frc.robot.commands.wrist.MoveWristManual;
 
 /**
  * Passes through and moves to a desired height.
@@ -41,7 +42,7 @@ public class SetScoringPosition extends CommandGroup {
         F2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.MEDIUM_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
         F3(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
         B1(Elevator.LOW_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH), 
-        B2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO_2, Elevator.MEDIUM_SCORING_POSITION_HATCH_BACK, Wrist.SCORING_POSITION_BACK_HATCH), 
+        B2(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO_2, Elevator.MEDIUM_SCORING_POSITION_HATCH_BACK, Wrist.SCORING_POSITION_BACK_HATCH_2), 
 		B3(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
 		CARGO_SHIP_FRONT(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_FRONT_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
 		CARGO_SHIP_BACK(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_BACK_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
@@ -152,11 +153,12 @@ public class SetScoringPosition extends CommandGroup {
 			addSequential (new SetArmPosition(ArmDirection.UP));
 		}
 		
-		addSequential(new ConditionalCommand(() -> HatchLatcher.getInstance().hasHatch(), new SetExtenderState(ExtenderDirection.OUT)));
+		addSequential(new ConditionalCommand(() -> HatchLatcher.getInstance().hasHatch() && desiredLocation != Location.HATCH_INTAKE && desiredLocation != Location.CARGO_INTAKE, new SetExtenderState(ExtenderDirection.OUT)));
 	}
 
 	public void end() {
 		System.out.println("Set scoring position end");
 		((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition();
+		((MoveWristManual) Wrist.getInstance().getDefaultCommand()).setLastPosition();
 	}
 }

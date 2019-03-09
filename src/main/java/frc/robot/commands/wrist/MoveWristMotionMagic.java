@@ -94,6 +94,7 @@ public class MoveWristMotionMagic extends Command {
     @Override
     public void end () {
         System.out.println("wrist motion magic end");
+        
         Robot.log("MoveWristMotionMagic ended.");
     }
 

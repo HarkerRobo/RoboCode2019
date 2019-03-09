@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.RobotType;
+import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Elevator;
 
 /**
