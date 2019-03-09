@@ -1,6 +1,7 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmDirection;
 
@@ -17,9 +18,11 @@ public class SetArmPosition extends InstantCommand {
     public SetArmPosition(ArmDirection direction) {
         requires(Arm.getInstance());
         this.direction = direction;
+
    }
 
    public void initialize() {
         Arm.getInstance().setState(direction.getState());
+        Robot.log("Arm moved " + (direction == ArmDirection.DOWN ? "up" : "down") + ".");
    }      
 } 

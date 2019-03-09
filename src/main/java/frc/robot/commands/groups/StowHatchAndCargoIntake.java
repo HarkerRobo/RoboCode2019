@@ -1,19 +1,13 @@
 package frc.robot.commands.groups;
 
-import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
-import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
-import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
-import frc.robot.commands.wrist.MoveWristPosition;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
-import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.auto.SequentialCommandGroup;
+import harkerrobolib.commands.CallMethodCommand;
 
 /**
  * Brings all necessary subsystems inside the frame perimeter of the robot
@@ -26,7 +20,8 @@ import harkerrobolib.auto.SequentialCommandGroup;
 public class StowHatchAndCargoIntake extends SequentialCommandGroup {
 
     public StowHatchAndCargoIntake () {
-        super(new SetScoringPosition(Location.CARGO_INTAKE, () -> false),
+        super(new CallMethodCommand(() -> Robot.log("Entering defense mode.")), 
+              new SetScoringPosition(Location.CARGO_INTAKE, () -> false),
               new MoveWristMotionMagic(Wrist.MID_POSITION),
               new SetArmPosition(ArmDirection.UP));
     }

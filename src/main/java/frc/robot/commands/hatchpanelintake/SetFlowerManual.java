@@ -1,6 +1,7 @@
 package frc.robot.commands.hatchpanelintake;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.HatchLatcher.FlowerDirection;
 /** 
@@ -21,6 +22,7 @@ public class SetFlowerManual extends InstantCommand {
      */
     @Override
     public void initialize(){
+        Robot.log("Flower " + (direction == FlowerDirection.OPEN ? "opened" : "closecd") + ".");
         HatchLatcher.getInstance().setFlowerState(direction);        
     }
 }

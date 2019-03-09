@@ -5,17 +5,14 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
-import frc.robot.commands.drivetrain.SetLimelightViewMode;
-import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
-import frc.robot.commands.drivetrain.ToggleLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
+import frc.robot.commands.drivetrain.ToggleLimelightViewMode;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.groups.StowHatchAndCargoIntake;
-import frc.robot.commands.groups.ZeroForMatch;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.wrist.ZeroWrist;
@@ -24,6 +21,7 @@ import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.TriggerButton;
 import frc.robot.util.TriggerButton.TriggerSide;
 import harkerrobolib.auto.SequentialCommandGroup;
+import harkerrobolib.commands.CallMethodCommand;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
@@ -88,6 +86,7 @@ public class OI {
             @Override
             public void initialize() {
                 cargoBayToggleMode = !cargoBayToggleMode;
+                Robot.log(cargoBayToggleMode ? "Enabled cargo ship mode." : "Enabled rocket mode.");
             }
         });
 
@@ -97,15 +96,16 @@ public class OI {
         driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
             public void initialize() {
                 wristToggleMode = !wristToggleMode;
+                Robot.log(wristToggleMode ? "Enabled wrist scoring mode." : "Enabled Limelight align mode.");
             }
         });
         driverGamepad.getButtonSelect().whenPressed(new ToggleLimelightViewMode());
         driverGamepad.getUpDPadButton().whenPressed(new StowHatchAndCargoIntake());
-        driverGamepad.getDownDPadButton().whenPressed(new ZeroForMatch());
+        // driverGamepad.getDownDPadButton().whenPressed(new ZeroForMatch());
         
         Trigger rightTrigger = new TriggerButton(driverGamepad, TriggerSide.RIGHT);
         rightTrigger.whileActive(new ConditionalCommand(() -> !wristToggleMode, 
-                                                                        new SequentialCommandGroup (new SetLimelightLEDMode(LEDMode.ON),
+                                                                        new SequentialCommandGroup (new CallMethodCommand(() -> Robot.log("Aligning with Limelight.")), new SetLimelightLEDMode(LEDMode.ON),
                                                                             new SetLimelightViewMode(ViewMode.VISION),
                                                                             new AlignWithLimelightDrive(0.0)))); // align to center
         rightTrigger.whenInactive(new SequentialCommandGroup(new SetLimelightViewMode(ViewMode.DRIVER), new SetLimelightLEDMode(LEDMode.OFF)));
@@ -115,6 +115,7 @@ public class OI {
                 if (!wristToggleMode) {
                     driveStraightMode = true;
                 }
+                Robot.log("Enabled drive straight mode.");
             }
         });
 
@@ -123,6 +124,7 @@ public class OI {
                 if (!wristToggleMode) {
                     driveStraightMode = false;
                 }
+                Robot.log("Disabled drive straight mode.");
             }
         });
 

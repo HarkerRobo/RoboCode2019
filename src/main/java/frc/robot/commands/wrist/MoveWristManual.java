@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
+import frc.robot.Robot;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Wrist.WristDirection;
@@ -24,6 +25,7 @@ public class MoveWristManual extends IndefiniteCommand {
 
     public MoveWristManual () {
         requires (Wrist.getInstance());
+        Robot.log("MoveWristManual constructed.");
         isHolding = false;
         shouldClosedLoop = false;
         lastPos = 0;

@@ -1,6 +1,7 @@
 package frc.robot.commands.hatchpanelintake;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.HatchLatcher.FlowerDirection;
 import frc.robot.util.PneumaticsUtil;
@@ -21,6 +22,7 @@ public class ToggleFlowerState extends InstantCommand{
      */
     @Override
     public void initialize() {
+        Robot.log("Flower " + (HatchLatcher.getInstance().getFlowerState() == FlowerDirection.OPEN ? "closed" : "opened") + ".");
         HatchLatcher.getInstance().setFlowerState(FlowerDirection.convertDirection(PneumaticsUtil.switchSolenoidValue(HatchLatcher.getInstance().getFlowerState().getValue())));
     }
 

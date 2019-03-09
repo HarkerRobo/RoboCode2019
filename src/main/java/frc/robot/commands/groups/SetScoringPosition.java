@@ -8,23 +8,23 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
+import frc.robot.Robot;
 import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.hatchpanelintake.SetExtenderState;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
-import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
+import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
-import harkerrobolib.commands.PrintCommand;
 
 /**
  * Passes through and moves to a desired height.
@@ -91,7 +91,6 @@ public class SetScoringPosition extends CommandGroup {
 		this(desiredLocation, () -> HatchLatcher.getInstance().hasHatch());
 	}
 
-
 	public SetScoringPosition(Location desiredLocation, Supplier<Boolean> doHatch) {
 
 		this.desiredLocation = desiredLocation;
@@ -107,6 +106,7 @@ public class SetScoringPosition extends CommandGroup {
 													Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS);
 		BooleanSupplier isDefenseMode = () -> Wrist.getInstance().isAmbiguous() && Arm.getInstance().getDirection() == ArmDirection.UP;
 
+		addSequential(new CallMethodCommand(() -> Robot.log("SetScoringPosition to " + desiredLocation.name() + " with desired Height, " + getDesiredHeight + " , desired Angle, " + getDesiredAngle + ".")));
 		addSequential(new InstantCommand() {
 			@Override
 			public void initialize() {

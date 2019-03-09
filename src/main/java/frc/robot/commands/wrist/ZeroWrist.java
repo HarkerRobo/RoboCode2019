@@ -3,14 +3,12 @@ package frc.robot.commands.wrist;
 import java.util.ArrayList;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Arm.ArmDirection;
+import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Wrist.WristDirection;
 
 /**
@@ -39,6 +37,7 @@ public class ZeroWrist extends Command {
         Wrist.getInstance().getMasterTalon().configReverseSoftLimitEnable(false);
         Arm.getInstance().setState(ArmDirection.DOWN.getState());
         //Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+        Robot.log("ZeroWrist initialized.");
     }
 
     @Override
@@ -72,6 +71,7 @@ public class ZeroWrist extends Command {
         Wrist.getInstance().getMasterTalon().setSelectedSensorPosition(0);
         Wrist.getInstance().getMasterTalon().configReverseSoftLimitEnable(true);
         ((MoveWristManual) Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
+        Robot.log("ZeroWrist ended.");
         System.out.println("command over");
     }
     

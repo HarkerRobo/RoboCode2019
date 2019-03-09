@@ -1,10 +1,10 @@
 package frc.robot.commands.intake;
 
 import frc.robot.OI;
+import frc.robot.Robot;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import harkerrobolib.commands.IndefiniteCommand;
-import harkerrobolib.util.MathUtil;
 
 
 /**
@@ -20,6 +20,7 @@ public class SpinIntakeManual extends IndefiniteCommand {
     
     public SpinIntakeManual() {
         requires(Intake.getInstance());
+        Robot.log("SpinIntakeManual constructed.");
     }
 
     /**

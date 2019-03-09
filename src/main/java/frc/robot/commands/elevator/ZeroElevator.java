@@ -3,12 +3,10 @@ package frc.robot.commands.elevator;
 import java.util.ArrayList;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.RobotMap.Global;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Elevator;
 
@@ -44,6 +42,7 @@ public class ZeroElevator extends Command {
     }
 
     public void initialize() {
+        Robot.log("ZeroElevator initialized.");
         startTime = Robot.getTime();
     }
 
@@ -68,6 +67,6 @@ public class ZeroElevator extends Command {
         Elevator.getInstance().getMasterTalon().set(ControlMode.Disabled, 0);
         Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
         ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition(0);
-        System.out.println("command over");
+        Robot.log("ZeroElevator over");
     }
 }
