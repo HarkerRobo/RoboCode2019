@@ -80,15 +80,17 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
     }
 
     public void execute() {
+        System.out.println(OI.getInstance().getDriveStraightMode());
         double leftX = OI.getInstance().getDriveStraightMode() ? 0 : MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
         double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
-        Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
-        // if(Drivetrain.getInstance().getRightMaster().getSensorCollection().getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION ||
-        //     Drivetrain.getInstance().getLeftMaster().getSensorCollection().getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION) {
-        //         Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
-        //     } else {
-        //             Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
-        // }
+        // Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+        if(Drivetrain.getInstance().getRightMaster().getSensorCollection().getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION ||
+            Drivetrain.getInstance().getLeftMaster().getSensorCollection().getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION) {
+                Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+            } else {
+
+                    Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+        }
         
         // if(OI.getInstance().getDriverGamepad().getLeftY() > 0.5)
         //     Drivetrain.getInstance().arcadeDriveVelocity(0.8, OI.getInstance().getDriverGamepad().getLeftX());

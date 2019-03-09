@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.commands.arm.ToggleArmPosition;
@@ -24,6 +25,7 @@ import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.TriggerButton;
 import frc.robot.util.TriggerButton.TriggerSide;
 import harkerrobolib.auto.SequentialCommandGroup;
+import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
@@ -78,7 +80,7 @@ public class OI {
         driverGamepad = new XboxGamepad(DRIVER_PORT);
         customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
         cargoBayToggleMode = false;
-        wristToggleMode = true;
+        wristToggleMode = false;
         driveStraightMode = false;
         initBindings();
     }
@@ -88,6 +90,15 @@ public class OI {
             @Override
             public void initialize() {
                 cargoBayToggleMode = !cargoBayToggleMode;
+
+                if (cargoBayToggleMode) {
+                    OI.getInstance().getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0.4);
+                    OI.getInstance().getDriverGamepad().setRumble(RumbleType.kRightRumble, 0.4);
+                }
+                else {
+                    OI.getInstance().getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0);
+                    OI.getInstance().getDriverGamepad().setRumble(RumbleType.kRightRumble, 0);
+                }
             }
         });
 

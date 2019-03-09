@@ -112,6 +112,9 @@ public class Robot extends TimedRobot {
 
          new SetLimelightLEDMode(LEDMode.OFF).start();
          new SetLimelightViewMode(ViewMode.DRIVER).start();
+
+        HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
+        new SetArmPosition(ArmDirection.UP).start();
     }
 
     /**
@@ -173,7 +176,8 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Has hatch?", HatchLatcher.getInstance().hasHatch());
         SmartDashboard.putBoolean("Is scoring on cargo ship?", OI.getInstance().getCargoBayToggleMode());
         SmartDashboard.putBoolean("Has wrist manual control?", OI.getInstance().getWristToggleMode());
-
+        SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() == ArmDirection.UP);
+        SmartDashboard.putNumber("date", System.currentTimeMillis());
         // //System.out.println(limelight.getCamtranData());
         // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
         // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());

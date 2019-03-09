@@ -5,9 +5,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot.Side;
+import frc.robot.OI;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
+import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.rollers.SpinRollersManual;
 import frc.robot.util.Pair;
 import harkerrobolib.wrappers.HSTalon;
@@ -58,6 +60,8 @@ public class Rollers extends Subsystem {
     public static final double DEFAULT_ROLLER_MAGNITUDE = 0.8;
     public static final double ROLLER_SHOOTING_SPEED = 0.65;
     public static final double HATCH_STOW_SPEED = 0.75;
+
+    public static final double CARGO_BAY_OUTPUT_REDUCTION = 0.55;
 
     private static Rollers instance;
     private HSTalon rTalonTop;
@@ -126,17 +130,24 @@ public class Rollers extends Subsystem {
         rTalonBottom.set(ControlMode.PercentOutput, -1 * output * direction.getSign());
     }
 
+    public Pair<Double, Double> getRecommendedRollersInput() {
+        return new Pair<Double, Double> (DEFAULT_ROLLER_MAGNITUDE, DEFAULT_ROLLER_MAGNITUDE);
+    }
     /**
      * Pair<top output, bottom output>
      */
     public Pair<Double, Double> getRecommendedRollersOutput() {
+        if(OI.getInstance().getCargoBayToggleMode() && Elevator.getInstance().isAt(Location.CARGO_SHIP_BACK.getCargoHeight())) {
+            return new Pair<Double, Double> (DEFAULT_ROLLER_MAGNITUDE - CARGO_BAY_OUTPUT_REDUCTION, DEFAULT_ROLLER_MAGNITUDE - CARGO_BAY_OUTPUT_REDUCTION);
+        }
         double wristAngle = Wrist.getInstance().getCurrentAngleDegrees();
         if((Wrist.getInstance().getCurrentSide() == Side.FRONT ||
             Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS) && 
-            Wrist.getInstance().isFurtherBackward(wristAngle, Wrist.SCORING_POSITION_FRONT_CARGO_2) ||
-            (Wrist.getInstance().getCurrentSide() == Side.BACK) &&
-            Wrist.getInstance().isFurtherForward(wristAngle, Wrist.SCORING_POSITION_BACK_CARGO_2)) {
+            Wrist.getInstance().isFurtherBackward(wristAngle, Wrist.SCORING_POSITION_FRONT_CARGO_2)) 
             return new Pair<Double, Double> (DEFAULT_ROLLER_MAGNITUDE + TOP_SPIN, DEFAULT_ROLLER_MAGNITUDE - TOP_SPIN);
+        if (Wrist.getInstance().getCurrentSide() == Side.BACK &&
+            Wrist.getInstance().isFurtherForward(wristAngle, Wrist.SCORING_POSITION_BACK_CARGO_2)) {
+            return new Pair<Double, Double> (DEFAULT_ROLLER_MAGNITUDE - TOP_SPIN, DEFAULT_ROLLER_MAGNITUDE + TOP_SPIN);
         }
         //  if(Math.abs(wristAngle - 90)
         //      return ROLLER_SHOOTING_SPEED;
@@ -146,6 +157,7 @@ public class Rollers extends Subsystem {
     public void moveRollers(double topMagnitude, double bottomMagnitude, RollerDirection direction) {
         rTalonTop.set(ControlMode.PercentOutput, topMagnitude * direction.getSign());
         rTalonBottom.set(ControlMode.PercentOutput, bottomMagnitude * direction.getSign());
+
     }
 
      /**

@@ -5,6 +5,7 @@ const updateToggleModes = () => {
     let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
     let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
     let isWristEnabled = NetworkTables.getValue("/SmartDashboard/Has wrist manual control?");
+    let isExtenderExtended = NetworkTables.getValue("/SmartDashboard/Is extended?");
 
     if(isCargoShipEnabled) {
         document.getElementById("cargoship").style.display = "inline-block";
@@ -30,11 +31,14 @@ const updateToggleModes = () => {
         document.getElementById("wrist").style.display = "none";
         document.getElementById("align").style.display = "inline-block";
     }
+
+    document.getElementById("extender").innerHTML = `${isExtenderExtended ? "Extended" : "Retracted"}`
 } 
 
 const updateSmartDashFields = () => {
     let elevatorPosition = NetworkTables.getValue("/SmartDashboard/Elevator Position");
     let wristPosition = NetworkTables.getValue("/SmartDashboard/Wrist Position");
+    console.log(new Date(NetworkTables.getValue("/SmartDashboard/date")).toString());
 
     document.getElementById("elevatorPos").innerHTML = elevatorPosition;
     document.getElementById("wristPos").innerHTML = Math.round(wristPosition * 10) / 10 + " degrees";
@@ -54,7 +58,7 @@ const updateKangarooBatteryPercentage = () => {
 
 const redrawLimelightFeed = () => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.font = "100pt Arial";
+    ctx.font = "100pt Comic Sans MS";
     ctx.textAlign = "center"
     ctx.fillStyle = "red";
     ctx.fillText("No Limelight Feed", ctx.canvas.width / 2, ctx.canvas.height / 2);

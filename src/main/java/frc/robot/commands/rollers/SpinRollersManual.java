@@ -18,6 +18,7 @@ import harkerrobolib.util.MathUtil;
  * @since 1/10/19
  */
 public class SpinRollersManual extends IndefiniteCommand {
+
 	public SpinRollersManual() {
         requires(Rollers.getInstance());
     }	
@@ -36,7 +37,7 @@ public class SpinRollersManual extends IndefiniteCommand {
                 output = Rollers.getInstance().getRecommendedRollersOutput();
                 rollerDirection = RollerDirection.OUT;
             } else if(OI.getInstance().getDriverGamepad().getButtonYState()) {
-                    output = Rollers.getInstance().getRecommendedRollersOutput();
+                    output = Rollers.getInstance().getRecommendedRollersInput(); 
                 rollerDirection = RollerDirection.IN;
             } else {
                 output = new Pair<Double, Double>(0.0, 0.0);
@@ -44,7 +45,7 @@ public class SpinRollersManual extends IndefiniteCommand {
             }
         } else {
             if(OI.getInstance().getDriverGamepad().getButtonXState())  {
-                output = Rollers.getInstance().getRecommendedRollersOutput();
+                output = Rollers.getInstance().getRecommendedRollersInput();
                 rollerDirection = rollerDirection.IN;
             } else {
                 if(OI.getInstance().getDriverGamepad().getButtonYState()) {
@@ -54,8 +55,8 @@ public class SpinRollersManual extends IndefiniteCommand {
             }
         }
         
-        if(rollerDirection == RollerDirection.IN && (Math.abs(output.getFirst()) > Rollers.HATCH_STOW_SPEED || 
-                                                     Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED)){}
+        // if(rollerDirection == RollerDirection.IN && (Math.abs(output.getFirst()) > Rollers.HATCH_STOW_SPEED || 
+                                                    //  Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED)){}
             // (new LoadOrScoreHatch(ScoreState.LOAD)).start();
         Rollers.getInstance().moveRollers(output.getFirst(), output.getSecond(), rollerDirection);
 	}
