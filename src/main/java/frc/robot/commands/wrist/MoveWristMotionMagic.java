@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Wrist;
@@ -69,7 +70,9 @@ public class MoveWristMotionMagic extends Command {
     public void initialize() {
         if (setpointLambda != null) {this.position = Wrist.getInstance().convertDegreesToEncoder(setpointLambda.get());}
         Wrist.getInstance().setupMotionMagic();
+        
         System.out.println("entering wrist motion " + position);
+        Robot.log("MoveElevatorMotionMagic initialized with desired position, " + position + ".");
     }
     
     /**
@@ -91,6 +94,7 @@ public class MoveWristMotionMagic extends Command {
     @Override
     public void end () {
         System.out.println("wrist motion magic end");
+        Robot.log("MoveWristMotionMagic ended.");
     }
 
     @Override

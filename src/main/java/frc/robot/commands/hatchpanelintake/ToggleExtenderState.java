@@ -1,9 +1,8 @@
 
-
-
 package frc.robot.commands.hatchpanelintake;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.util.PneumaticsUtil;
@@ -26,6 +25,7 @@ public class ToggleExtenderState extends InstantCommand {
      */
     @Override
     public void initialize(){
+        Robot.log("Extender moved " + (HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT ? "in" : "out") + ".");
         HatchLatcher.getInstance().setExtenderState(ExtenderDirection.convertDirection(
             PneumaticsUtil.switchSolenoidValue(HatchLatcher.getInstance().getExtenderState()
             .getValue())));

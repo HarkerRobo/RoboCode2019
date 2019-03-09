@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.io.PrintWriter;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -18,8 +20,8 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
-import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.groups.SetScoringPosition.Location;
@@ -62,8 +64,11 @@ public class Robot extends TimedRobot {
     private static OI oi;
     private static double startTime;
     private static TalonSRX talon;
+    private static PrintWriter pw;
 
     private CommandGroupWrapper wrapper;
+    private static final String LOG_FILE_PREFIX = "/home/lvuser/logs/";
+    private static String logFileName = "";
 
     // private CANSparkMax talon;
 
@@ -108,13 +113,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-         startTime = Timer.getFPGATimestamp();
-
+         startTime = Timer.getFPGATimestamp(); 
+        setupPrintWriter();
+        log("Autonomous initialized.");
          new SetLimelightLEDMode(LEDMode.OFF).start();
          new SetLimelightViewMode(ViewMode.DRIVER).start();
 
         HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
         new SetArmPosition(ArmDirection.UP).start();
+         
     }
 
     /**
@@ -132,6 +139,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         wrapper.start();
         startTime = Timer.getFPGATimestamp();
+        setupPrintWriter();
+        log("Teleop initialized.");
         // Elevator.getInstance().setElevator(ControlMode.Disabled, 0);
         // Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
         // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
@@ -145,7 +154,6 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
         SmartDashboard.putNumber("Elevator Position", Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
- 
         // talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightY());
         // System.out.println("completed: " + cgw.isCompleted() + " " + cgw.isRunning());
         //talon.set(ControlMode.PercentOutput, OI.getInstance().getDriverGamepad().getRightX());
@@ -178,6 +186,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Has wrist manual control?", OI.getInstance().getWristToggleMode());
         SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() == ArmDirection.UP);
         SmartDashboard.putNumber("date", System.currentTimeMillis());
+
+        if (pw != null) {
+            pw.flush();
+        }
         // //System.out.println(limelight.getCamtranData());
         // SmartDashboard.putNumber("right y", OI.getInstance().getDriverGamepad().getRightY());
         // SmartDashboard.putNumber("right x", OI.getInstance().getDriverGamepad().getRightX());
@@ -254,6 +266,8 @@ public class Robot extends TimedRobot {
     }
     @Override
     public void disabledInit() {
+        log("Disabled initialized.");
+        pw.close();
         drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
 
         elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
@@ -263,5 +277,34 @@ public class Robot extends TimedRobot {
         ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).disableClosedLoop();
     }
     
+    public static void log (String message) {
+        String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
+        System.out.println(prefix + ": " + message);
+        if (pw != null) {
+            pw.println(prefix + ": " + message);
+            pw.println();
+        } 
+    }
+
+    private String getLogFileName () {
+        String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match" + DriverStation.getInstance().getMatchNumber() + ".txt";
+        name = name.replaceAll(" ", "");
+        return name;
+    }
+
+    private void setupPrintWriter () {
+        if (logFileName.equals("")) {
+            logFileName = getLogFileName();
+        }    
+
+        if (pw == null) {
+            try {
+                pw = new PrintWriter(LOG_FILE_PREFIX + logFileName);
+             } 
+             catch (Exception e) {
+                 e.printStackTrace();
+             }
+        }
+    }
 }
 

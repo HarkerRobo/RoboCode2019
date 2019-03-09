@@ -1,6 +1,7 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.util.Limelight;
 
 /**
@@ -28,6 +29,7 @@ public class SetLimelightViewMode extends InstantCommand
      */
     public void initialize()
     {
+        Robot.log("Setting Limelight view mode to " + mode.name());
         Limelight.getInstance().table.getEntry(Limelight.MODE_KEY).setNumber(mode.getViewState());
     }
 }

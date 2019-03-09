@@ -1,16 +1,14 @@
 package frc.robot.commands.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.Global;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Rollers;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
@@ -58,6 +56,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
 
     public DriveWithVelocityManual() {
         requires(Drivetrain.getInstance());
+        Robot.log("DriveWithVelocityManual constructed.");
     }
 
     public void initialize() {

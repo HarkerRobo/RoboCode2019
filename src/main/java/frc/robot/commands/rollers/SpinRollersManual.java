@@ -1,13 +1,11 @@
 package frc.robot.commands.rollers;
 
 import frc.robot.OI;
-import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch;
-import frc.robot.commands.hatchpanelintake.LoadOrScoreHatch.ScoreState;
+import frc.robot.Robot;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import frc.robot.util.Pair;
 import harkerrobolib.commands.IndefiniteCommand;
-import harkerrobolib.util.MathUtil;
 
 /**
  * Allows manual control over the rollers for intake and outtake.
@@ -21,6 +19,7 @@ public class SpinRollersManual extends IndefiniteCommand {
 
 	public SpinRollersManual() {
         requires(Rollers.getInstance());
+        Robot.log("SpinRollersManual constructed.");        
     }	
 
     /**

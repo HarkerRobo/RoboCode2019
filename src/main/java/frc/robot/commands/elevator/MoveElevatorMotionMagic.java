@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Elevator;
@@ -97,6 +98,7 @@ public class MoveElevatorMotionMagic extends Command {
         if (setpointLambda != null) {this.setpoint = setpointLambda.get();}
         System.out.println("EL MOTION MAGIC " + setpoint);
         Elevator.getInstance().setUpMotionMagic();
+        Robot.log("MoveElevatorMotionMagic initialized.");
         
     }
 
@@ -110,5 +112,8 @@ public class MoveElevatorMotionMagic extends Command {
     
     }
 
-    public void end () {System.out.println("command ended");}
+    public void end () {
+        System.out.println("command ended");
+        Robot.log("MoveElevatorMotionMagic ended.");
+    }
 }

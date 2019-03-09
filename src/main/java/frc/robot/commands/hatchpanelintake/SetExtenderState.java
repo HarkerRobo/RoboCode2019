@@ -1,6 +1,7 @@
 package frc.robot.commands.hatchpanelintake;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.subsystems.HatchLatcher;
 import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 /**
@@ -23,6 +24,7 @@ public class SetExtenderState extends InstantCommand {
      */
     @Override
     public void initialize() {
+        Robot.log("Extender moved " + (direction == ExtenderDirection.OUT ? "out" : "in") + ".");
         HatchLatcher.getInstance().setExtenderState(direction);
     }    
 }

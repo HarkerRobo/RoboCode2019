@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import frc.robot.OI;
+import frc.robot.Robot;
 import frc.robot.Robot.Side;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
@@ -24,6 +25,7 @@ public class MoveElevatorManual extends IndefiniteCommand {
 
     public MoveElevatorManual() {
         requires(Elevator.getInstance());
+        Robot.log("MoveElevatorManual constructed.");
         isHolding = false;
         shouldClosedLoop = false;
         lastPos = 0;
