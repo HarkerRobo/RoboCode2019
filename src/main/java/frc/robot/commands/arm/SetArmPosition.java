@@ -23,6 +23,6 @@ public class SetArmPosition extends InstantCommand {
 
    public void initialize() {
         Arm.getInstance().setState(direction.getState());
-        Robot.log("Arm moved " + (direction == ArmDirection.DOWN ? "up" : "down") + ".");
+        Robot.log("Arm moved " + (direction == ArmDirection.DOWN ? "down" : "up") + ".");
    }      
 } 

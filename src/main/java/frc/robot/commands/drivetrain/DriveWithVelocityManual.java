@@ -40,7 +40,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
             RIGHT_KP = 0.4;
             RIGHT_KI = 0.0;
             RIGHT_KD = 0.0;
-            RIGHT_KF = 0.25;
+            RIGHT_KF = 0.18;
         } else {
             LEFT_KP = 0.4;
             LEFT_KI = 0.0;
@@ -87,7 +87,6 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
             Drivetrain.getInstance().getLeftMaster().getSensorCollection().getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION) {
                 Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
             } else {
-
                     Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
         }
         

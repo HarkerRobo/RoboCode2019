@@ -267,7 +267,8 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         log("Disabled initialized.");
-        pw.close();
+        if (pw != null)
+            pw.close();
         drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
 
         elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
