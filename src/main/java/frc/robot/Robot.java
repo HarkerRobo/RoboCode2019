@@ -15,7 +15,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,7 +24,6 @@ import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorManual;
-import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
@@ -71,8 +69,6 @@ public class Robot extends TimedRobot {
     private CommandGroupWrapper wrapper;
     private static final String LOG_FILE_PREFIX = "/home/lvuser/logs/";
     private static String logFileName = "";
-
-    private static SetScoringPosition currentSetScoringCommand;
 
     // private CANSparkMax talon;
 
@@ -310,14 +306,6 @@ public class Robot extends TimedRobot {
                  e.printStackTrace();
              }
         }
-    }
-
-    public static SetScoringPosition getSetScoringCommand() {
-        return currentSetScoringCommand;
-    }
-
-    public static void setScoringCommand(SetScoringPosition scoringCommand) {
-        currentSetScoringCommand = scoringCommand;
     }
 }
 

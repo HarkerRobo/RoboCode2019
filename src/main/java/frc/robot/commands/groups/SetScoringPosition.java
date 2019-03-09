@@ -88,9 +88,6 @@ public class SetScoringPosition extends CommandGroup {
 
 	public static final double PASSTHROUGH_WAIT_TIME = 0.25;
 
-	private final int DESIRED_HEIGHT;
-	private final int DESIRED_ANGLE;
-
 	public SetScoringPosition(Location desiredLocation) {
 		this(desiredLocation, () -> HatchLatcher.getInstance().hasHatch());
 	}
@@ -110,10 +107,6 @@ public class SetScoringPosition extends CommandGroup {
 													Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS);
 		BooleanSupplier isDefenseMode = () -> Wrist.getInstance().isAmbiguous() && Arm.getInstance().getDirection() == ArmDirection.UP;
 
-		DESIRED_HEIGHT = getDesiredHeight.get();
-		DESIRED_ANGLE = getDesiredAngle.get();
-
-		addSequential(new CallMethodCommand(() -> Robot.setScoringCommand(this)));
 		addSequential(new CallMethodCommand(() -> Robot.log("SetScoringPosition to " + desiredLocation.name() + " with desired Height, " + getDesiredHeight + " , desired Angle, " + getDesiredAngle + ".")));
 		addSequential(new InstantCommand() {
 			@Override
@@ -167,15 +160,5 @@ public class SetScoringPosition extends CommandGroup {
 		System.out.println("Set scoring position end");
 		((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition();
 		((MoveWristManual) Wrist.getInstance().getDefaultCommand()).setLastPosition();
-
-		Robot.setScoringCommand(null);
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if(other == null || !(other instanceof SetScoringPosition))
-			return false;
-		SetScoringPosition otherCommand = (SetScoringPosition) other;
-		return DESIRED_ANGLE == otherCommand.DESIRED_ANGLE && DESIRED_HEIGHT == otherCommand.DESIRED_HEIGHT;
 	}
 }
