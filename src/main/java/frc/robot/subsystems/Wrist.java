@@ -82,6 +82,7 @@ public class Wrist extends Subsystem {
     public static final int BACK_LOW_PASSTHROUGH_ANGLE;
 
     public static final int MID_POSITION;
+    public static final int DEFENSE_POSITION;
     public static final int SAFE_FORWARD_POSITION;
     public static final int SAFE_BACKWARD_POSITION;
     public static final int RANGE_OF_MOTION;
@@ -130,6 +131,8 @@ public class Wrist extends Subsystem {
             RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
 
             SENSOR_PHASE = false;
+
+            DEFENSE_POSITION = MID_POSITION + 5;
         }
         else {
             MASTER_INVERTED = false;
@@ -170,6 +173,8 @@ public class Wrist extends Subsystem {
             SAFE_BACKWARD_POSITION = 110;
             RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
             SENSOR_PHASE = true;
+
+            DEFENSE_POSITION = MID_POSITION + 5;
         }
     }
 

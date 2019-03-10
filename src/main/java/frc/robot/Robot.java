@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -282,12 +285,15 @@ public class Robot extends TimedRobot {
         String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
         System.out.println(prefix + ": " + message);
         if (pw != null) {
-            pw.println(prefix + ": " + message);
-            pw.println();
+            pw.print(prefix + ": " + message + "\r\n");
         } 
     }
 
     private String getLogFileName () {
+        try {
+            System.out.println(new SimpleDateFormat("y-M-d H:m").format(new Date()));
+        } catch(Exception e) {e.printStackTrace();}
+
         String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match" + DriverStation.getInstance().getMatchNumber() + ".txt";
         name = name.replaceAll(" ", "");
         return name;
@@ -300,6 +306,7 @@ public class Robot extends TimedRobot {
 
         if (pw == null) {
             try {
+                new File(LOG_FILE_PREFIX + logFileName).createNewFile();
                 pw = new PrintWriter(LOG_FILE_PREFIX + logFileName);
              } 
              catch (Exception e) {
