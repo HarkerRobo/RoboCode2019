@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -15,7 +18,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,7 +27,6 @@ import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorManual;
-import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
@@ -71,8 +72,6 @@ public class Robot extends TimedRobot {
     private CommandGroupWrapper wrapper;
     private static final String LOG_FILE_PREFIX = "/home/lvuser/logs/";
     private static String logFileName = "";
-
-    private static SetScoringPosition currentSetScoringCommand;
 
     // private CANSparkMax talon;
 
@@ -286,12 +285,15 @@ public class Robot extends TimedRobot {
         String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
         System.out.println(prefix + ": " + message);
         if (pw != null) {
-            pw.println(prefix + ": " + message);
-            pw.println();
+            pw.print(prefix + ": " + message + "\r\n");
         } 
     }
 
     private String getLogFileName () {
+        try {
+            System.out.println(new SimpleDateFormat("y-M-d H:m").format(new Date()));
+        } catch(Exception e) {e.printStackTrace();}
+
         String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match" + DriverStation.getInstance().getMatchNumber() + ".txt";
         name = name.replaceAll(" ", "");
         return name;
@@ -304,20 +306,13 @@ public class Robot extends TimedRobot {
 
         if (pw == null) {
             try {
+                new File(LOG_FILE_PREFIX + logFileName).createNewFile();
                 pw = new PrintWriter(LOG_FILE_PREFIX + logFileName);
              } 
              catch (Exception e) {
                  e.printStackTrace();
              }
         }
-    }
-
-    public static SetScoringPosition getSetScoringCommand() {
-        return currentSetScoringCommand;
-    }
-
-    public static void setScoringCommand(SetScoringPosition scoringCommand) {
-        currentSetScoringCommand = scoringCommand;
     }
 }
 
