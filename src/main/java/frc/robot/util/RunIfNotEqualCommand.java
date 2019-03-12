@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class RunIfNotEqualCommand extends ConditionalCommand {
 
-    public RunIfNotEqualCommand(Command commandToRun, Command commandToCompare) {
-        super(() -> (!commandToRun.equals(commandToCompare)), commandToRun);
+    public RunIfNotEqualCommand(Supplier<Command> commandToRun, Supplier<Command> commandToCompare) {
+        super(() -> (!commandToRun.get().equals(commandToCompare.get())), commandToRun.get());
     }
 }

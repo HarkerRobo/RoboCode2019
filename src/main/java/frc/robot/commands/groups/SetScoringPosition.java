@@ -46,7 +46,8 @@ public class SetScoringPosition extends CommandGroup {
 		B3(Elevator.HIGH_ROCKET_SCORING_POSITION_CARGO, Wrist.SCORING_POSITION_BACK_CARGO, Elevator.HIGH_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
 		CARGO_SHIP_FRONT(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_FRONT_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_FRONT_HATCH),
 		CARGO_SHIP_BACK(Elevator.CARGO_SHIP_SCORING_POSITION_CARGO_FRONT, Wrist.SCORING_POSITION_BACK_CARGO_SHIP, Elevator.LOW_SCORING_POSITION_HATCH, Wrist.SCORING_POSITION_BACK_HATCH),
-
+		PARALLEL_FRONT(0, Wrist.PARALLEL_FRONT, 0, Wrist.PARALLEL_FRONT),
+		PARALLEL_BACK(0, Wrist.PARALLEL_BACK, 0, Wrist.PARALLEL_BACK),
 		ZERO(0, 0, 0, 0), 
 		HATCH_INTAKE(Integer.MAX_VALUE, Integer.MAX_VALUE, Elevator.HATCH_INTAKING_POSITION, Wrist.HATCH_INTAKING_POSITION),
 		CARGO_INTAKE(Elevator.CARGO_INTAKING_POSITION, Wrist.CARGO_INTAKING_POSITION, Integer.MAX_VALUE, Integer.MAX_VALUE); 
@@ -133,8 +134,9 @@ public class SetScoringPosition extends CommandGroup {
 							() -> Wrist.getInstance().getCurrentSide() == Side.FRONT && Elevator.getInstance().isBelow(Elevator.ARM_COLLISION_HEIGHT),
 							new SequentialCommandGroup(
 								new SetArmPosition(ArmDirection.DOWN), 
-								new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)),
-							new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN)))));
+								new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME))
+							)));
+		addSequential(new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN)));
 		addSequential(new ConditionalCommand(() -> (mustPassthroughHigh.getAsBoolean() || mustPassthroughLow.getAsBoolean() || desiredLocation == Location.HATCH_INTAKE || desiredLocation == Location.CARGO_INTAKE), new SetExtenderState(ExtenderDirection.IN)));
 		addSequential (new ConditionalCommand(mustPassthroughHigh, new MoveWristMotionMagic(Wrist.BACK_HIGH_PASSTHROUGH_ANGLE))); 
 		addSequential (new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean() && Elevator.getInstance().isAbove(getSafePassthroughHeight.get()), // needs to pass through robot and lower to max passthrough
@@ -160,7 +162,7 @@ public class SetScoringPosition extends CommandGroup {
 			addSequential (new SetArmPosition(ArmDirection.UP));
 		}
 		
-		addSequential(new ConditionalCommand(() -> HatchLatcher.getInstance().hasHatch() && desiredLocation != Location.HATCH_INTAKE && desiredLocation != Location.CARGO_INTAKE, new SetExtenderState(ExtenderDirection.OUT)));
+		addSequential(new ConditionalCommand(() -> HatchLatcher.getInstance().hasHatch() && desiredLocation != Location.HATCH_INTAKE && desiredLocation != Location.CARGO_INTAKE && (desiredLocation != Location.PARALLEL_BACK || desiredLocation != Location.PARALLEL_FRONT), new SetExtenderState(ExtenderDirection.OUT)));
 	}
 
 	public void end() {

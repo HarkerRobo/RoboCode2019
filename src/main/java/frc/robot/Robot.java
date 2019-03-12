@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -67,12 +70,11 @@ public class Robot extends TimedRobot {
     private static double startTime;
     private static TalonSRX talon;
     private static PrintWriter pw;
+    private static SetScoringPosition currentSetScoringCommand;
 
     private CommandGroupWrapper wrapper;
     private static final String LOG_FILE_PREFIX = "/home/lvuser/logs/";
     private static String logFileName = "";
-
-    private static SetScoringPosition currentSetScoringCommand;
 
     // private CANSparkMax talon;
 
@@ -120,8 +122,8 @@ public class Robot extends TimedRobot {
          startTime = Timer.getFPGATimestamp(); 
         setupPrintWriter();
         log("Autonomous initialized.");
-         new SetLimelightLEDMode(LEDMode.OFF).start();
-         new SetLimelightViewMode(ViewMode.DRIVER).start();
+        new SetLimelightLEDMode(LEDMode.OFF).start();
+        new SetLimelightViewMode(ViewMode.DRIVER).start();
 
         HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
         new SetArmPosition(ArmDirection.UP).start();
@@ -286,12 +288,15 @@ public class Robot extends TimedRobot {
         String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
         System.out.println(prefix + ": " + message);
         if (pw != null) {
-            pw.println(prefix + ": " + message);
-            pw.println();
+            pw.print(prefix + ": " + message + "\r\n");
         } 
     }
 
     private String getLogFileName () {
+        try {
+            System.out.println(new SimpleDateFormat("y-M-d H:m").format(new Date()));
+        } catch(Exception e) {e.printStackTrace();}
+
         String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match" + DriverStation.getInstance().getMatchNumber() + ".txt";
         name = name.replaceAll(" ", "");
         return name;
@@ -300,15 +305,16 @@ public class Robot extends TimedRobot {
     private void setupPrintWriter () {
         if (logFileName.equals("")) {
             logFileName = getLogFileName();
-        }    
+        }
 
         if (pw == null) {
             try {
+                new File(LOG_FILE_PREFIX + logFileName).createNewFile();
                 pw = new PrintWriter(LOG_FILE_PREFIX + logFileName);
              } 
              catch (Exception e) {
                  e.printStackTrace();
-             }
+             } 
         }
     }
 
@@ -316,8 +322,7 @@ public class Robot extends TimedRobot {
         return currentSetScoringCommand;
     }
 
-    public static void setScoringCommand(SetScoringPosition scoringCommand) {
+     public static void setScoringCommand(SetScoringPosition scoringCommand) {
         currentSetScoringCommand = scoringCommand;
     }
 }
-

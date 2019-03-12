@@ -127,7 +127,7 @@ public class Elevator extends Subsystem {
             CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18200;
             CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
 
-            ARM_COLLISION_HEIGHT = 10000; // TUNE
+            ARM_COLLISION_HEIGHT = 16000; // TUNE
 
             LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT = 7000;
             } else {
@@ -148,20 +148,19 @@ public class Elevator extends Subsystem {
                 PEAK_TIME = 150;
                     
                 RIGHT_TALON_FEEDBACK_COEFFICIENT = 1;
-                    
-                    
+                
                 INTAKE_POSITION = 0;
-                    
+
                 HATCH_INTAKING_POSITION = 7000;
                 CARGO_INTAKING_POSITION = 0;
-                    
+    
                 RAIL_POSITION = 20500; //TUNE
                 BALL_INTAKING_HEIGHT = 100; //Tune
                     
                 FFGRAV = 0.095;
                 ZERO_CURRENT_SPIKE = 0;
                     
-                LOW_SCORING_POSITION_HATCH = 10338; 
+                LOW_SCORING_POSITION_HATCH = 7000; 
                 LOW_ROCKET_SCORING_POSITION_CARGO = 5418; 
                 MEDIUM_SCORING_POSITION_HATCH = 13020; 
                 MEDIUM_SCORING_POSITION_HATCH_BACK = 22830;
@@ -171,7 +170,7 @@ public class Elevator extends Subsystem {
                 CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18200;
                 CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
                 
-                ARM_COLLISION_HEIGHT = 10000;
+                ARM_COLLISION_HEIGHT = 16000;
                 LIMELIGHT_NECESSARY_ELEVATOR_HEIGHT = 7000;
         }
     }

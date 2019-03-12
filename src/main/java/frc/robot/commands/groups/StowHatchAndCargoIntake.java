@@ -1,10 +1,15 @@
 package frc.robot.commands.groups;
 
 import frc.robot.Robot;
+import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
+import frc.robot.commands.hatchpanelintake.SetExtenderState;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Arm.ArmDirection;
+import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
+import frc.robot.util.ConditionalCommand;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
@@ -21,7 +26,11 @@ public class StowHatchAndCargoIntake extends SequentialCommandGroup {
 
     public StowHatchAndCargoIntake () {
         super(new CallMethodCommand(() -> Robot.log("Entering defense mode.")), 
-              new SetScoringPosition(Location.CARGO_INTAKE, () -> false),
+                new SetExtenderState(ExtenderDirection.IN),
+                new ConditionalCommand(() -> (Wrist.getInstance().getCurrentSide() == Side.FRONT &&
+                                                !Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)), 
+                    new SetScoringPosition(Location.PARALLEL_FRONT), 
+                    new SetScoringPosition(Location.PARALLEL_BACK)),
               new MoveWristMotionMagic(Wrist.MID_POSITION),
               new SetArmPosition(ArmDirection.UP));
     }
