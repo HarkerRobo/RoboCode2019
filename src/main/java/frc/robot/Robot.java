@@ -27,6 +27,7 @@ import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorManual;
+import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
@@ -68,6 +69,7 @@ public class Robot extends TimedRobot {
     private static double startTime;
     private static TalonSRX talon;
     private static PrintWriter pw;
+    private static SetScoringPosition currentSetScoringCommand;
 
     private CommandGroupWrapper wrapper;
     private static final String LOG_FILE_PREFIX = "/home/lvuser/logs/";
@@ -119,8 +121,8 @@ public class Robot extends TimedRobot {
          startTime = Timer.getFPGATimestamp(); 
         setupPrintWriter();
         log("Autonomous initialized.");
-         new SetLimelightLEDMode(LEDMode.OFF).start();
-         new SetLimelightViewMode(ViewMode.DRIVER).start();
+        new SetLimelightLEDMode(LEDMode.OFF).start();
+        new SetLimelightViewMode(ViewMode.DRIVER).start();
 
         HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
         new SetArmPosition(ArmDirection.UP).start();
@@ -302,7 +304,7 @@ public class Robot extends TimedRobot {
     private void setupPrintWriter () {
         if (logFileName.equals("")) {
             logFileName = getLogFileName();
-        }    
+        }
 
         if (pw == null) {
             try {
@@ -311,8 +313,16 @@ public class Robot extends TimedRobot {
              } 
              catch (Exception e) {
                  e.printStackTrace();
-             }
+             } 
         }
     }
-}
 
+
+    public static SetScoringPosition getSetScoringCommand() {
+        return currentSetScoringCommand;
+    }
+
+     public static void setScoringCommand(SetScoringPosition scoringCommand) {
+        currentSetScoringCommand = scoringCommand;
+    }
+}
