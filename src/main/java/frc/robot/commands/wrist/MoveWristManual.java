@@ -13,82 +13,86 @@ import harkerrobolib.commands.IndefiniteCommand;
 
 /**
  * Moves the wrist manually.
+ * 
  * @author Finn Frankis
- * @author Angela Jia 
+ * @author Angela Jia
  * 
  * @since 1/10/19
  */
 public class MoveWristManual extends IndefiniteCommand {
-    private boolean isHolding;
-    private boolean shouldClosedLoop;
-    private double lastPos;
+   private boolean isHolding;
+   private boolean shouldClosedLoop;
+   private double lastPos;
 
-    public MoveWristManual () {
-        requires (Wrist.getInstance());
-        Robot.log("MoveWristManual constructed.");
-        isHolding = false;
-        shouldClosedLoop = false;
-        lastPos = 0;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize () {
-        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-        Wrist.getInstance().setupMotionMagic();
-    }
+   public MoveWristManual() {
+      requires(Wrist.getInstance());
+      Robot.log("MoveWristManual constructed.");
+      isHolding = false;
+      shouldClosedLoop = false;
+      lastPos = 0;
+   }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void execute() {
-        double leftOperatorTrigger = OI.getInstance().getDriverGamepad().getLeftTrigger();
-        double rightOperatorTrigger = OI.getInstance().getDriverGamepad().getRightTrigger();
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+            Global.PID_PRIMARY);
+      Wrist.getInstance().setupMotionMagic();
+   }
 
-        double magnitude = 0;
-        WristDirection direction;
-        //double currentPosition = Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
-        if (OI.getInstance().getWristToggleMode() && (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
-            isHolding = false;
-            shouldClosedLoop = true;
-            
-            if (leftOperatorTrigger > rightOperatorTrigger) {
-                magnitude = 0.35 * leftOperatorTrigger;
-                direction = WristDirection.TO_BACK;
-            }
-            else {
-                magnitude = 0.35 * rightOperatorTrigger;
-                direction = WristDirection.TO_FRONT;
-            }
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      double leftOperatorTrigger = OI.getInstance().getDriverGamepad().getLeftTrigger();
+      double rightOperatorTrigger = OI.getInstance().getDriverGamepad().getRightTrigger();
 
-            Wrist.getInstance().setWristPercentOutput(magnitude, direction);
-        }
-        else {
-            if (!isHolding) {lastPos = Wrist.getInstance().getCurrentAngleEncoder();}
-            isHolding = true;
-        }
+      double magnitude = 0;
+      WristDirection direction;
+      // double currentPosition =
+      // Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
+      if (OI.getInstance().getWristToggleMode() && (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER
+            || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
+         isHolding = false;
+         shouldClosedLoop = true;
 
-        if (isHolding && shouldClosedLoop) {
-            Wrist.getInstance().setWrist(ControlMode.MotionMagic, lastPos);
-            SmartDashboard.putNumber("Wrist Error",  Wrist.getInstance().getMasterTalon().getClosedLoopError());
-        }
-    }
+         if (leftOperatorTrigger > rightOperatorTrigger) {
+            magnitude = 0.35 * leftOperatorTrigger;
+            direction = WristDirection.TO_BACK;
+         } else {
+            magnitude = 0.35 * rightOperatorTrigger;
+            direction = WristDirection.TO_FRONT;
+         }
 
-    public void disableClosedLoop () {
-        shouldClosedLoop = false;
-    }
+         Wrist.getInstance().setWristPercentOutput(magnitude, direction);
+      } else {
+         if (!isHolding) {
+            lastPos = Wrist.getInstance().getCurrentAngleEncoder();
+         }
+         isHolding = true;
+      }
 
-    public void setLastPosition (double lastPos) {
-        this.lastPos = lastPos;
-    }
+      if (isHolding && shouldClosedLoop) {
+         Wrist.getInstance().setWrist(ControlMode.MotionMagic, lastPos);
+         SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
+      }
+   }
 
-        /**
-     * Sets the last position to be the current wrist position.
-     */
-    public void setLastPosition () {
-        this.setLastPosition(Wrist.getInstance().getCurrentAngleEncoder());
-    }
+   public void disableClosedLoop() {
+      shouldClosedLoop = false;
+   }
+
+   public void setLastPosition(double lastPos) {
+      this.lastPos = lastPos;
+   }
+
+   /**
+    * Sets the last position to be the current wrist position.
+    */
+   public void setLastPosition() {
+      this.setLastPosition(Wrist.getInstance().getCurrentAngleEncoder());
+   }
 }

@@ -15,10 +15,9 @@ import harkerrobolib.commands.CallMethodCommand;
  * @since 1/17/19
  */
 public class SpinIntakeAndRollers extends ParallelCommandGroup {
-    public SpinIntakeAndRollers() {
-        super(new CallMethodCommand(() -> Robot.log("Intaking with intake and rollers.")),
+   public SpinIntakeAndRollers() {
+      super(new CallMethodCommand(() -> Robot.log("Intaking with intake and rollers.")),
             new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, Intake.IntakeDirection.IN),
-            new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, Rollers.RollerDirection.IN)
-        );
-    }
+            new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, Rollers.RollerDirection.IN));
+   }
 }

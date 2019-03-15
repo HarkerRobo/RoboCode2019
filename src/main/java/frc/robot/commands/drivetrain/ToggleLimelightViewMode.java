@@ -4,15 +4,14 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.util.Limelight;
 
 /**
- * Toggles the Limelight view mode between one for low-exposure vision processing and one for high-exposure human view. 
+ * Toggles the Limelight view mode between one for low-exposure vision
+ * processing and one for high-exposure human view.
  */
-public class ToggleLimelightViewMode extends InstantCommand
-{
-    /**
-     * {@inheritDoc}
-     */
-    public void initialize()
-    {
-        Limelight.getInstance().toggleCamMode();
-    }
+public class ToggleLimelightViewMode extends InstantCommand {
+   /**
+    * {@inheritDoc}
+    */
+   public void initialize() {
+      Limelight.getInstance().toggleCamMode();
+   }
 }

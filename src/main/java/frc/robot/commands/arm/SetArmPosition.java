@@ -13,16 +13,16 @@ import frc.robot.subsystems.Arm.ArmDirection;
  * @since 1/11/19
  */
 public class SetArmPosition extends InstantCommand {
-    private ArmDirection direction;
-                                    
-    public SetArmPosition(ArmDirection direction) {
-        requires(Arm.getInstance());
-        this.direction = direction;
+   private ArmDirection direction;
+
+   public SetArmPosition(ArmDirection direction) {
+      requires(Arm.getInstance());
+      this.direction = direction;
 
    }
 
    public void initialize() {
-        Arm.getInstance().setState(direction.getState());
-        Robot.log("Arm moved " + (direction == ArmDirection.DOWN ? "down" : "up") + ".");
-   }      
-} 
+      Arm.getInstance().setState(direction.getState());
+      Robot.log("Arm moved " + (direction == ArmDirection.DOWN ? "down" : "up") + ".");
+   }
+}

@@ -11,15 +11,15 @@ import harkerrobolib.auto.CommandGroupWrapper;
  * 
  */
 public class StowHatchIntake extends CommandGroupWrapper {
-    public StowHatchIntake() {
-        FlowerDirection oldFlowerDirection = HatchLatcher.getInstance().getFlowerState();
-        sequential(new SetFlowerManual(FlowerDirection.CLOSED));
-        sequential(new ConditionalCommand(new WaitCommand(HatchLatcher.FLOWER_ACTUATION_TIME)) {
-           @Override 
-           public boolean condition() {
-               return oldFlowerDirection == FlowerDirection.OPEN;
-           }
-        });
-        sequential(new SetExtenderState(ExtenderDirection.IN));
-    }
+   public StowHatchIntake() {
+      FlowerDirection oldFlowerDirection = HatchLatcher.getInstance().getFlowerState();
+      sequential(new SetFlowerManual(FlowerDirection.CLOSED));
+      sequential(new ConditionalCommand(new WaitCommand(HatchLatcher.FLOWER_ACTUATION_TIME)) {
+         @Override
+         public boolean condition() {
+            return oldFlowerDirection == FlowerDirection.OPEN;
+         }
+      });
+      sequential(new SetExtenderState(ExtenderDirection.IN));
+   }
 }

@@ -20,82 +20,78 @@ import harkerrobolib.commands.IndefiniteCommand;
  * @since 1/12/19
  */
 public class AlignWithLimelightIndefinite extends IndefiniteCommand {
-    private Limelight limelight;
+   private Limelight limelight;
 
-    public static final double TURN_KP = 0;//.07;
-    public static final double TURN_KI = 0;//0.001;
-    public static final double TURN_KD = 0;//0.3;
-    public static final double TURN_KF = 0;//0
-    
-    public static final double FORWARD_KF = 0;//0;
-    public static final double FORWARD_KP = 0;//0.045;
-    public static final double FORWARD_KI = 0;//0;
-    public static final double FOWARD_KD = 0;//16;    
+   public static final double TURN_KP = 0;// .07;
+   public static final double TURN_KI = 0;// 0.001;
+   public static final double TURN_KD = 0;// 0.3;
+   public static final double TURN_KF = 0;// 0
 
-    public static final double TURN_ALLOWABLE_ERROR = 1;
-    public static final double FORWARD_ALLOWABLE_ERROR = 0.5; 
+   public static final double FORWARD_KF = 0;// 0;
+   public static final double FORWARD_KP = 0;// 0.045;
+   public static final double FORWARD_KI = 0;// 0;
+   public static final double FOWARD_KD = 0;// 16;
 
-    public PIDOutputGetter turnOutput;
-    public PIDOutputGetter forwardOutput;
+   public static final double TURN_ALLOWABLE_ERROR = 1;
+   public static final double FORWARD_ALLOWABLE_ERROR = 0.5;
 
-    private PIDController turnController;
-    private PIDController forwardController;
+   public PIDOutputGetter turnOutput;
+   public PIDOutputGetter forwardOutput;
 
-    private double xSetpoint;
-    
+   private PIDController turnController;
+   private PIDController forwardController;
 
-    private static boolean LEFT_MASTER_INVERTED = true;
-    private static boolean RIGHT_MASTER_INVERTED = false;
-    private static boolean LEFT_FOLLOWER_INVERTED = true;
-    private static boolean RIGHT_FOLLOWER_INVERTED = false;
+   private double xSetpoint;
 
-    public AlignWithLimelightIndefinite(double thorSetpoint, double txSetpoint) {
-        requires(Drivetrain.getInstance());
-        
-        limelight = Limelight.getInstance();
+   private static boolean LEFT_MASTER_INVERTED = true;
+   private static boolean RIGHT_MASTER_INVERTED = false;
+   private static boolean LEFT_FOLLOWER_INVERTED = true;
+   private static boolean RIGHT_FOLLOWER_INVERTED = false;
 
-        turnOutput = new PIDOutputGetter();
-        forwardOutput = new PIDOutputGetter();
-    }
+   public AlignWithLimelightIndefinite(double thorSetpoint, double txSetpoint) {
+      requires(Drivetrain.getInstance());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize() {
-        turnController = new PIDController(
-            TURN_KP, TURN_KI, TURN_KD, TURN_KF, 
-            new PIDSourceCustomGet(() -> limelight.getTx(), PIDSourceType.kDisplacement), 
-            turnOutput
-        );
-        
-         forwardController = new PIDController(
-             FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF, 
-             new PIDSourceCustomGet(() -> limelight.getThor(), Limelight.THOR_LINEARIZATION_FUNCTION, 
-                                     PIDSourceType.kDisplacement),
-             forwardOutput
-         );
-        
-        turnController.enable();
-        forwardController.enable();
+      limelight = Limelight.getInstance();
 
-        // turnController.setSetpoint(txSetpoint);
-        // forwardController.setSetpoint(thorSetpoint);
+      turnOutput = new PIDOutputGetter();
+      forwardOutput = new PIDOutputGetter();
+   }
 
-        Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED, RIGHT_FOLLOWER_INVERTED);
-    }
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      turnController = new PIDController(TURN_KP, TURN_KI, TURN_KD, TURN_KF,
+            new PIDSourceCustomGet(() -> limelight.getTx(), PIDSourceType.kDisplacement), turnOutput);
 
-    /**
-     * {@inheritDoc}
-     */
-    public void execute () {
-        double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0 : forwardOutput.getOutput();
-        double turnOutputVal = Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR ? 0 : turnOutput.getOutput();
+      forwardController = new PIDController(FORWARD_KP, FORWARD_KI, FOWARD_KD, FORWARD_KF,
+            new PIDSourceCustomGet(() -> limelight.getThor(), Limelight.THOR_LINEARIZATION_FUNCTION,
+                  PIDSourceType.kDisplacement),
+            forwardOutput);
 
-        SmartDashboard.putNumber("Turn Error", turnController.getError());
-        SmartDashboard.putNumber("Forward Error", forwardController.getError());
+      turnController.enable();
+      forwardController.enable();
 
-        Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, forwardOutputVal - turnOutputVal);
-        Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, forwardOutputVal + turnOutputVal);
-    }
+      // turnController.setSetpoint(txSetpoint);
+      // forwardController.setSetpoint(thorSetpoint);
+
+      Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED,
+            RIGHT_FOLLOWER_INVERTED);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public void execute() {
+      double forwardOutputVal = Math.abs(forwardController.getError()) < FORWARD_ALLOWABLE_ERROR ? 0
+            : forwardOutput.getOutput();
+      double turnOutputVal = Math.abs(turnController.getError()) < TURN_ALLOWABLE_ERROR ? 0 : turnOutput.getOutput();
+
+      SmartDashboard.putNumber("Turn Error", turnController.getError());
+      SmartDashboard.putNumber("Forward Error", forwardController.getError());
+
+      Drivetrain.getInstance().getLeftMaster().set(ControlMode.PercentOutput, forwardOutputVal - turnOutputVal);
+      Drivetrain.getInstance().getRightMaster().set(ControlMode.PercentOutput, forwardOutputVal + turnOutputVal);
+   }
 }

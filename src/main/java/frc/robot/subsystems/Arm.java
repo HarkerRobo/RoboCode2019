@@ -8,77 +8,80 @@ import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
 
 /**
- * Represents the arm of the robot, 
- * which picks up cargo from the human player station and the ground.
+ * Represents the arm of the robot, which picks up cargo from the human player
+ * station and the ground.
  * 
- * @author Chirag Kaushik
+ * @author Chirag Kaushikare
  * @author Finn Frankis
  * @author Angela Jia
  * @since 1/11/19
  */
 public class Arm extends Subsystem {
-    public static final DoubleSolenoid.Value ARM_UP_VALUE;
-    public static final DoubleSolenoid.Value ARM_DOWN_VALUE;
+   public static final DoubleSolenoid.Value ARM_UP_VALUE;
+   public static final DoubleSolenoid.Value ARM_DOWN_VALUE;
 
-    public static final double DOWN_SAFE_ACTUATION_TIME = 0.27;
-    
-    static {
-        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-           ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
-           ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
-        } else {
-            ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
-            ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
-        }
-    }
-    public enum ArmDirection {        
-        UP (ARM_UP_VALUE), DOWN (ARM_DOWN_VALUE);
-        private DoubleSolenoid.Value state;
-        private ArmDirection(DoubleSolenoid.Value state) {
-            this.state = state;
-        }     
-        public DoubleSolenoid.Value getState() {
-            return state;
-        }  
-    }
+   public static final double DOWN_SAFE_ACTUATION_TIME = 0.27;
 
-    private static Arm instance;
+   static {
+      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+         ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
+         ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
+      } else {
+         ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
+         ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
+      }
+   }
 
-    private static final boolean INITIAL_COMPRESSOR_STATE = true;
+   public enum ArmDirection {
+      UP(ARM_UP_VALUE), DOWN(ARM_DOWN_VALUE);
+      private DoubleSolenoid.Value state;
 
-    private DoubleSolenoid solenoid;
-    private Compressor compressor;
-    
-    private Arm() {
-        solenoid = new DoubleSolenoid(CAN_IDs.ARM_FORWARD_CHANNEL, CAN_IDs.ARM_REVERSE_CHANNEL);
-        compressor = new Compressor(CAN_IDs.PCM);
-        compressor.setClosedLoopControl(INITIAL_COMPRESSOR_STATE);
-    }
-    
-    public void initDefaultCommand() {
-        //setDefaultCommand();
-    }
+      private ArmDirection(DoubleSolenoid.Value state) {
+         this.state = state;
+      }
 
-    public DoubleSolenoid.Value getState() {
-        return solenoid.get();
-    }
+      public DoubleSolenoid.Value getState() {
+         return state;
+      }
+   }
 
-    public void setState(DoubleSolenoid.Value value) {
-        solenoid.set(value);
-    }
+   private static Arm instance;
 
-    public ArmDirection getDirection() {
-        return getState() == ArmDirection.UP.getState() ? ArmDirection.UP : ArmDirection.DOWN;
-    }
+   private static final boolean INITIAL_COMPRESSOR_STATE = true;
 
-    public Compressor getCompressor() {
-        return compressor;
-    }
+   private DoubleSolenoid solenoid;
+   private Compressor compressor;
 
-    public static Arm getInstance() {
-        if(instance == null) {
-            instance = new Arm();
-        }
-        return instance;
-    }
+   private Arm() {
+      solenoid = new DoubleSolenoid(CAN_IDs.ARM_FORWARD_CHANNEL, CAN_IDs.ARM_REVERSE_CHANNEL);
+      compressor = new Compressor(CAN_IDs.PCM);
+      compressor.setClosedLoopControl(INITIAL_COMPRESSOR_STATE);
+   }
+
+   public void initDefaultCommand() {
+      // setDefaultCommand();
+   }
+
+   public DoubleSolenoid.Value getState() {
+      return solenoid.get();
+   }
+
+   public void setState(DoubleSolenoid.Value value) {
+      solenoid.set(value);
+   }
+
+   public ArmDirection getDirection() {
+      return getState() == ArmDirection.UP.getState() ? ArmDirection.UP : ArmDirection.DOWN;
+   }
+
+   public Compressor getCompressor() {
+      return compressor;
+   }
+
+   public static Arm getInstance() {
+      if (instance == null) {
+         instance = new Arm();
+      }
+      return instance;
+   }
 }

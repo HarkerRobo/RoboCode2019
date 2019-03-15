@@ -16,41 +16,43 @@ import frc.robot.subsystems.Wrist;
  * @since 1/12/19
  */
 public class MoveWristPosition extends Command {
-    private double position; 
-    
-	public static final double KF = 0.0;
-	public static final double KP = 0.5;
-	public static final double KI = 0;
-    public static final double KD = 1; 
-    public static final int IZONE = 0;
+   private double position;
 
-    public MoveWristPosition (double angle) {
-        requires (Wrist.getInstance());
-        this.position = Wrist.getInstance().convertDegreesToEncoder(angle);                
-    }            
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize() {
-        Wrist.getInstance().setupPositionPID();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void execute() {
-        SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
-        Wrist.getInstance().setWrist(ControlMode.Position, position);  
-    }         
-        
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected boolean isFinished() {
-        return true;//return Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
-    }
+   public static final double KF = 0.0;
+   public static final double KP = 0.5;
+   public static final double KI = 0;
+   public static final double KD = 1;
+   public static final int IZONE = 0;
+
+   public MoveWristPosition(double angle) {
+      requires(Wrist.getInstance());
+      this.position = Wrist.getInstance().convertDegreesToEncoder(angle);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      Wrist.getInstance().setupPositionPID();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
+      Wrist.getInstance().setWrist(ControlMode.Position, position);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected boolean isFinished() {
+      return true;// return
+                  // Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT))
+                  // < Wrist.ALLOWABLE_ERROR;
+   }
 }

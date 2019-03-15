@@ -22,84 +22,85 @@ import harkerrobolib.util.Gains;
  */
 public class DriveToPosition extends Command {
 
-	private double setpoint;
-	private int leftError;
-	private int rightError;
-	
-	public static final double LEFT_KD, LEFT_KI, LEFT_KP;
-	public static final double RIGHT_KD, RIGHT_KI, RIGHT_KP;
+   private double setpoint;
+   private int leftError;
+   private int rightError;
 
-	static {
-		if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
-			LEFT_KD = 0;
-			LEFT_KI = 0;
-			LEFT_KP = 0;
-			RIGHT_KD = 0;
-			RIGHT_KI = 0;
-			RIGHT_KP = 0;
-		} else {
-			LEFT_KD = 0;
-			LEFT_KI = 0;
-			LEFT_KP = 0;
-			RIGHT_KD = 0;
-			RIGHT_KI = 0;
-			RIGHT_KP = 0;
-		}
-	}
+   public static final double LEFT_KD, LEFT_KI, LEFT_KP;
+   public static final double RIGHT_KD, RIGHT_KI, RIGHT_KP;
 
-	/**
-	 * 
-	 * @param setpoint desired position in feet
-	 */
-	public DriveToPosition(double setpoint) {
-		this.setpoint = Conversions.convert(PositionUnit.FEET, setpoint, Conversions.PositionUnit.ENCODER_UNITS);
-		requires(Drivetrain.getInstance());
-	}
+   static {
+      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+         LEFT_KD = 0;
+         LEFT_KI = 0;
+         LEFT_KP = 0;
+         RIGHT_KD = 0;
+         RIGHT_KI = 0;
+         RIGHT_KP = 0;
+      } else {
+         LEFT_KD = 0;
+         LEFT_KI = 0;
+         LEFT_KP = 0;
+         RIGHT_KD = 0;
+         RIGHT_KI = 0;
+         RIGHT_KP = 0;
+      }
+   }
 
-	/**
-     * {@inheritDoc}
-     */
-	protected void initialize() {
-		Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
-		Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
+   /**
+    * 
+    * @param setpoint desired position in feet
+    */
+   public DriveToPosition(double setpoint) {
+      this.setpoint = Conversions.convert(PositionUnit.FEET, setpoint, Conversions.PositionUnit.ENCODER_UNITS);
+      requires(Drivetrain.getInstance());
+   }
 
-		Drivetrain.getInstance().getLeftMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
-		Drivetrain.getInstance().getRightMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
+   /**
+    * {@inheritDoc}
+    */
+   protected void initialize() {
+      Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
+      Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.POSITION_SLOT_INDEX, Global.PID_PRIMARY);
 
-		Drivetrain.getInstance().getLeftMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
-				Global.PID_PRIMARY);
-		Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
-				Global.PID_PRIMARY);
+      Drivetrain.getInstance().getLeftMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
+      Drivetrain.getInstance().getRightMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
 
-		Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
-		Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
+      Drivetrain.getInstance().getLeftMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+            Global.PID_PRIMARY);
+      Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+            Global.PID_PRIMARY);
 
-        Drivetrain.getInstance().configClosedLoopConstants(Drivetrain.POSITION_SLOT_INDEX, 
-                new Gains()
-                            .kP(LEFT_KP)
-                            .kI(LEFT_KI)
-                            .kD(LEFT_KD), 
-                new Gains()
-                            .kP(RIGHT_KP)
-                            .kI(RIGHT_KI)
-                            .kD(RIGHT_KD)); // kF will be set to zero if not specified
-	}
+      Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
+      Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
 
-	/**
-     * {@inheritDoc}
-     */
-	protected void execute() {
-		Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position,
-				Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
-		Drivetrain.getInstance().getRightMaster().set(ControlMode.Position,
-				Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
-	}
+      Drivetrain.getInstance().configClosedLoopConstants(Drivetrain.POSITION_SLOT_INDEX,
+            new Gains().kP(LEFT_KP).kI(LEFT_KI).kD(LEFT_KD), new Gains().kP(RIGHT_KP).kI(RIGHT_KI).kD(RIGHT_KD)); // kF
+                                                                                                                  // will
+                                                                                                                  // be
+                                                                                                                  // set
+                                                                                                                  // to
+                                                                                                                  // zero
+                                                                                                                  // if
+                                                                                                                  // not
+                                                                                                                  // specified
+   }
 
-	/**
-     * {@inheritDoc}
-     */
-	@Override
-	protected boolean isFinished() {
-		return Drivetrain.getInstance().isClosedLoopErrorWithin(Global.PID_PRIMARY, Drivetrain.ALLOWABLE_ERROR);
-	}
+   /**
+    * {@inheritDoc}
+    */
+   protected void execute() {
+      Drivetrain.getInstance().getLeftMaster().set(ControlMode.Position,
+            Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
+      Drivetrain.getInstance().getRightMaster().set(ControlMode.Position,
+            Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition(Global.PID_PRIMARY));
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected boolean isFinished() {
+      return Drivetrain.getInstance().isClosedLoopErrorWithin(Global.PID_PRIMARY, Drivetrain.ALLOWABLE_ERROR);
+   }
 }

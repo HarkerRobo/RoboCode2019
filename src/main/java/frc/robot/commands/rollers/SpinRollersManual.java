@@ -17,46 +17,46 @@ import harkerrobolib.commands.IndefiniteCommand;
  */
 public class SpinRollersManual extends IndefiniteCommand {
 
-	public SpinRollersManual() {
-        requires(Rollers.getInstance());
-        Robot.log("SpinRollersManual constructed.");        
-    }	
+   public SpinRollersManual() {
+      requires(Rollers.getInstance());
+      Robot.log("SpinRollersManual constructed.");
+   }
 
-    /**
-     * The driver controller will take priority and spin the roller according to the amount that the right
-     * and left triggers are pressed.
-     * {@inheritDoc}
-     */
-    @Override
-	public void execute() {
-        Pair<Double, Double> output = new Pair<Double, Double> (0.0 , 0.0);
-        RollerDirection rollerDirection = RollerDirection.IN;
-        if(OI.getInstance().getDriver() == OI.Driver.CHRIS){
-            if(OI.getInstance().getDriverGamepad().getButtonXState()) {
-                output = Rollers.getInstance().getRecommendedRollersOutput();
-                rollerDirection = RollerDirection.OUT;
-            } else if(OI.getInstance().getDriverGamepad().getButtonYState()) {
-                    output = Rollers.getInstance().getRecommendedRollersInput(); 
-                rollerDirection = RollerDirection.IN;
-            } else {
-                output = new Pair<Double, Double>(0.0, 0.0);
-                rollerDirection = RollerDirection.IN;
+   /**
+    * The driver controller will take priority and spin the roller according to the
+    * amount that the right and left triggers are pressed. {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      Pair<Double, Double> output = new Pair<Double, Double>(0.0, 0.0);
+      RollerDirection rollerDirection = RollerDirection.IN;
+      if (OI.getInstance().getDriver() == OI.Driver.CHRIS) {
+         if (OI.getInstance().getDriverGamepad().getButtonXState()) {
+            output = Rollers.getInstance().getRecommendedRollersOutput();
+            rollerDirection = RollerDirection.OUT;
+         } else if (OI.getInstance().getDriverGamepad().getButtonYState()) {
+            output = Rollers.getInstance().getRecommendedRollersInput();
+            rollerDirection = RollerDirection.IN;
+         } else {
+            output = new Pair<Double, Double>(0.0, 0.0);
+            rollerDirection = RollerDirection.IN;
+         }
+      } else {
+         if (OI.getInstance().getDriverGamepad().getButtonXState()) {
+            output = Rollers.getInstance().getRecommendedRollersInput();
+            rollerDirection = rollerDirection.IN;
+         } else {
+            if (OI.getInstance().getDriverGamepad().getButtonYState()) {
+               output = Rollers.getInstance().getRecommendedRollersOutput();
+               rollerDirection = rollerDirection.OUT;
             }
-        } else {
-            if(OI.getInstance().getDriverGamepad().getButtonXState())  {
-                output = Rollers.getInstance().getRecommendedRollersInput();
-                rollerDirection = rollerDirection.IN;
-            } else {
-                if(OI.getInstance().getDriverGamepad().getButtonYState()) {
-                    output = Rollers.getInstance().getRecommendedRollersOutput();
-                    rollerDirection = rollerDirection.OUT;
-                }
-            }
-        }
-        
-        // if(rollerDirection == RollerDirection.IN && (Math.abs(output.getFirst()) > Rollers.HATCH_STOW_SPEED || 
-                                                    //  Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED)){}
-            // (new LoadOrScoreHatch(ScoreState.LOAD)).start();
-        Rollers.getInstance().moveRollers(output.getFirst(), output.getSecond(), rollerDirection);
-	}
+         }
+      }
+
+      // if(rollerDirection == RollerDirection.IN && (Math.abs(output.getFirst()) >
+      // Rollers.HATCH_STOW_SPEED ||
+      // Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED)){}
+      // (new LoadOrScoreHatch(ScoreState.LOAD)).start();
+      Rollers.getInstance().moveRollers(output.getFirst(), output.getSecond(), rollerDirection);
+   }
 }

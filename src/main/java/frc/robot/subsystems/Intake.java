@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
-import frc.robot.commands.intake.SpinIntakeManual;
 import harkerrobolib.util.Constants;
 
 /**
@@ -22,96 +21,97 @@ import harkerrobolib.util.Constants;
  * @since 1/11/19
  */
 public class Intake extends Subsystem {
-    public enum IntakeDirection {
-        IN(1),OUT(-1),STOP(0);
-        private int sign;
-        private IntakeDirection(int sign) {
-            this.sign = sign;
-        }
-        public int getSign() {
-            return sign;
-        }
-    }
+   public enum IntakeDirection {
+      IN(1), OUT(-1), STOP(0);
+      private int sign;
 
-    private static Intake instance;
-    private VictorSPX intakeVictor;
-    private CANSparkMax intakeSpark;
-    private boolean isSpark;
+      private IntakeDirection(int sign) {
+         this.sign = sign;
+      }
 
-    private final static int STALL_LIMIT = 40; // current limit (amps) when the robot is stopped
-    private final static int FREE_LIMIT = 30; // current limit (amps) when the robot is moving freely
-  
-    private final static boolean SPARK_INVERTED;
-    private final static boolean VICTOR_INVERTED;
-    private final static NeutralMode VICTOR_NEUTRAL_MODE = NeutralMode.Brake;
+      public int getSign() {
+         return sign;
+      }
+   }
 
-    static {
-        if(RobotMap.ROBOT_TYPE == RobotType.COMP) {
-            SPARK_INVERTED = true;
-            VICTOR_INVERTED = true;
-        }
-        else {
-            SPARK_INVERTED = true;
-            VICTOR_INVERTED = true;
-        }
+   private static Intake instance;
+   private VictorSPX intakeVictor;
+   private CANSparkMax intakeSpark;
+   private boolean isSpark;
 
-    }
-    public final static double DEFAULT_INTAKE_MAGNITUDE = 0.8;
+   private final static int STALL_LIMIT = 40; // current limit (amps) when the robot is stopped
+   private final static int FREE_LIMIT = 30; // current limit (amps) when the robot is moving freely
 
-    public void setControllerOutput(double magnitude, IntakeDirection direction) {
-        setControllerOutput (magnitude * direction.getSign());
-    }
+   private final static boolean SPARK_INVERTED;
+   private final static boolean VICTOR_INVERTED;
+   private final static NeutralMode VICTOR_NEUTRAL_MODE = NeutralMode.Brake;
 
-    public void setControllerOutput(double percentOutput) {
-        // getController().set(percentOutput);
-        if (isSpark) {
-            intakeSpark.set(percentOutput);
-        } else {
-            intakeVictor.set(ControlMode.PercentOutput, percentOutput);
-        }
-    }
+   static {
+      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+         SPARK_INVERTED = true;
+         VICTOR_INVERTED = true;
+      } else {
+         SPARK_INVERTED = true;
+         VICTOR_INVERTED = true;
+      }
 
-    private Intake() {
-        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-            System.out.println("Spark: " + CAN_IDs.BALL_INTAKE_MASTER_SPARK);
-            intakeSpark = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER_SPARK, MotorType.kBrushless);
-        }
-        else {
-            intakeVictor = new VictorSPX(CAN_IDs.BALL_INTAKE_MASTER_VICTOR);
-        }
-        isSpark = RobotMap.ROBOT_TYPE == RobotType.COMP;
-        //intakeVictor = new VictorSPX(CAN_IDs.BALL_INTAKE_MASTER);//CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
-    }
+   }
+   public final static double DEFAULT_INTAKE_MAGNITUDE = 0.8;
 
-    public void controllerInit() {
-        if(isSpark) {
-            intakeSpark.setInverted(SPARK_INVERTED);
-            intakeSpark.setSmartCurrentLimit(STALL_LIMIT, FREE_LIMIT);
-            intakeSpark.setCANTimeout(Constants.DEFAULT_TIMEOUT);
-        }
-        else {
-            intakeVictor.setInverted(VICTOR_INVERTED);
-            intakeVictor.setNeutralMode(VICTOR_NEUTRAL_MODE);
-        }
-    }
+   public void setControllerOutput(double magnitude, IntakeDirection direction) {
+      setControllerOutput(magnitude * direction.getSign());
+   }
 
-    public static Intake getInstance() {
-        if(instance == null) {
-            instance = new Intake();
-        }
-        return instance;
-    }
+   public void setControllerOutput(double percentOutput) {
+      // getController().set(percentOutput);
+      if (isSpark) {
+         intakeSpark.set(percentOutput);
+      } else {
+         intakeVictor.set(ControlMode.PercentOutput, percentOutput);
+      }
+   }
 
-    @Override    
-    protected void initDefaultCommand() {
-        // setDefaultCommand(new SpinIntakeManual());
-    }
+   private Intake() {
+      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+         System.out.println("Spark: " + CAN_IDs.BALL_INTAKE_MASTER_SPARK);
+         intakeSpark = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER_SPARK, MotorType.kBrushless);
+      } else {
+         intakeVictor = new VictorSPX(CAN_IDs.BALL_INTAKE_MASTER_VICTOR);
+      }
+      isSpark = RobotMap.ROBOT_TYPE == RobotType.COMP;
+      // intakeVictor = new
+      // VictorSPX(CAN_IDs.BALL_INTAKE_MASTER);//CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER,
+      // MotorType.kBrushless);
+   }
 
-    // public double getEncoderPosition () {
-    //     return Intake.getInstance().getController().getEncoder().getPosition();
-    // }
+   public void controllerInit() {
+      if (isSpark) {
+         intakeSpark.setInverted(SPARK_INVERTED);
+         intakeSpark.setSmartCurrentLimit(STALL_LIMIT, FREE_LIMIT);
+         intakeSpark.setCANTimeout(Constants.DEFAULT_TIMEOUT);
+      } else {
+         intakeVictor.setInverted(VICTOR_INVERTED);
+         intakeVictor.setNeutralMode(VICTOR_NEUTRAL_MODE);
+      }
+   }
 
-    // public double getEncoderVelocity () {
-    //     return Intake.getInstance().getController().getEncoder().getVelocity();
-    // }
+   public static Intake getInstance() {
+      if (instance == null) {
+         instance = new Intake();
+      }
+      return instance;
+   }
+
+   @Override
+   protected void initDefaultCommand() {
+      // setDefaultCommand(new SpinIntakeManual());
+   }
+
+   // public double getEncoderPosition () {
+   // return Intake.getInstance().getController().getEncoder().getPosition();
+   // }
+
+   // public double getEncoderVelocity () {
+   // return Intake.getInstance().getController().getEncoder().getVelocity();
+   // }
 }

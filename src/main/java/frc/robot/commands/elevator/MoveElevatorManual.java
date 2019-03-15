@@ -19,63 +19,68 @@ import harkerrobolib.util.MathUtil;
  * @since 1/10/19
  */
 public class MoveElevatorManual extends IndefiniteCommand {
-    private boolean isHolding;
-    private boolean shouldClosedLoop;
-    private double lastPos;
+   private boolean isHolding;
+   private boolean shouldClosedLoop;
+   private double lastPos;
 
-    public MoveElevatorManual() {
-        requires(Elevator.getInstance());
-        Robot.log("MoveElevatorManual constructed.");
-        isHolding = false;
-        shouldClosedLoop = false;
-        lastPos = 0;
-    }
+   public MoveElevatorManual() {
+      requires(Elevator.getInstance());
+      Robot.log("MoveElevatorManual constructed.");
+      isHolding = false;
+      shouldClosedLoop = false;
+      lastPos = 0;
+   }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize() {
-        Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-        Elevator.getInstance().setUpMotionMagic();
-    }
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+            Global.PID_PRIMARY);
+      Elevator.getInstance().setUpMotionMagic();
+   }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void execute() {
-        double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
-        if (Math.abs(desiredSpeed) > 0) {
-            isHolding = false;
-            shouldClosedLoop = true;
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(),
+            OI.DRIVER_DEADBAND);
+      if (Math.abs(desiredSpeed) > 0) {
+         isHolding = false;
+         shouldClosedLoop = true;
 
-            Elevator.getInstance().setElevator(ControlMode.PercentOutput, desiredSpeed);
-        } else {
-            if (!isHolding) {lastPos = Elevator.getInstance().getCurrentPositionEncoder();}
-            isHolding = true;   
-        }
+         Elevator.getInstance().setElevator(ControlMode.PercentOutput, desiredSpeed);
+      } else {
+         if (!isHolding) {
+            lastPos = Elevator.getInstance().getCurrentPositionEncoder();
+         }
+         isHolding = true;
+      }
 
-        boolean isWristPullingUp = Elevator.getInstance().isAbove(Elevator.RAIL_POSITION) && Wrist.getInstance().getCurrentSide() == Side.FRONT;
-        if (isHolding && shouldClosedLoop && !isWristPullingUp) {
-            Elevator.getInstance().setElevator(ControlMode.MotionMagic, lastPos);
-        } else if (isWristPullingUp) {
-            Elevator.getInstance().setElevator(ControlMode.Disabled, 0.0);
-        }
-    }
+      boolean isWristPullingUp = Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)
+            && Wrist.getInstance().getCurrentSide() == Side.FRONT;
+      if (isHolding && shouldClosedLoop && !isWristPullingUp) {
+         Elevator.getInstance().setElevator(ControlMode.MotionMagic, lastPos);
+      } else if (isWristPullingUp) {
+         Elevator.getInstance().setElevator(ControlMode.Disabled, 0.0);
+      }
+   }
 
-    public void disableClosedLoop () {
-        shouldClosedLoop = false;
-    }
-        
-    public void setLastPosition (double lastPos) {
-        this.lastPos = lastPos;
-    }
-    
-    /**
-     * Sets the last position to be the current elevator position.
-     */
-    public void setLastPosition () {
-        this.setLastPosition(Elevator.getInstance().getCurrentPositionEncoder());
-    }
+   public void disableClosedLoop() {
+      shouldClosedLoop = false;
+   }
+
+   public void setLastPosition(double lastPos) {
+      this.lastPos = lastPos;
+   }
+
+   /**
+    * Sets the last position to be the current elevator position.
+    */
+   public void setLastPosition() {
+      this.setLastPosition(Elevator.getInstance().getCurrentPositionEncoder());
+   }
 }

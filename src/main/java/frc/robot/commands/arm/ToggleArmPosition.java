@@ -15,17 +15,19 @@ import frc.robot.subsystems.Arm.ArmDirection;
  */
 public class ToggleArmPosition extends InstantCommand {
 
-    public ToggleArmPosition() {
-        requires(Arm.getInstance());
-    }
+   public ToggleArmPosition() {
+      requires(Arm.getInstance());
+   }
 
-    public void initialize() {
-        Robot.log("Arm moved " + (Arm.getInstance().getDirection() == ArmDirection.DOWN ? "up" : "down") + ".");
-    }
-    
-    @Override
-    public void execute() {
-        DoubleSolenoid.Value newValue = Arm.getInstance().getState() == DoubleSolenoid.Value.kForward ? DoubleSolenoid.Value.kReverse : DoubleSolenoid.Value.kForward;
-        Arm.getInstance().setState(newValue);
-    }
+   public void initialize() {
+      Robot.log("Arm moved " + (Arm.getInstance().getDirection() == ArmDirection.DOWN ? "up" : "down") + ".");
+   }
+
+   @Override
+   public void execute() {
+      DoubleSolenoid.Value newValue = Arm.getInstance().getState() == DoubleSolenoid.Value.kForward
+           ? DoubleSolenoid.Value.kReverse
+           : DoubleSolenoid.Value.kForward;
+      Arm.getInstance().setState(newValue);
+   }
 }

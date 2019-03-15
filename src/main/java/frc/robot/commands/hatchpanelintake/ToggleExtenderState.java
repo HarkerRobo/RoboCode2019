@@ -16,18 +16,18 @@ import frc.robot.util.PneumaticsUtil;
  */
 public class ToggleExtenderState extends InstantCommand {
 
-    public ToggleExtenderState(){
-        requires(HatchLatcher.getInstance());
-    }
+   public ToggleExtenderState() {
+      requires(HatchLatcher.getInstance());
+   }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize(){
-        Robot.log("Extender moved " + (HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT ? "in" : "out") + ".");
-        HatchLatcher.getInstance().setExtenderState(ExtenderDirection.convertDirection(
-            PneumaticsUtil.switchSolenoidValue(HatchLatcher.getInstance().getExtenderState()
-            .getValue())));
-    }
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      Robot.log("Extender moved "
+            + (HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT ? "in" : "out") + ".");
+      HatchLatcher.getInstance().setExtenderState(ExtenderDirection.convertDirection(
+            PneumaticsUtil.switchSolenoidValue(HatchLatcher.getInstance().getExtenderState().getValue())));
+   }
 }

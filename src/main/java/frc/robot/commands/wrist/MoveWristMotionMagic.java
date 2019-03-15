@@ -20,86 +20,87 @@ import frc.robot.subsystems.Wrist;
  * @since 1/12/19
  */
 public class MoveWristMotionMagic extends Command {
-    private double position;
-    private Supplier<Integer> setpointLambda;
+   private double position;
+   private Supplier<Integer> setpointLambda;
 
-    public static final double KF;
-    public static final double KP;
-	public static final double KI;
-    public static final double KD;
-    public static final int IZONE;
-    public static final int ACCELERATION;
-    public static final int CRUISE_VELOCITY;
-    
+   public static final double KF;
+   public static final double KP;
+   public static final double KI;
+   public static final double KD;
+   public static final int IZONE;
+   public static final int ACCELERATION;
+   public static final int CRUISE_VELOCITY;
 
-    static {
-        if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-            KF = 2.6;
-            KP = 1.1;
-            KI = 0.0025;
-            KD = 100;
-            IZONE = 150;
-            ACCELERATION = 325;
-            CRUISE_VELOCITY = 300;
-        }
-        else {
-            KF = 2.6;
-            KP = 1.1;
-            KI = 0.0025;
-            KD = 100;
-            IZONE = 150;
-            ACCELERATION = 325;
-            CRUISE_VELOCITY = 300;
-        }
-    }
+   static {
+      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+         KF = 2.6;
+         KP = 1.1;
+         KI = 0.0025;
+         KD = 100;
+         IZONE = 150;
+         ACCELERATION = 325;
+         CRUISE_VELOCITY = 300;
+      } else {
+         KF = 2.6;
+         KP = 1.1;
+         KI = 0.0025;
+         KD = 100;
+         IZONE = 150;
+         ACCELERATION = 325;
+         CRUISE_VELOCITY = 300;
+      }
+   }
 
-    public MoveWristMotionMagic (double angle) {
-        requires (Wrist.getInstance());
-        this.position = Wrist.getInstance().convertDegreesToEncoder(angle);              
-    }            
+   public MoveWristMotionMagic(double angle) {
+      requires(Wrist.getInstance());
+      this.position = Wrist.getInstance().convertDegreesToEncoder(angle);
+   }
 
-    public MoveWristMotionMagic (Supplier<Integer> setpointLambda) {
-        super(0);
-        this.setpointLambda = setpointLambda;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void initialize() {
-        if (setpointLambda != null) {this.position = Wrist.getInstance().convertDegreesToEncoder(setpointLambda.get());}
-        Wrist.getInstance().setupMotionMagic();
-        
-        System.out.println("entering wrist motion " + position);
-        Robot.log("MoveElevatorMotionMagic initialized with desired position, " + position + ".");
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void execute() {
-        Wrist.getInstance().setWrist(ControlMode.MotionMagic, position);
-    }        
-        
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected boolean isFinished() {
-        return Math.abs(position - Wrist.getInstance().getMasterTalon().getSelectedSensorPosition()) <= Wrist.ALLOWABLE_ERROR;
-    }
+   public MoveWristMotionMagic(Supplier<Integer> setpointLambda) {
+      super(0);
+      this.setpointLambda = setpointLambda;
+   }
 
-    @Override
-    public void end () {
-        System.out.println("wrist motion magic end");
-        
-        Robot.log("MoveWristMotionMagic ended.");
-    }
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      if (setpointLambda != null) {
+         this.position = Wrist.getInstance().convertDegreesToEncoder(setpointLambda.get());
+      }
+      Wrist.getInstance().setupMotionMagic();
 
-    @Override
-    public void interrupted() {
-        end();
-    }
+      System.out.println("entering wrist motion " + position);
+      Robot.log("MoveElevatorMotionMagic initialized with desired position, " + position + ".");
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      Wrist.getInstance().setWrist(ControlMode.MotionMagic, position);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected boolean isFinished() {
+      return Math
+            .abs(position - Wrist.getInstance().getMasterTalon().getSelectedSensorPosition()) <= Wrist.ALLOWABLE_ERROR;
+   }
+
+   @Override
+   public void end() {
+      System.out.println("wrist motion magic end");
+
+      Robot.log("MoveWristMotionMagic ended.");
+   }
+
+   @Override
+   public void interrupted() {
+      end();
+   }
 }
