@@ -1,14 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
+import frc.robot.commands.climber.MoveClimberManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -22,31 +21,38 @@ public class Climber extends Subsystem {
 
    private static Climber instance;
 
-   private HSTalon talon;
-   private VictorSPX victor;
+   private HSTalon leftTalon;
+   private HSTalon rightTalon;
     
    private static final boolean TALON_INVERTED; 
    private static final boolean VICTOR_INVERTED; 
     
    private static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake; 
-   private static final int CONT_CURRENT_LIMIT;
-   private static final int PEAK_CURRENT_LIMIT;
+   private static final int CONT_CURRENT_LIMIT_LEFT;
+   private static final int PEAK_CURRENT_LIMIT_LEFT;
+   private static final int CONT_CURRENT_LIMIT_RIGHT;
+   private static final int PEAK_CURRENT_LIMIT_RIGHT;
    private static final int PEAK_TIME;
+   public static final double CLIMB_SPEED = 1;
     
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
          TALON_INVERTED = false;
          VICTOR_INVERTED = false;
-         CONT_CURRENT_LIMIT = 40;
-         PEAK_CURRENT_LIMIT = 80;
+         CONT_CURRENT_LIMIT_LEFT = 40;
+         PEAK_CURRENT_LIMIT_LEFT = 80;
+         CONT_CURRENT_LIMIT_RIGHT = 40; 
+         PEAK_CURRENT_LIMIT_RIGHT = 80;
          PEAK_TIME = 1000;
-         } else {
-            TALON_INVERTED = false;
-            VICTOR_INVERTED = false;
-            CONT_CURRENT_LIMIT = 40; 
-            PEAK_CURRENT_LIMIT = 80;
-            PEAK_TIME = 1000;
-         }
+      } else {
+         TALON_INVERTED = false;
+         VICTOR_INVERTED = false;
+         CONT_CURRENT_LIMIT_LEFT = 40; 
+         PEAK_CURRENT_LIMIT_LEFT = 80;
+         CONT_CURRENT_LIMIT_RIGHT = 40; 
+         PEAK_CURRENT_LIMIT_RIGHT = 80;
+         PEAK_TIME = 1000;
+      }
    }
 
    /**
@@ -66,33 +72,43 @@ public class Climber extends Subsystem {
    }
     
     private Climber() {
-      talon = new HSTalon(CAN_IDs.CLIMBER_TALON);
-      victor = new VictorSPX(CAN_IDs.CLIMBER_VICTOR);
+      leftTalon = new HSTalon(CAN_IDs.CLIMBER_TALON_LEFT);
+      rightTalon = new HSTalon(CAN_IDs.CLIMBER_TALON_RIGHT);
    }
     
     public void talonInit() {
-      talon.setNeutralMode(NEUTRAL_MODE);
-      victor.setNeutralMode(NEUTRAL_MODE);
+      leftTalon.setNeutralMode(NEUTRAL_MODE);
+      rightTalon.setNeutralMode(NEUTRAL_MODE);
 
-      talon.setInverted(TALON_INVERTED);
-      victor.setInverted(VICTOR_INVERTED);
+      leftTalon.setInverted(TALON_INVERTED);
+      rightTalon.setInverted(VICTOR_INVERTED);
 
-      talon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
-      talon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-      talon.configPeakCurrentDuration(PEAK_TIME);
-      victor.follow(talon);
+      leftTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT_LEFT);
+      rightTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT_RIGHT);
+      leftTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT_LEFT);
+      rightTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT_RIGHT);
+      leftTalon.configPeakCurrentDuration(PEAK_TIME);
+      rightTalon.configPeakCurrentDuration(PEAK_TIME);
+
+      rightTalon.follow(leftTalon);
    }
 
     public void initDefaultCommand() {
-        // setDefaultCommand();
+        setDefaultCommand(new MoveClimberManual(ClimbDirection.UP));
    }
 
    public void setClimberOutput(ClimbDirection direction, double magnitude) {
-      if(direction == ClimbDirection.DOWN) {
-         talon.set(ControlMode.PercentOutput, magnitude * direction.getSign());
-         } else {
-            talon.set(ControlMode.PercentOutput, magnitude * direction.getSign());
-         }
+      setClimberOutput(direction, magnitude, magnitude);
+   }
+
+   public void setClimberOutput(ClimbDirection direction, double leftMagnitude, double rightMagnitude) {
+      leftTalon.set(ControlMode.PercentOutput, leftMagnitude * direction.getSign());
+      rightTalon.set(ControlMode.PercentOutput, rightMagnitude * direction.getSign());
+   }
+
+   public void disableClimber() {
+      leftTalon.set(ControlMode.Disabled, 0);
+      rightTalon.set(ControlMode.Disabled, 0);
    }
 
    public static Climber getInstance() {
@@ -102,7 +118,11 @@ public class Climber extends Subsystem {
       return instance;
    }
     
-   public IMotorController getController () {
-      return talon;
+   public HSTalon getLeftTalon() {
+      return leftTalon;
+   }
+
+   public HSTalon getRightTalon() {
+      return rightTalon;
    }
 }

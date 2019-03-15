@@ -217,4 +217,8 @@ public class SetScoringPosition extends CommandGroup {
       ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition();
       ((MoveWristManual) Wrist.getInstance().getDefaultCommand()).setLastPosition();
    }
+
+   public int getDesiredHeight () {
+      return 1;
+   }
 }

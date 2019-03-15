@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
+import frc.robot.OI.TriggerMode;
 import frc.robot.Robot;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Wrist;
@@ -47,23 +48,23 @@ public class MoveWristManual extends IndefiniteCommand {
     */
    @Override
    public void execute() {
-      double leftOperatorTrigger = OI.getInstance().getDriverGamepad().getLeftTrigger();
-      double rightOperatorTrigger = OI.getInstance().getDriverGamepad().getRightTrigger();
+      double leftDriverTrigger = OI.getInstance().getDriverGamepad().getLeftTrigger();
+      double rightDriverTrigger = OI.getInstance().getDriverGamepad().getRightTrigger();
 
       double magnitude = 0;
       WristDirection direction;
       // double currentPosition =
       // Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
-      if (OI.getInstance().getWristToggleMode() && (leftOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER
-            || rightOperatorTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
+      if (OI.getInstance().getCurrentTriggerMode() == TriggerMode.WRIST_MANUAL && (leftDriverTrigger > OI.DRIVER_DEADBAND_TRIGGER
+            || rightDriverTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
          isHolding = false;
          shouldClosedLoop = true;
 
-         if (leftOperatorTrigger > rightOperatorTrigger) {
-            magnitude = 0.35 * leftOperatorTrigger;
+         if (leftDriverTrigger > rightDriverTrigger) {
+            magnitude = 0.35 * leftDriverTrigger;
             direction = WristDirection.TO_BACK;
          } else {
-            magnitude = 0.35 * rightOperatorTrigger;
+            magnitude = 0.35 * rightDriverTrigger;
             direction = WristDirection.TO_FRONT;
          }
 
