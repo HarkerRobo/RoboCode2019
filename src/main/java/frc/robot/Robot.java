@@ -31,6 +31,8 @@ import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmDirection;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
@@ -38,7 +40,6 @@ import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.util.Limelight;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
@@ -63,6 +64,7 @@ public class Robot extends TimedRobot {
     private static Rollers rollers;
     private static Wrist wrist;
     private static Intake intake;
+    private static Climber climber;
     private static HatchLatcher hatchLatcher;
     private static Limelight limelight;
     private static OI oi;
@@ -93,6 +95,7 @@ public class Robot extends TimedRobot {
         intake = Intake.getInstance();
         rollers = Rollers.getInstance();
         wrist = Wrist.getInstance();
+        climber = Climber.getInstance();
         // hatchLatcher = HatchLatcher.getInstance();
         // oi = OI.getInstance();        
         //limelight = Limelight.getInstance();        
@@ -102,6 +105,7 @@ public class Robot extends TimedRobot {
         wrist.talonInit();
         rollers.talonInit();
         intake.controllerInit();
+        climber.talonInit();
         Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
         // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);
