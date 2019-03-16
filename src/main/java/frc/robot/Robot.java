@@ -40,6 +40,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
+import frc.robot.util.Pair;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
 
@@ -72,8 +73,8 @@ public class Robot extends TimedRobot {
    private static PrintWriter pw;
    private static SetScoringPosition currentSetScoringCommand;
 
-   private CommandGroupWrapper wrapper;
    private static final String LOG_FILE_PREFIX = "/home/lvuser/logs/";
+   private static String logFileDir = "";
    private static String logFileName = "";
 
    // private CANSparkMax talon;
@@ -89,23 +90,23 @@ public class Robot extends TimedRobot {
    @Override
    public void robotInit() {
       System.out.println("robotinit");
-      drivetrain = Drivetrain.getInstance();
-      // arm = Arm.getInstance();
-      elevator = Elevator.getInstance();
-      intake = Intake.getInstance();
-      rollers = Rollers.getInstance();
-      wrist = Wrist.getInstance();
-      climber = Climber.getInstance();
+      // drivetrain = Drivetrain.getInstance();
+      // // arm = Arm.getInstance();
+      // elevator = Elevator.getInstance();
+      // intake = Intake.getInstance();
+      // rollers = Rollers.getInstance();
+      // wrist = Wrist.getInstance();
+      // climber = Climber.getInstance();
       // hatchLatcher = HatchLatcher.getInstance();
       // oi = OI.getInstance();
       // limelight = Limelight.getInstance();
 
-      drivetrain.talonInit();
-      elevator.talonInit();
-      wrist.talonInit();
-      rollers.talonInit();
-      intake.controllerInit();
-      climber.talonInit();
+      // drivetrain.talonInit();
+      // elevator.talonInit();
+      // wrist.talonInit();
+      // rollers.talonInit();
+      // intake.controllerInit();
+      // climber.talonInit();
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
       // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);
@@ -145,7 +146,6 @@ public class Robot extends TimedRobot {
     */
    @Override
    public void teleopInit() {
-      wrapper.start();
       startTime = Timer.getFPGATimestamp();
       setupPrintWriter();
       log("Teleop initialized.");
@@ -161,8 +161,8 @@ public class Robot extends TimedRobot {
    @Override
    public void teleopPeriodic() {
       Scheduler.getInstance().run();
-      SmartDashboard.putNumber("Elevator Position",
-            Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+      // SmartDashboard.putNumber("Elevator Position",
+      // Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
       // talon.set(ControlMode.PercentOutput,
       // OI.getInstance().getDriverGamepad().getRightY());
       // System.out.println("completed: " + cgw.isCompleted() + " " +
@@ -186,24 +186,33 @@ public class Robot extends TimedRobot {
     */
    @Override
    public void robotPeriodic() {
+      SmartDashboard.putNumber("DRIVER STATION TIME", DriverStation.getInstance().getMatchTime());
       // SmartDashboard.putNumber("Left Error",
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
       // SmartDashboard.putNumber("Right Error",
       // drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
 
-      SmartDashboard.putNumber("Wrist Position", Wrist.getInstance().getCurrentAngleDegrees());
-      SmartDashboard.putNumber("Elevator Position",
-            Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
-      SmartDashboard.putNumber("LEFT Y", OI.getInstance().getDriverGamepad().getLeftY());
-      SmartDashboard.putNumber("el current", Elevator.getInstance().getMasterTalon().getOutputCurrent());
+      // SmartDashboard.putNumber("Wrist Position",
+      // Wrist.getInstance().getCurrentAngleDegrees());
+      // SmartDashboard.putNumber("Elevator Position",
+      // Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+      // SmartDashboard.putNumber("LEFT Y",
+      // OI.getInstance().getDriverGamepad().getLeftY());
+      // SmartDashboard.putNumber("el current",
+      // Elevator.getInstance().getMasterTalon().getOutputCurrent());
 
-      SmartDashboard.putBoolean("Is extended?", HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT);
+      // SmartDashboard.putBoolean("Is extended?",
+      // HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT);
 
-      /* Necessary for custom dashboard. Do not remove. */
-      SmartDashboard.putBoolean("Has hatch?", HatchLatcher.getInstance().hasHatch());
-      SmartDashboard.putBoolean("Is scoring on cargo ship?", OI.getInstance().getCargoBayToggleMode());
-      SmartDashboard.putBoolean("Has wrist manual control?", OI.getInstance().getWristToggleMode());
-      SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() == ArmDirection.UP);
+      // /* Necessary for custom dashboard. Do not remove. */
+      // SmartDashboard.putBoolean("Has hatch?",
+      // HatchLatcher.getInstance().hasHatch());
+      // SmartDashboard.putBoolean("Is scoring on cargo ship?",
+      // OI.getInstance().getCargoBayToggleMode());
+      // SmartDashboard.putBoolean("Has wrist manual control?",
+      // OI.getInstance().getWristToggleMode());
+      // SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() ==
+      // ArmDirection.UP);
       SmartDashboard.putNumber("date", System.currentTimeMillis());
 
       if (pw != null) {
@@ -300,15 +309,16 @@ public class Robot extends TimedRobot {
    @Override
    public void disabledInit() {
       log("Disabled initialized.");
-      if (pw != null)
-         pw.close();
-      drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
+      resetPrintWriter();
+      // drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
 
-      elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
-      wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
+      // elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
+      // wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
 
-      ((MoveWristManual) Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
-      ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).disableClosedLoop();
+      // ((MoveWristManual)
+      // Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
+      // ((MoveElevatorManual)
+      // Elevator.getInstance().getDefaultCommand()).disableClosedLoop();
    }
 
    public static void log(String message) {
@@ -319,32 +329,63 @@ public class Robot extends TimedRobot {
       }
    }
 
-   private String getLogFileName() {
-      try {
-         System.out.println(new SimpleDateFormat("y-M-d H:m").format(new Date()));
-      } catch (Exception e) {
-         e.printStackTrace();
+   /**
+    * Gets the log file name and its corresponding directory.
+    * 
+    * @return a pair with the first element as the file's directory (relative to
+    *         LOG_FILE_PREFIX) and the second element as the file's name
+    */
+   private Pair<String, String> getLogFilePair() {
+      String directory = "matches/" + DriverStation.getInstance().getEventName() + "/";
+      String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match"
+            + DriverStation.getInstance().getMatchNumber();
+      name = name.replaceAll(" ", "");
+
+      if (name.indexOf("None") >= 0) {
+         String date = new SimpleDateFormat("y-M-d_H-m-s").format(new Date());
+         name = date;
+         date = date.substring(0, date.lastIndexOf("-"));
+         directory = date.substring(0, date.indexOf("_")) + "/" + date.substring(date.indexOf("_") + 1, date.lastIndexOf("-")) + ":00/";
       }
 
-      String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match"
-            + DriverStation.getInstance().getMatchNumber() + ".txt";
-      name = name.replaceAll(" ", "");
-      return name;
+      name += ".txt";
+      return new Pair<String, String>(directory, name);
+   }
+
+   private String getLogFileName() {
+      return getLogFilePair().getSecond();
    }
 
    private void setupPrintWriter() {
-      if (logFileName.equals("")) {
-         logFileName = getLogFileName();
-      }
-
       if (pw == null) {
+         if (logFileName.equals("") || logFileDir.equals("")) {
+            logFileName = getLogFilePair().getSecond();
+            logFileDir = getLogFilePair().getFirst();
+         }
+
          try {
-            new File(LOG_FILE_PREFIX + logFileName).createNewFile();
-            pw = new PrintWriter(LOG_FILE_PREFIX + logFileName);
+            String fileDir = LOG_FILE_PREFIX + logFileDir;
+            String fileLoc = fileDir + logFileName;
+
+            System.out.println("DIR " + fileDir + " LOC " + fileLoc);
+            File desiredDirectory = new File(fileDir);
+            while (desiredDirectory.mkdirs()); // to make all nested directories
+
+            new File(fileLoc).createNewFile();
+            pw = new PrintWriter(fileLoc);
          } catch (Exception e) {
             e.printStackTrace();
          }
       }
+   }
+
+   private void resetPrintWriter() {
+      if (pw != null) {
+         pw.close();
+      }
+      pw = null;
+      logFileName = "";
+      logFileDir = "";
    }
 
    public static SetScoringPosition getSetScoringCommand() {
