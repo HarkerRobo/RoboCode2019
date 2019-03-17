@@ -154,7 +154,7 @@ public class Wrist extends Subsystem {
          SCORING_POSITION_FRONT_CARGO_SHIP = PARALLEL_FRONT - 10;
          SCORING_POSITION_BACK_CARGO_SHIP = 188;
 
-         ARBITRARY_FF = 0;// 0.002;//17;
+         ARBITRARY_FF = 0.025;// 0.002;//17;
 
          ANGLE_INTAKE = 180;
          HATCH_INTAKING_POSITION = PARALLEL_BACK;
@@ -244,6 +244,8 @@ public class Wrist extends Subsystem {
 
       wristMaster.configForwardSoftLimitEnable(true);
       wristMaster.configReverseSoftLimitEnable(true);
+
+      setupMotionMagic();
    }
 
    public HSTalon getMasterTalon() {

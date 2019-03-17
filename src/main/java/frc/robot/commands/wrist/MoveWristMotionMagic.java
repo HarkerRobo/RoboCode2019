@@ -38,16 +38,16 @@ public class MoveWristMotionMagic extends Command {
          KI = 0.0025;
          KD = 100;
          IZONE = 150;
-         ACCELERATION = 325;
-         CRUISE_VELOCITY = 300;
+         ACCELERATION = (int) (325 * 1.20);
+         CRUISE_VELOCITY = (int) (300 * 1.20);
       } else {
-         KF = 2.6;
+         KF = 2.79;
          KP = 1.1;
          KI = 0.0025;
-         KD = 100;
+         KD = 75;
          IZONE = 150;
-         ACCELERATION = 325;
-         CRUISE_VELOCITY = 300;
+         ACCELERATION = (int) (315 * 1.20);
+         CRUISE_VELOCITY = (int) (300 * 1.28);
       }
    }
 
@@ -69,7 +69,6 @@ public class MoveWristMotionMagic extends Command {
       if (setpointLambda != null) {
          this.position = Wrist.getInstance().convertDegreesToEncoder(setpointLambda.get());
       }
-      Wrist.getInstance().setupMotionMagic();
 
       System.out.println("entering wrist motion " + position);
       Robot.log("MoveElevatorMotionMagic initialized with desired position, " + position + ".");

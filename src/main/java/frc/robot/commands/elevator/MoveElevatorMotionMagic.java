@@ -100,7 +100,6 @@ public class MoveElevatorMotionMagic extends Command {
          this.setpoint = setpointLambda.get();
       }
       System.out.println("EL MOTION MAGIC " + setpoint);
-      Elevator.getInstance().setUpMotionMagic();
       Robot.log("MoveElevatorMotionMagic initialized.");
 
    }

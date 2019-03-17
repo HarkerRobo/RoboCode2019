@@ -44,8 +44,8 @@ public class Rollers extends Subsystem {
          TOP_INVERTED = false;
          BOTTOM_INVERTED = false;
       } else {
-         TOP_INVERTED = false;
-         BOTTOM_INVERTED = false;
+         TOP_INVERTED = true;
+         BOTTOM_INVERTED = true;
       }
    }
 
@@ -61,16 +61,16 @@ public class Rollers extends Subsystem {
 
    public static final double CARGO_BAY_OUTPUT_REDUCTION = 0.55;
 
+   public static final double STOP_INTAKING_CURRENT = 15;
+
    private static Rollers instance;
    private HSTalon rTalonTop;
-   private HSTalon rTalonBottom;
 
    /**
     * Creates new Talons
     */
    private Rollers() {
       rTalonTop = new HSTalon(CAN_IDs.RO_TOP);
-      rTalonBottom = new HSTalon(CAN_IDs.RO_BOTTOM);
    }
 
    @Override
@@ -83,30 +83,23 @@ public class Rollers extends Subsystem {
     */
    public void talonInit() {
       rTalonTop.configFactoryDefault();
-      rTalonBottom.configFactoryDefault();
 
       rTalonTop.setNeutralMode(NeutralMode.Coast);
-      rTalonBottom.setNeutralMode(NeutralMode.Coast);
 
       rTalonTop.setInverted(TOP_INVERTED);
-      rTalonBottom.setInverted(BOTTOM_INVERTED);
+
       System.out.println(TOP_INVERTED);
-      System.out.println(BOTTOM_INVERTED);
 
       setupCurrentLimits();
    }
 
    public void setupCurrentLimits() {
       rTalonTop.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
-      rTalonBottom.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
 
       rTalonTop.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-      rTalonBottom.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
 
       rTalonTop.configPeakCurrentDuration(PEAK_TIME);
-      rTalonBottom.configPeakCurrentDuration(PEAK_TIME);
 
-      rTalonBottom.enableCurrentLimit(true);
       rTalonTop.enableCurrentLimit(true);
    }
 
@@ -114,50 +107,29 @@ public class Rollers extends Subsystem {
       return rTalonTop;
    }
 
-   public HSTalon getBottomTalon() {
-      return rTalonBottom;
-   }
-
    public void stopRollers() {
       rTalonTop.set(ControlMode.Disabled, 0);
-      rTalonBottom.set(ControlMode.Disabled, 0);
    }
 
    public void moveRollers(double output, RollerDirection direction) {
       rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign());
-      rTalonBottom.set(ControlMode.PercentOutput, -1 * output * direction.getSign());
    }
 
-   public Pair<Double, Double> getRecommendedRollersInput() {
-      return new Pair<Double, Double>(DEFAULT_ROLLER_MAGNITUDE, DEFAULT_ROLLER_MAGNITUDE);
+   public double getRecommendedRollersInput() {
+      return DEFAULT_ROLLER_MAGNITUDE;
    }
 
    /**
     * Pair<top output, bottom output>
     */
-   public Pair<Double, Double> getRecommendedRollersOutput() {
+   public double getRecommendedRollersOutput() {
       if (OI.getInstance().getCargoBayToggleMode()
             && Elevator.getInstance().isAt(Location.CARGO_SHIP_BACK.getCargoHeight())) {
-         return new Pair<Double, Double>(DEFAULT_ROLLER_MAGNITUDE - CARGO_BAY_OUTPUT_REDUCTION,
-               DEFAULT_ROLLER_MAGNITUDE - CARGO_BAY_OUTPUT_REDUCTION);
-      }
-      double wristAngle = Wrist.getInstance().getCurrentAngleDegrees();
-      if ((Wrist.getInstance().getCurrentSide() == Side.FRONT || Wrist.getInstance().getCurrentSide() == Side.AMBIGUOUS)
-            && Wrist.getInstance().isFurtherBackward(wristAngle, Wrist.SCORING_POSITION_FRONT_CARGO_2))
-         return new Pair<Double, Double>(DEFAULT_ROLLER_MAGNITUDE + TOP_SPIN, DEFAULT_ROLLER_MAGNITUDE - TOP_SPIN);
-      if (Wrist.getInstance().getCurrentSide() == Side.BACK
-            && Wrist.getInstance().isFurtherForward(wristAngle, Wrist.SCORING_POSITION_BACK_CARGO_2)) {
-         return new Pair<Double, Double>(DEFAULT_ROLLER_MAGNITUDE - TOP_SPIN, DEFAULT_ROLLER_MAGNITUDE + TOP_SPIN);
+         return DEFAULT_ROLLER_MAGNITUDE - CARGO_BAY_OUTPUT_REDUCTION;
       }
       // if(Math.abs(wristAngle - 90)
       // return ROLLER_SHOOTING_SPEED;
-      return new Pair<Double, Double>(DEFAULT_ROLLER_MAGNITUDE, DEFAULT_ROLLER_MAGNITUDE);
-   }
-
-   public void moveRollers(double topMagnitude, double bottomMagnitude, RollerDirection direction) {
-      rTalonTop.set(ControlMode.PercentOutput, topMagnitude * direction.getSign());
-      rTalonBottom.set(ControlMode.PercentOutput, bottomMagnitude * direction.getSign());
-
+      return DEFAULT_ROLLER_MAGNITUDE;
    }
 
    /**

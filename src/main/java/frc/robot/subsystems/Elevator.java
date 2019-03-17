@@ -150,7 +150,7 @@ public class Elevator extends Subsystem {
 
          INTAKE_POSITION = 0;
 
-         HATCH_INTAKING_POSITION = 7000;
+         HATCH_INTAKING_POSITION = 8100;
          CARGO_INTAKING_POSITION = 0;
 
          RAIL_POSITION = 20500; // TUNE
@@ -159,7 +159,7 @@ public class Elevator extends Subsystem {
          FFGRAV = 0.095;
          ZERO_CURRENT_SPIKE = 0;
 
-         LOW_SCORING_POSITION_HATCH = 7000;
+         LOW_SCORING_POSITION_HATCH = 8100;
          LOW_ROCKET_SCORING_POSITION_CARGO = 5418;
          MEDIUM_SCORING_POSITION_HATCH = 13020;
          MEDIUM_SCORING_POSITION_HATCH_BACK = 22830;
@@ -246,7 +246,7 @@ public class Elevator extends Subsystem {
       masterTalon.enableVoltageCompensation(true);
 
       // setUpPositionPID();
-      // setUpMotionMagic();
+      setUpMotionMagic();
    }
 
    public void moveElevatorPercentOutput(double speed) {

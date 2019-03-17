@@ -129,9 +129,9 @@ public class OI {
       driverGamepad.getButtonY()
             .whilePressed(new ParallelCommandGroup(
                   new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN),
-                  new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, RollerDirection.IN)));
+                  new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN)));
       driverGamepad.getButtonX()
-            .whilePressed(new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, RollerDirection.OUT));
+            .whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersOutput, RollerDirection.OUT));
       driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
          public void initialize() {
             wristToggleMode = !wristToggleMode;

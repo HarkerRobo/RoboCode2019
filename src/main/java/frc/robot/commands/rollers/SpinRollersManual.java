@@ -28,7 +28,7 @@ public class SpinRollersManual extends IndefiniteCommand {
     */
    @Override
    public void execute() {
-      Pair<Double, Double> output = new Pair<Double, Double>(0.0, 0.0);
+      double output = 0.0;
       RollerDirection rollerDirection = RollerDirection.IN;
       if (OI.getInstance().getDriver() == OI.Driver.CHRIS) {
          if (OI.getInstance().getDriverGamepad().getButtonXState()) {
@@ -38,7 +38,7 @@ public class SpinRollersManual extends IndefiniteCommand {
             output = Rollers.getInstance().getRecommendedRollersInput();
             rollerDirection = RollerDirection.IN;
          } else {
-            output = new Pair<Double, Double>(0.0, 0.0);
+            output = 0.0;
             rollerDirection = RollerDirection.IN;
          }
       } else {
@@ -57,6 +57,6 @@ public class SpinRollersManual extends IndefiniteCommand {
       // Rollers.HATCH_STOW_SPEED ||
       // Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED)){}
       // (new LoadOrScoreHatch(ScoreState.LOAD)).start();
-      Rollers.getInstance().moveRollers(output.getFirst(), output.getSecond(), rollerDirection);
+      Rollers.getInstance().moveRollers(output, rollerDirection);
    }
 }

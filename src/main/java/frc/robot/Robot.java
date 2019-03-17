@@ -90,22 +90,21 @@ public class Robot extends TimedRobot {
    @Override
    public void robotInit() {
       System.out.println("robotinit");
-      // drivetrain = Drivetrain.getInstance();
-      // // arm = Arm.getInstance();
-      // elevator = Elevator.getInstance();
-      // intake = Intake.getInstance();
-      // rollers = Rollers.getInstance();
-      // wrist = Wrist.getInstance();
-      // climber = Climber.getInstance();
-      // hatchLatcher = HatchLatcher.getInstance();
-      // oi = OI.getInstance();
-      // limelight = Limelight.getInstance();
-
-      // drivetrain.talonInit();
-      // elevator.talonInit();
-      // wrist.talonInit();
-      // rollers.talonInit();
-      // intake.controllerInit();
+       drivetrain = Drivetrain.getInstance();
+        arm = Arm.getInstance();
+       elevator = Elevator.getInstance();
+       intake = Intake.getInstance();
+       rollers = Rollers.getInstance();
+       wrist = Wrist.getInstance();
+       //climber = Climber.getInstance();
+       hatchLatcher = HatchLatcher.getInstance();
+       oi = OI.getInstance();
+       limelight = Limelight.getInstance();
+       drivetrain.talonInit();
+       elevator.talonInit();
+       wrist.talonInit();
+       rollers.talonInit();
+       intake.controllerInit();
       // climber.talonInit();
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
@@ -187,6 +186,8 @@ public class Robot extends TimedRobot {
    @Override
    public void robotPeriodic() {
       SmartDashboard.putNumber("DRIVER STATION TIME", DriverStation.getInstance().getMatchTime());
+      SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
+      SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
       // SmartDashboard.putNumber("Left Error",
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
       // SmartDashboard.putNumber("Right Error",
@@ -213,6 +214,7 @@ public class Robot extends TimedRobot {
       // OI.getInstance().getWristToggleMode());
       // SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() ==
       // ArmDirection.UP);
+      SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
       SmartDashboard.putNumber("date", System.currentTimeMillis());
 
       if (pw != null) {
@@ -335,7 +337,7 @@ public class Robot extends TimedRobot {
     * @return a pair with the first element as the file's directory (relative to
     *         LOG_FILE_PREFIX) and the second element as the file's name
     */
-   private Pair<String, String> getLogFilePair() {
+   private Pair<String, String> getLogFileNameAndDirectory() {
       String directory = "matches/" + DriverStation.getInstance().getEventName() + "/";
       String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match"
             + DriverStation.getInstance().getMatchNumber();
@@ -353,14 +355,14 @@ public class Robot extends TimedRobot {
    }
 
    private String getLogFileName() {
-      return getLogFilePair().getSecond();
+      return "";
    }
 
    private void setupPrintWriter() {
       if (pw == null) {
          if (logFileName.equals("") || logFileDir.equals("")) {
-            logFileName = getLogFilePair().getSecond();
-            logFileDir = getLogFilePair().getFirst();
+            logFileName = getLogFileNameAndDirectory().getSecond();
+            logFileDir = getLogFileNameAndDirectory().getFirst();
          }
 
          try {

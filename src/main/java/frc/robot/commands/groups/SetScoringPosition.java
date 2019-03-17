@@ -115,7 +115,7 @@ public class SetScoringPosition extends CommandGroup {
 
    private Side desiredSide;
 
-   public static final double PASSTHROUGH_WAIT_TIME = 0.25;
+   public static final double PASSTHROUGH_WAIT_TIME = 0;//.25;
 
    public SetScoringPosition(Location desiredLocation) {
       this(desiredLocation, () -> HatchLatcher.getInstance().hasHatch());
@@ -155,13 +155,13 @@ public class SetScoringPosition extends CommandGroup {
 
       addSequential(new ConditionalCommand(isDefenseMode, new MoveWristMotionMagic(Wrist.SAFE_BACKWARD_POSITION)));
 
-      addSequential(new ConditionalCommand(() -> Arm.getInstance().getDirection() == ArmDirection.UP,
+      addSequential(new ConditionalCommand(() -> Arm.getInstance().getDirection() == ArmDirection.UP && 
+                                                !(Wrist.getInstance().getCurrentSide() == Side.BACK && desiredSide == Side.BACK),
             new ConditionalCommand(
                   () -> Wrist.getInstance().getCurrentSide() == Side.FRONT
                         && Elevator.getInstance().isBelow(Elevator.ARM_COLLISION_HEIGHT),
                   new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN),
-                        new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)))));
-      addSequential(new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN)));
+                        new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)), new SetArmPosition(ArmDirection.DOWN))));
       addSequential(new ConditionalCommand(
             () -> (mustPassthroughHigh.getAsBoolean() || mustPassthroughLow.getAsBoolean()
                   || desiredLocation == Location.HATCH_INTAKE || desiredLocation == Location.CARGO_INTAKE),
@@ -210,6 +210,7 @@ public class SetScoringPosition extends CommandGroup {
                   && desiredLocation != Location.CARGO_INTAKE
                   && (desiredLocation != Location.PARALLEL_BACK || desiredLocation != Location.PARALLEL_FRONT),
             new SetExtenderState(ExtenderDirection.OUT)));
+      addSequential(new ConditionalCommand(() -> desiredLocation != Location.CARGO_INTAKE, new SetArmPosition(ArmDirection.UP)));
    }
 
    public void end() {
