@@ -202,20 +202,20 @@ public class Robot extends TimedRobot {
       // SmartDashboard.putNumber("el current",
       // Elevator.getInstance().getMasterTalon().getOutputCurrent());
 
-      // SmartDashboard.putBoolean("Is extended?",
-      // HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT);
+      SmartDashboard.putBoolean("Is extended?",
+       HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT);
 
       // /* Necessary for custom dashboard. Do not remove. */
-      // SmartDashboard.putBoolean("Has hatch?",
-      // HatchLatcher.getInstance().hasHatch());
-      // SmartDashboard.putBoolean("Is scoring on cargo ship?",
-      // OI.getInstance().getCargoBayToggleMode());
-      // SmartDashboard.putBoolean("Has wrist manual control?",
-      // OI.getInstance().getWristToggleMode());
-      // SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() ==
-      // ArmDirection.UP);
-      SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
-      SmartDashboard.putNumber("date", System.currentTimeMillis());
+      SmartDashboard.putBoolean("Has hatch?",
+      HatchLatcher.getInstance().hasHatch());
+      SmartDashboard.putBoolean("Is scoring on cargo ship?",
+      OI.getInstance().getCargoBayToggleMode());
+      SmartDashboard.putNumber("Trigger Mode",
+      OI.getInstance().getCurrentTriggerMode().getValue());
+      SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() ==
+      ArmDirection.UP);
+      // SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
+      // SmartDashboard.putNumber("date", System.currentTimeMillis());
 
       if (pw != null) {
          pw.flush();

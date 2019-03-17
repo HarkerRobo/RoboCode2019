@@ -33,3 +33,12 @@ img {
 span {
     font-family: "Comic Sans MS", cursive, sans-serif	
 }
+
+.mode-icon {
+    height: 15vh;
+}
+
+#pneumatics {
+    position: absolute;
+    right: 2vh;
+}

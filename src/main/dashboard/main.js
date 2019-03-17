@@ -4,8 +4,13 @@ let limelightLoaded = false;
 const updateToggleModes = () => {
     let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
     let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
-    let isWristEnabled = NetworkTables.getValue("/SmartDashboard/Has wrist manual control?");
+    let wristMode = Math.round(NetworkTables.getValue("/SmartDashboard/Trigger Mode"));
     let isExtenderExtended = NetworkTables.getValue("/SmartDashboard/Is extended?");
+
+    // let isCargoShipEnabled = true;
+    // let isHatchEnabled = false
+    // let wristMode = 2;
+    // let isExtenderExtended = true;
 
     if(isCargoShipEnabled) {
         document.getElementById("cargoship").style.display = "inline-block";
@@ -23,13 +28,19 @@ const updateToggleModes = () => {
         document.getElementById("cargo").style.display = "inline-block";
     }
 
-    if (isWristEnabled) {
+    if (wristMode == 0) { // Limelight align
         document.getElementById("wrist").style.display = "inline-block";
         document.getElementById("align").style.display = "none";
+        document.getElementById("climb").style.display = "none"
     }
-    else {
+    else if (wristMode == 1) { // Wrist Manual Control
         document.getElementById("wrist").style.display = "none";
         document.getElementById("align").style.display = "inline-block";
+        document.getElementById("climb").style.display = "none"
+    } else { // Climb
+        document.getElementById("wrist").style.display = "none";
+        document.getElementById("align").style.display = "none";
+        document.getElementById("climb").style.display = "inline-block"
     }
 
     document.getElementById("extender").innerHTML = `${isExtenderExtended ? "Extended" : "Retracted"}`
