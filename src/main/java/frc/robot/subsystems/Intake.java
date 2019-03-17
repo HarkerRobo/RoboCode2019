@@ -72,12 +72,12 @@ public class Intake extends Subsystem {
    }
 
    private Intake() {
-      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-         System.out.println("Spark: " + CAN_IDs.BALL_INTAKE_MASTER_SPARK);
-         intakeSpark = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER_SPARK, MotorType.kBrushless);
-      } else {
-         intakeVictor = new VictorSPX(CAN_IDs.BALL_INTAKE_MASTER_VICTOR);
-      }
+    //   if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+    //      System.out.println("Spark: " + CAN_IDs.BALL_INTAKE_MASTER_SPARK);
+    //      intakeSpark = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER_SPARK, MotorType.kBrushless);
+    //   } else {
+    //      intakeVictor = new VictorSPX(CAN_IDs.BALL_INTAKE_MASTER_VICTOR);
+    //   }
       isSpark = RobotMap.ROBOT_TYPE == RobotType.COMP;
       // intakeVictor = new
       // VictorSPX(CAN_IDs.BALL_INTAKE_MASTER);//CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER,

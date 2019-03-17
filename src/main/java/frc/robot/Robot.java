@@ -31,7 +31,6 @@ import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
@@ -39,15 +38,20 @@ import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
+import frc.robot.RobotMap.CAN_IDs;
+import frc.robot.RobotMap.Global;
+import frc.robot.commands.drivetrain.GenerateAndFollowPath;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
 import frc.robot.util.Pair;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
+import jaci.pathfinder.Waypoint;
 
 /**
  * Represents the core of the code, where the highest-level robot functions are
  * called.
- * 
+ *
  * @author Finn Frankis
  * @author Jatin Kohli
  * @author Chirag Kaushik
@@ -64,7 +68,7 @@ public class Robot extends TimedRobot {
    private static Rollers rollers;
    private static Wrist wrist;
    private static Intake intake;
-   private static Climber climber;
+   //private static Climber climber;
    private static HatchLatcher hatchLatcher;
    private static Limelight limelight;
    private static OI oi;
@@ -91,20 +95,20 @@ public class Robot extends TimedRobot {
    public void robotInit() {
       System.out.println("robotinit");
        drivetrain = Drivetrain.getInstance();
-        arm = Arm.getInstance();
-       elevator = Elevator.getInstance();
-       intake = Intake.getInstance();
-       rollers = Rollers.getInstance();
-       wrist = Wrist.getInstance();
+    //    arm = Arm.getInstance();
+    //    elevator = Elevator.getInstance();
+    //    intake = Intake.getInstance();
+    //    rollers = Rollers.getInstance();
+    //    wrist = Wrist.getInstance();
        //climber = Climber.getInstance();
-       hatchLatcher = HatchLatcher.getInstance();
+       //hatchLatcher = HatchLatcher.getInstance();
        oi = OI.getInstance();
-       limelight = Limelight.getInstance();
+       //limelight = Limelight.getInstance();
        drivetrain.talonInit();
-       elevator.talonInit();
-       wrist.talonInit();
-       rollers.talonInit();
-       intake.controllerInit();
+    //    elevator.talonInit();
+    //    wrist.talonInit();
+    //    rollers.talonInit();
+    //    intake.controllerInit();
       // climber.talonInit();
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
@@ -113,24 +117,26 @@ public class Robot extends TimedRobot {
       // talon.configFactoryDefault();
 
       // elevator.getMasterTalon().get
-      System.out.println("var vals " + Location.CARGO_INTAKE.getHasVariableValues());
+      //System.out.println("var vals " + Location.CARGO_INTAKE.getHasVariableValues());
    }
 
    /**
-    * This function is run once each time the robot enters autonomous mode.
-    */
-   @Override
-   public void autonomousInit() {
-      startTime = Timer.getFPGATimestamp();
-      setupPrintWriter();
-      log("Autonomous initialized.");
-      new SetLimelightLEDMode(LEDMode.OFF).start();
-      new SetLimelightViewMode(ViewMode.DRIVER).start();
+     * This function is run once each time the robot enters autonomous mode.
+     */
+    @Override
+    public void autonomousInit() {
+         //startTime = Timer.getFPGATimestamp();
 
-      HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
-      new SetArmPosition(ArmDirection.UP).start();
+         Waypoint[] points =
+         {
+             new Waypoint(0, 0, 0),
+             new Waypoint(3, 0, 0)
+         };
+         double dt = 0.05;
+         double cruiseVelocity = 5;
 
-   }
+         new GenerateAndFollowPath(points, dt, cruiseVelocity).start();
+    }
 
    /**
     * This function is called periodically during autonomous.
@@ -145,13 +151,6 @@ public class Robot extends TimedRobot {
     */
    @Override
    public void teleopInit() {
-      startTime = Timer.getFPGATimestamp();
-      setupPrintWriter();
-      log("Teleop initialized.");
-      // Elevator.getInstance().setElevator(ControlMode.Disabled, 0);
-      // Wrist.getInstance().setWrist(ControlMode.Disabled, 0);
-      // Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-      // Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
    }
 
    /**
@@ -160,23 +159,6 @@ public class Robot extends TimedRobot {
    @Override
    public void teleopPeriodic() {
       Scheduler.getInstance().run();
-      // SmartDashboard.putNumber("Elevator Position",
-      // Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
-      // talon.set(ControlMode.PercentOutput,
-      // OI.getInstance().getDriverGamepad().getRightY());
-      // System.out.println("completed: " + cgw.isCompleted() + " " +
-      // cgw.isRunning());
-      // talon.set(ControlMode.PercentOutput,
-      // OI.getInstance().getDriverGamepad().getRightX());
-      // sparkMax.set(OI.getInstance().getDriverGamepad().getRightX());
-
-      // SmartDashboard.putNumber("el current ",
-      // Elevator.getInstance().getFollowerTalon().getOutputCurrent());
-      // System.out.println("Elevator position: " +
-      // Elevator.getInstance().getMasterTalon().getSelectedSensorPosition() + " Wrist
-      // position: " +
-      // Wrist.getInstance().getMasterTalon().getSelectedSensorPosition());
-
    }
 
    /**
@@ -185,52 +167,6 @@ public class Robot extends TimedRobot {
     */
    @Override
    public void robotPeriodic() {
-      SmartDashboard.putNumber("DRIVER STATION TIME", DriverStation.getInstance().getMatchTime());
-      SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
-      SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
-      // SmartDashboard.putNumber("Left Error",
-      // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
-      // SmartDashboard.putNumber("Right Error",
-      // drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
-
-      // SmartDashboard.putNumber("Wrist Position",
-      // Wrist.getInstance().getCurrentAngleDegrees());
-      // SmartDashboard.putNumber("Elevator Position",
-      // Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
-      // SmartDashboard.putNumber("LEFT Y",
-      // OI.getInstance().getDriverGamepad().getLeftY());
-      // SmartDashboard.putNumber("el current",
-      // Elevator.getInstance().getMasterTalon().getOutputCurrent());
-
-      // SmartDashboard.putBoolean("Is extended?",
-      // HatchLatcher.getInstance().getExtenderState() == ExtenderDirection.OUT);
-
-      // /* Necessary for custom dashboard. Do not remove. */
-      // SmartDashboard.putBoolean("Has hatch?",
-      // HatchLatcher.getInstance().hasHatch());
-      // SmartDashboard.putBoolean("Is scoring on cargo ship?",
-      // OI.getInstance().getCargoBayToggleMode());
-      // SmartDashboard.putBoolean("Has wrist manual control?",
-      // OI.getInstance().getWristToggleMode());
-      // SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() ==
-      // ArmDirection.UP);
-      SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
-      SmartDashboard.putNumber("date", System.currentTimeMillis());
-
-      if (pw != null) {
-         pw.flush();
-      }
-      // //System.out.println(limelight.getCamtranData());
-      // SmartDashboard.putNumber("right y",
-      // OI.getInstance().getDriverGamepad().getRightY());
-      // SmartDashboard.putNumber("right x",
-      // OI.getInstance().getDriverGamepad().getRightX());
-      // SmartDashboard.putNumber("left y",
-      // OI.getInstance().getDriverGamepad().getLeftY());
-      // SmartDashboard.putNumber("left x",
-      // OI.getInstance().getDriverGamepad().getLeftX());
-
-      // System.out.println(OI.getInstance().getCustomOperatorGamepad().getBackwardThreePressed());
    }
 
    /**
@@ -238,10 +174,7 @@ public class Robot extends TimedRobot {
     */
    @Override
    public void testPeriodic() {
-      // System.out.println("elevator limit " +
-      // elevator.getMasterTalon().getSensorCollection().isRevLimitSwitchClosed());
-      // System.out.println("elevator limit fwd" +
-      // elevator.getMasterTalon().getSensorCollection().isFwdLimitSwitchClosed());
+
    }
 
    /**
@@ -253,50 +186,50 @@ public class Robot extends TimedRobot {
       return drivetrain;
    }
 
-   /**
-    * Gets the instance of the elevator on the robot.
-    * 
-    * @return the elevator
-    */
-   public static Elevator getElevator() {
-      return elevator;
-   }
+//    /**
+//     * Gets the instance of the elevator on the robot.
+//     * 
+//     * @return the elevator
+//     */
+//    public static Elevator getElevator() {
+//       return elevator;
+//    }
 
-   /**
-    * Gets the instance of the wrist on the robot.
-    * 
-    * @return the wrist
-    */
-   public static Wrist getWrist() {
-      return wrist;
-   }
+//    /**
+//     * Gets the instance of the wrist on the robot.
+//     * 
+//     * @return the wrist
+//     */
+//    public static Wrist getWrist() {
+//       return wrist;
+//    }
 
-   /**
-    * Gets the instance of the rollers on the robot.
-    * 
-    * @return the rollers
-    */
-   public static Rollers getRollers() {
-      return rollers;
-   }
+//    /**
+//     * Gets the instance of the rollers on the robot.
+//     * 
+//     * @return the rollers
+//     */
+//    public static Rollers getRollers() {
+//       return rollers;
+//    }
 
-   /**
-    * Gets the instance of the arm on the robot.
-    * 
-    * @return the arm
-    */
-   public static Arm getArm() {
-      return arm;
-   }
+//    /**
+//     * Gets the instance of the arm on the robot.
+//     * 
+//     * @return the arm
+//     */
+//    public static Arm getArm() {
+//       return arm;
+//    }
 
-   /**
-    * Gets the instance of the arm on the robot.
-    * 
-    * @return the arm
-    */
-   public static Intake getIntake() {
-      return intake;
-   }
+//    /**
+//     * Gets the instance of the arm on the robot.
+//     * 
+//     * @return the arm
+//     */
+//    public static Intake getIntake() {
+//       return intake;
+//    }
 
    /**
     * Gets the current time elapsed (in milliseconds) since the robot was last
@@ -310,8 +243,8 @@ public class Robot extends TimedRobot {
 
    @Override
    public void disabledInit() {
-      log("Disabled initialized.");
-      resetPrintWriter();
+      //log("Disabled initialized.");
+      //resetPrintWriter();
       // drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
 
       // elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
