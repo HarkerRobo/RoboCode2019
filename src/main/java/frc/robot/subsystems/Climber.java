@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -34,6 +35,7 @@ public class Climber extends Subsystem {
    private static final int PEAK_CURRENT_LIMIT_RIGHT;
    private static final int PEAK_TIME;
    public static final double CLIMB_SPEED = 1;
+   public static final double ARBITRARY_FF = 0.04;
     
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
@@ -95,6 +97,10 @@ public class Climber extends Subsystem {
 
     public void initDefaultCommand() {
         setDefaultCommand(new MoveClimberManual(ClimbDirection.UP));
+   }
+
+   public void setClimberMotionMagic(double value) {
+      leftTalon.set(ControlMode.MotionMagic, value, DemandType.ArbitraryFeedForward, Climber.ARBITRARY_FF);
    }
 
    public void setClimberOutput(ClimbDirection direction, double magnitude) {

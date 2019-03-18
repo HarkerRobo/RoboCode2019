@@ -31,7 +31,8 @@ public class MoveClimberManual extends IndefiniteCommand {
       if (OI.getInstance().getCurrentTriggerMode() == TriggerMode.CLIMB) {
          Climber.getInstance().setClimberOutput(climbDirection, leftDriverTrigger, rightDriverTrigger);
       } else {
-         Climber.getInstance().disableClimber();
+        // Climber.getInstance().setClimberOutput(climbDirection, 0);
+         Climber.getInstance().setClimberMotionMagic(0);
       }
    }
 }
