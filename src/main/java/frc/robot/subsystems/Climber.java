@@ -99,8 +99,9 @@ public class Climber extends Subsystem {
         setDefaultCommand(new MoveClimberManual(ClimbDirection.UP));
    }
 
-   public void setClimberMotionMagic(double value) {
-      leftTalon.set(ControlMode.MotionMagic, value, DemandType.ArbitraryFeedForward, Climber.ARBITRARY_FF);
+   public void setClimberMotionMagic(double leftPosition, double rightPosition) {
+      leftTalon.set(ControlMode.MotionMagic, leftPosition, DemandType.ArbitraryFeedForward, Climber.ARBITRARY_FF);
+      rightTalon.set(ControlMode.MotionMagic, rightPosition, DemandType.ArbitraryFeedForward, Climber.ARBITRARY_FF);
    }
 
    public void setClimberOutput(ClimbDirection direction, double magnitude) {
@@ -108,8 +109,8 @@ public class Climber extends Subsystem {
    }
 
    public void setClimberOutput(ClimbDirection direction, double leftMagnitude, double rightMagnitude) {
-      leftTalon.set(ControlMode.PercentOutput, leftMagnitude * direction.getSign());
-      rightTalon.set(ControlMode.PercentOutput, rightMagnitude * direction.getSign());
+      leftTalon.set(ControlMode.PercentOutput, leftMagnitude * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF);
+      rightTalon.set(ControlMode.PercentOutput, rightMagnitude * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF);
    }
 
    public void disableClimber() {

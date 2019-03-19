@@ -139,8 +139,8 @@ public class OI {
          }
       });
         
-      //driverGamepad.getButtonSelect()
-     //       .whenPressed(new CallMethodCommand(() -> currentTriggerMode = TriggerMode.CLIMB));
+      driverGamepad.getButtonSelect()
+           .whenPressed(new CallMethodCommand(() -> currentTriggerMode = TriggerMode.CLIMB));
       driverGamepad.getButtonStart().whenPressed(new CallMethodCommand (() -> {
           if (currentTriggerMode == TriggerMode.ALIGN || currentTriggerMode == TriggerMode.WRIST_MANUAL) {
             currentTriggerMode = (currentTriggerMode == TriggerMode.ALIGN ? TriggerMode.WRIST_MANUAL : TriggerMode.ALIGN);

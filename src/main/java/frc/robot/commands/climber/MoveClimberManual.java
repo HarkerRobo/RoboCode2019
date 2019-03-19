@@ -25,14 +25,14 @@ public class MoveClimberManual extends IndefiniteCommand {
 
    @Override
    protected void execute() {
-      double leftDriverTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND_TRIGGER);
-      double rightDriverTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND_TRIGGER);
 
+      double leftTriggerOutput = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND_TRIGGER);
+      double rightTriggerOutput = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND_TRIGGER);
+         
       if (OI.getInstance().getCurrentTriggerMode() == TriggerMode.CLIMB) {
-         Climber.getInstance().setClimberOutput(climbDirection, leftDriverTrigger, rightDriverTrigger);
+         Climber.getInstance().setClimberOutput(climbDirection, leftTriggerOutput, rightTriggerOutput);
       } else {
-        // Climber.getInstance().setClimberOutput(climbDirection, 0);
-         Climber.getInstance().setClimberMotionMagic(0);
+         Climber.getInstance().setClimberOutput(ClimbDirection.UP, 0);
       }
    }
 }
