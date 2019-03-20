@@ -19,10 +19,10 @@ public class MoveWristPosition extends Command {
    private double position;
 
    public static final double KF = 0.0;
-   public static final double KP = 0.5;
-   public static final double KI = 0;
-   public static final double KD = 1;
-   public static final int IZONE = 0;
+   public static final double KP = 1.1;
+   public static final double KI = 0.0025;
+   public static final double KD = 75;
+   public static final int IZONE = 150;
 
    public MoveWristPosition(double angle) {
       requires(Wrist.getInstance());
@@ -51,7 +51,7 @@ public class MoveWristPosition extends Command {
     */
    @Override
    protected boolean isFinished() {
-      return true;// return
+      return false;// return
                   // Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT))
                   // < Wrist.ALLOWABLE_ERROR;
    }

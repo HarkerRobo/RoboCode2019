@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
        intake = Intake.getInstance();
        rollers = Rollers.getInstance();
        wrist = Wrist.getInstance();
-       //climber = Climber.getInstance();
+       climber = Climber.getInstance();
        hatchLatcher = HatchLatcher.getInstance();
        oi = OI.getInstance();
        limelight = Limelight.getInstance();
@@ -105,7 +105,7 @@ public class Robot extends TimedRobot {
        wrist.talonInit();
        rollers.talonInit();
        intake.controllerInit();
-      // climber.talonInit();
+      climber.talonInit();
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
       // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);
@@ -188,6 +188,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("DRIVER STATION TIME", DriverStation.getInstance().getMatchTime());
       SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
       SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
+      SmartDashboard.putNumber("right climber current", Climber.getInstance().getLeftTalon().getOutputCurrent());
       // SmartDashboard.putNumber("Left Error",
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
       // SmartDashboard.putNumber("Right Error",
@@ -214,6 +215,8 @@ public class Robot extends TimedRobot {
       OI.getInstance().getCurrentTriggerMode().getValue());
       SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() ==
       ArmDirection.UP);
+
+      SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
       // SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
       // SmartDashboard.putNumber("date", System.currentTimeMillis());
 

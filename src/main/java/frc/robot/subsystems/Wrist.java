@@ -233,7 +233,7 @@ public class Wrist extends Subsystem {
       wristMaster.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
       wristMaster.configPeakCurrentDuration(PEAK_TIME);
       wristMaster.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-      wristMaster.enableCurrentLimit(true);
+      wristMaster.enableCurrentLimit(false);
 
       wristMaster.setSensorPhase(SENSOR_PHASE);
       // wristMaster.setSelectedSensorPosition(0);
