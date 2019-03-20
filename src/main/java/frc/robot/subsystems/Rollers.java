@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -12,6 +13,7 @@ import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.rollers.SpinRollersManual;
 import frc.robot.util.Pair;
+import harkerrobolib.util.MathUtil;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -63,6 +65,7 @@ public class Rollers extends Subsystem {
 
    public static final double STOP_INTAKING_CURRENT = 15;
 
+   public static final double ARBITRARY_FF = 0.15;
    private static Rollers instance;
    private HSTalon rTalonTop;
 
@@ -75,7 +78,7 @@ public class Rollers extends Subsystem {
 
    @Override
    protected void initDefaultCommand() {
-      // setDefaultCommand(new SpinRollersManual());
+       setDefaultCommand(new SpinRollersManual());
    }
 
    /**
@@ -112,7 +115,7 @@ public class Rollers extends Subsystem {
    }
 
    public void moveRollers(double output, RollerDirection direction) {
-      rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign());
+      rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign(), DemandType.ArbitraryFeedForward, output < 10e-7 ? ARBITRARY_FF * RollerDirection.IN.getSign() : 0);
    }
 
    public double getRecommendedRollersInput() {

@@ -28,35 +28,36 @@ public class SpinRollersManual extends IndefiniteCommand {
     */
    @Override
    public void execute() {
-      double output = 0.0;
-      RollerDirection rollerDirection = RollerDirection.IN;
-      if (OI.getInstance().getDriver() == OI.Driver.CHRIS) {
-         if (OI.getInstance().getDriverGamepad().getButtonXState()) {
-            output = Rollers.getInstance().getRecommendedRollersOutput();
-            rollerDirection = RollerDirection.OUT;
-         } else if (OI.getInstance().getDriverGamepad().getButtonYState()) {
-            output = Rollers.getInstance().getRecommendedRollersInput();
-            rollerDirection = RollerDirection.IN;
-         } else {
-            output = 0.0;
-            rollerDirection = RollerDirection.IN;
-         }
-      } else {
-         if (OI.getInstance().getDriverGamepad().getButtonXState()) {
-            output = Rollers.getInstance().getRecommendedRollersInput();
-            rollerDirection = rollerDirection.IN;
-         } else {
-            if (OI.getInstance().getDriverGamepad().getButtonYState()) {
-               output = Rollers.getInstance().getRecommendedRollersOutput();
-               rollerDirection = rollerDirection.OUT;
-            }
-         }
-      }
+      System.out.println("rollers manual");
+      // double output = 0.0;
+      // RollerDirection rollerDirection = RollerDirection.IN;
+      // if (OI.getInstance().getDriver() == OI.Driver.CHRIS) {
+      //    if (OI.getInstance().getDriverGamepad().getButtonXState()) {
+      //       output = Rollers.getInstance().getRecommendedRollersOutput();
+      //       rollerDirection = RollerDirection.OUT;
+      //    } else if (OI.getInstance().getDriverGamepad().getButtonYState()) {
+      //       output = Rollers.getInstance().getRecommendedRollersInput();
+      //       rollerDirection = RollerDirection.IN;
+      //    } else {
+      //       output = 0.0;
+      //       rollerDirection = RollerDirection.IN;
+      //    }
+      // } else {
+      //    if (OI.getInstance().getDriverGamepad().getButtonXState()) {
+      //       output = Rollers.getInstance().getRecommendedRollersInput();
+      //       rollerDirection = rollerDirection.IN;
+      //    } else {
+      //       if (OI.getInstance().getDriverGamepad().getButtonYState()) {
+      //          output = Rollers.getInstance().getRecommendedRollersOutput();
+      //          rollerDirection = rollerDirection.OUT;
+      //       }
+      //    }
+      // }
 
       // if(rollerDirection == RollerDirection.IN && (Math.abs(output.getFirst()) >
       // Rollers.HATCH_STOW_SPEED ||
       // Math.abs(output.getSecond()) > Rollers.HATCH_STOW_SPEED)){}
       // (new LoadOrScoreHatch(ScoreState.LOAD)).start();
-      Rollers.getInstance().moveRollers(output, rollerDirection);
+      Rollers.getInstance().moveRollers(0, RollerDirection.IN);
    }
 }

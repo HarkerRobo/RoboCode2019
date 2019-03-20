@@ -156,7 +156,7 @@ public class SetScoringPosition extends CommandGroup {
       addSequential(new ConditionalCommand(isDefenseMode, new MoveWristMotionMagic(Wrist.SAFE_BACKWARD_POSITION)));
 
       addSequential(new ConditionalCommand(() -> Arm.getInstance().getDirection() == ArmDirection.UP && 
-                                                !(Wrist.getInstance().getCurrentSide() == Side.BACK && desiredSide == Side.BACK),
+                                                !(Wrist.getInstance().getCurrentSide() == Side.BACK && desiredSide == Side.BACK), //is it bc sometimes desired side changes throughout?
             new ConditionalCommand(
                   () -> Wrist.getInstance().getCurrentSide() == Side.FRONT
                         && Elevator.getInstance().isBelow(Elevator.ARM_COLLISION_HEIGHT),
