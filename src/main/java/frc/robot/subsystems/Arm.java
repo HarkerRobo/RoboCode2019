@@ -24,8 +24,8 @@ public class Arm extends Subsystem {
 
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-         ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
-         ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
+         ARM_UP_VALUE = DoubleSolenoid.Value.kForward;
+         ARM_DOWN_VALUE = DoubleSolenoid.Value.kReverse;
       } else {
          ARM_UP_VALUE = DoubleSolenoid.Value.kReverse;
          ARM_DOWN_VALUE = DoubleSolenoid.Value.kForward;
