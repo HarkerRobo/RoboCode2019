@@ -29,13 +29,13 @@ const updateToggleModes = () => {
     }
 
     if (wristMode == 0) { // Limelight align
-        document.getElementById("wrist").style.display = "inline-block";
-        document.getElementById("align").style.display = "none";
+        document.getElementById("wrist").style.display = "none";
+        document.getElementById("align").style.display = "inline-block";
         document.getElementById("climb").style.display = "none"
     }
     else if (wristMode == 1) { // Wrist Manual Control
-        document.getElementById("wrist").style.display = "none";
-        document.getElementById("align").style.display = "inline-block";
+        document.getElementById("wrist").style.display = "inline-block";
+        document.getElementById("align").style.display = "none";
         document.getElementById("climb").style.display = "none"
     } else { // Climb
         document.getElementById("wrist").style.display = "none";
