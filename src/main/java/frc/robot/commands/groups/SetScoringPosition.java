@@ -111,9 +111,7 @@ public class SetScoringPosition extends CommandGroup {
       }
    }
 
-   private Location desiredLocation;
 
-   private Side desiredSide;
 
    public static final double PASSTHROUGH_WAIT_TIME = 0;//.25;
 
@@ -122,9 +120,6 @@ public class SetScoringPosition extends CommandGroup {
    }
 
    public SetScoringPosition(Location desiredLocation, Supplier<Boolean> doHatch) {
-
-      this.desiredLocation = desiredLocation;
-
       Supplier<Integer> getDesiredHeight = () -> doHatch.get() ? desiredLocation.getHatchHeight()
             : desiredLocation.getCargoHeight();
       Supplier<Integer> getDesiredAngle = () -> doHatch.get() ? desiredLocation.getHatchAngle()
@@ -140,7 +135,7 @@ public class SetScoringPosition extends CommandGroup {
             && Arm.getInstance().getDirection() == ArmDirection.UP;
 
       addSequential(new CallMethodCommand(() -> Robot.log("SetScoringPosition to " + desiredLocation.name()
-            + " with desired Height, " + getDesiredHeight + " , desired Angle, " + getDesiredAngle + ".")));
+            + " with desired Height, " + getDesiredHeight.get() + " , desired Angle, " + getDesiredAngle.get() + ".")));
       addSequential(new InstantCommand() {
          @Override
          public void initialize() {
@@ -156,7 +151,7 @@ public class SetScoringPosition extends CommandGroup {
       addSequential(new ConditionalCommand(isDefenseMode, new MoveWristMotionMagic(Wrist.SAFE_BACKWARD_POSITION)));
 
       addSequential(new ConditionalCommand(() -> Arm.getInstance().getDirection() == ArmDirection.UP && 
-                                                !(Wrist.getInstance().getCurrentSide() == Side.BACK && desiredSide == Side.BACK), //is it bc sometimes desired side changes throughout?
+                                                !(Wrist.getInstance().getCurrentSide() == Side.BACK && getDesiredSide.get() == Side.BACK), //is it bc sometimes desired side changes throughout?
             new ConditionalCommand(
                   () -> Wrist.getInstance().getCurrentSide() == Side.FRONT
                         && Elevator.getInstance().isBelow(Elevator.ARM_COLLISION_HEIGHT),
