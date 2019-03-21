@@ -17,13 +17,11 @@ import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
-import frc.robot.commands.wrist.MoveWristIndefinite;
 import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
-import frc.robot.subsystems.Wrist.WristDirection;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.CustomOperatorGamepad;
 import frc.robot.util.RunIfNotEqualCommand;
@@ -209,8 +207,6 @@ public class OI {
       customOperatorGamepad.getZeroElevatorButton().whilePressed(new ZeroElevator());
       customOperatorGamepad.getHatchIntakingButton().whenPressed(new RunIfNotEqualCommand(
             () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
-
-      driverGamepad.getDownDPadButton().whilePressed(new MoveWristIndefinite(0.8, WristDirection.TO_BACK));
    }
 
    public HSGamepad getDriverGamepad() {

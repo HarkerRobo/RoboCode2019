@@ -21,7 +21,6 @@ public class MoveClimberManual extends IndefiniteCommand {
 
    public MoveClimberManual(ClimbDirection climberDirection) {
       requires(Climber.getInstance());
-      this.climbDirection = climberDirection;
    }
 
    @Override
@@ -30,9 +29,7 @@ public class MoveClimberManual extends IndefiniteCommand {
       double leftTriggerOutput = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND_TRIGGER);
       double rightTriggerOutput = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND_TRIGGER);
          
-
       if (OI.getInstance().getCurrentTriggerMode() == TriggerMode.CLIMB) {
-         System.out.println("ready to climb");
          Climber.getInstance().setClimberOutput(climbDirection, leftTriggerOutput, rightTriggerOutput);
       } else {
          Climber.getInstance().setClimberOutput(ClimbDirection.UP, 0);

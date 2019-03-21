@@ -182,8 +182,7 @@ public class SetScoringPosition extends CommandGroup {
             new MoveElevatorMotionMagic(getSafePassthroughHeight)));
       addSequential(
             new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean(), new WaitCommand(PASSTHROUGH_WAIT_TIME)));
-      // CHANGE PASSTHROUGH LOW TO RAISE ELEVATOR BEFORE FINISHING PASSTHROUGH (OTHERWISE WILL HIT CLIMBER)
-            addSequential(new MoveWristMotionMagic(
+      addSequential(new MoveWristMotionMagic(
             () -> (mustPassthroughLow.getAsBoolean()
                   ? (getDesiredSide.get() == Side.FRONT ? Wrist.FRONT_LOW_PASSTHROUGH_ANGLE
                         : Wrist.BACK_LOW_PASSTHROUGH_ANGLE)

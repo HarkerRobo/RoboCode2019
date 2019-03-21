@@ -79,8 +79,8 @@ public class RobotMap {
             BALL_INTAKE_MASTER_SPARK = 3;
             BALL_INTAKE_MASTER_VICTOR = 0;
             ARM_MASTER = 0;
-            CLIMBER_TALON_LEFT = 1;
-            CLIMBER_TALON_RIGHT = 4;
+            CLIMBER_TALON_LEFT = 0;
+            CLIMBER_TALON_RIGHT = 0;
 
             RO_TOP = 0;
             RO_BOTTOM = 1;

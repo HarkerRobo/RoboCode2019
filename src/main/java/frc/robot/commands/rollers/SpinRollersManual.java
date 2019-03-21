@@ -28,6 +28,7 @@ public class SpinRollersManual extends IndefiniteCommand {
     */
    @Override
    public void execute() {
+      System.out.println("rollers manual");
       // double output = 0.0;
       // RollerDirection rollerDirection = RollerDirection.IN;
       // if (OI.getInstance().getDriver() == OI.Driver.CHRIS) {

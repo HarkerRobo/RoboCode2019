@@ -123,7 +123,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
    }
 
    public void end() {
-      Drivetrain.getInstance().getLeftMaster().set(ControlMode.Disabled, 0); 
+      Drivetrain.getInstance().getLeftMaster().set(ControlMode.Disabled, 0);
       Drivetrain.getInstance().getRightMaster().set(ControlMode.Disabled, 0);
    }
 }
