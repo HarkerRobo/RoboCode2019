@@ -193,10 +193,7 @@ public class Robot extends TimedRobot {
       // SmartDashboard.putNumber("Right Error",
       // drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
 
-      // SmartDashboard.putNumber("Wrist Position",
-      // Wrist.getInstance().getCurrentAngleDegrees());
-      // SmartDashboard.putNumber("Elevator Position",
-      // Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
+      
       // SmartDashboard.putNumber("LEFT Y",
       // OI.getInstance().getDriverGamepad().getLeftY());
       // SmartDashboard.putNumber("el current",
@@ -214,6 +211,10 @@ public class Robot extends TimedRobot {
       OI.getInstance().getCurrentTriggerMode().getValue());
       SmartDashboard.putBoolean("Arm up?", Arm.getInstance().getDirection() ==
       ArmDirection.UP);
+      SmartDashboard.putNumber("Wrist Position",
+      Wrist.getInstance().getCurrentAngleDegrees());
+      SmartDashboard.putNumber("Elevator Position",
+      Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
       // SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
       // SmartDashboard.putNumber("date", System.currentTimeMillis());
 
