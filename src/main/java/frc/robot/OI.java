@@ -8,6 +8,7 @@ import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
+import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
@@ -31,6 +32,7 @@ import harkerrobolib.auto.ParallelCommandGroup;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
 import harkerrobolib.wrappers.HSGamepad;
+import harkerrobolib.wrappers.LogitechAnalogGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
 /**
@@ -70,6 +72,7 @@ public class OI {
    private HSGamepad driverGamepad;
    private CustomOperatorGamepad customOperatorGamepad;
    private static OI instance;
+   private static HSGamepad operatorGamepad;
 
    private TriggerMode currentTriggerMode;
 
@@ -98,7 +101,8 @@ public class OI {
    private OI() {
       driver = Driver.CHRIS;
       driverGamepad = new XboxGamepad(DRIVER_PORT);
-      customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
+      operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);
+      //customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
       cargoBayToggleMode = false;
       wristToggleMode = false;
       driveStraightMode = false;
@@ -141,6 +145,8 @@ public class OI {
         
       // driverGamepad.getButtonSelect()
       //      .whenPressed(new CallMethodCommand(() -> currentTriggerMode = TriggerMode.CLIMB));
+      driverGamepad.getButtonSelect()
+         .whenPressed(new ToggleLimelightLEDMode());
       driverGamepad.getButtonStart().whenPressed(new CallMethodCommand (() -> {
           if (currentTriggerMode == TriggerMode.ALIGN || currentTriggerMode == TriggerMode.WRIST_MANUAL) {
             currentTriggerMode = (currentTriggerMode == TriggerMode.ALIGN ? TriggerMode.WRIST_MANUAL : TriggerMode.ALIGN);
@@ -179,34 +185,58 @@ public class OI {
          }
       });
 
-      customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+      // customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_FRONT),
+      //             () -> Robot.getSetScoringCommand()),
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F1), () -> Robot.getSetScoringCommand())));
+      // customOperatorGamepad.getBackwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_BACK),
+      //             () -> Robot.getSetScoringCommand()),
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B1), () -> Robot.getSetScoringCommand())));
+
+      // customOperatorGamepad.getForwardOneButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F1), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getForwardTwoButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F2), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getForwardThreeButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F3), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getBackwardOneButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B1), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getBackwardTwoButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B2), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getBackwardThreeButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B3), () -> Robot.getSetScoringCommand()));
+
+      // customOperatorGamepad.getCargoIntakingButton().whenPressed(new RunIfNotEqualCommand(
+      //       () -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getZeroWristButton().whilePressed(new ZeroWrist());
+      // customOperatorGamepad.getZeroElevatorButton().whilePressed(new ZeroElevator());
+      // customOperatorGamepad.getHatchIntakingButton().whenPressed(new RunIfNotEqualCommand(
+      //       () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
+
+      operatorGamepad.getDownDPadButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_FRONT),
                   () -> Robot.getSetScoringCommand()),
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F1), () -> Robot.getSetScoringCommand())));
-      customOperatorGamepad.getBackwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+      operatorGamepad.getButtonA().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_BACK),
                   () -> Robot.getSetScoringCommand()),
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B1), () -> Robot.getSetScoringCommand())));
 
-      customOperatorGamepad.getForwardOneButton().whenPressed(
-            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F1), () -> Robot.getSetScoringCommand()));
-      customOperatorGamepad.getForwardTwoButton().whenPressed(
+      operatorGamepad.getUpDPadButton().whenPressed(
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F2), () -> Robot.getSetScoringCommand()));
-      customOperatorGamepad.getForwardThreeButton().whenPressed(
-            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F3), () -> Robot.getSetScoringCommand()));
-      customOperatorGamepad.getBackwardOneButton().whenPressed(
-            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B1), () -> Robot.getSetScoringCommand()));
-      customOperatorGamepad.getBackwardTwoButton().whenPressed(
+      operatorGamepad.getButtonY().whenPressed(
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B2), () -> Robot.getSetScoringCommand()));
-      customOperatorGamepad.getBackwardThreeButton().whenPressed(
-            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B3), () -> Robot.getSetScoringCommand()));
 
-      customOperatorGamepad.getCargoIntakingButton().whenPressed(new RunIfNotEqualCommand(
+      operatorGamepad.getButtonBumperLeft().whenPressed(new RunIfNotEqualCommand(
             () -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand()));
-      customOperatorGamepad.getZeroWristButton().whilePressed(new ZeroWrist());
-      customOperatorGamepad.getZeroElevatorButton().whilePressed(new ZeroElevator());
-      customOperatorGamepad.getHatchIntakingButton().whenPressed(new RunIfNotEqualCommand(
-            () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
+      operatorGamepad.getButtonBumperRight().whenPressed(new RunIfNotEqualCommand(
+         () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
+      Trigger leftTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.LEFT);
+      leftTriggerOperator.whileActive(new ZeroWrist());
+      
+      Trigger rightTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.RIGHT);
+      rightTriggerOperator.whileActive(new ZeroElevator()); 
    }
 
    public HSGamepad getDriverGamepad() {
@@ -215,6 +245,10 @@ public class OI {
 
    public CustomOperatorGamepad getCustomOperatorGamepad() {
       return customOperatorGamepad;
+   }
+
+   public HSGamepad getOperatorGamepad() {
+      return operatorGamepad;
    }
 
    public Driver getDriver() {

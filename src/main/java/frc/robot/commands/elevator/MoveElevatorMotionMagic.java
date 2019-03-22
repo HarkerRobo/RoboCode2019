@@ -44,7 +44,7 @@ public class MoveElevatorMotionMagic extends Command {
          KD = 5;
          IZONE = 500;
          MOTION_MAGIC_ACCELERATION = 10000;
-         CRUISE_VELOCITY = 5000;
+         CRUISE_VELOCITY = 6000;
 
          MOTION_MAGIC_SENSOR_PHASE = false;
          ALLOWABLE_ERROR = 100;

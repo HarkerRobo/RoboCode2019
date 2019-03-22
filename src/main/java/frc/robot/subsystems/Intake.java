@@ -56,7 +56,7 @@ public class Intake extends Subsystem {
       }
 
    }
-   public final static double DEFAULT_INTAKE_MAGNITUDE = 0.8;
+   public final static double DEFAULT_INTAKE_MAGNITUDE = 0.5;
 
    public void setControllerOutput(double magnitude, IntakeDirection direction) {
       setControllerOutput(magnitude * direction.getSign());

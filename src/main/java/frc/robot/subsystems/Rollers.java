@@ -56,6 +56,7 @@ public class Rollers extends Subsystem {
    private static final int PEAK_TIME = 500;
    private static final double ROCKET_HIGH_SCORING_SPEED = 0.8;
    private static final double TOP_SPIN = 0.1;
+   private static final double INTAKE_SPEED = 1;
 
    public static final double DEFAULT_ROLLER_MAGNITUDE = 0.8;
    public static final double ROLLER_SHOOTING_SPEED = 0.65;
@@ -103,7 +104,7 @@ public class Rollers extends Subsystem {
 
       rTalonTop.configPeakCurrentDuration(PEAK_TIME);
 
-      rTalonTop.enableCurrentLimit(true);
+      rTalonTop.enableCurrentLimit(false);
    }
 
    public HSTalon getTopTalon() {
@@ -119,7 +120,7 @@ public class Rollers extends Subsystem {
    }
 
    public double getRecommendedRollersInput() {
-      return DEFAULT_ROLLER_MAGNITUDE;
+      return INTAKE_SPEED;
    }
 
    /**

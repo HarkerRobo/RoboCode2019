@@ -60,8 +60,8 @@ public class MoveElevatorManual extends IndefiniteCommand {
          isHolding = true;
       }
 
-      boolean isWristPullingUp = Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)
-            && Wrist.getInstance().getCurrentSide() == Side.FRONT;
+      boolean isWristPullingUp = false;//Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)
+            // && Wrist.getInstance().getCurrentSide() == Side.FRONT;
       if (isHolding && shouldClosedLoop && !isWristPullingUp) {
          Elevator.getInstance().setElevator(ControlMode.MotionMagic, lastPos);
       } else if (isWristPullingUp) {

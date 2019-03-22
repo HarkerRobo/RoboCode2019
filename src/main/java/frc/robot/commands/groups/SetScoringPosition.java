@@ -8,7 +8,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
+import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.OI.TriggerMode;
 import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.elevator.MoveElevatorManual;
@@ -26,6 +28,7 @@ import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
+import harkerrobolib.util.MathUtil;
 
 /**
  * Passes through and moves to a desired height.
@@ -209,9 +212,17 @@ public class SetScoringPosition extends CommandGroup {
    }
 
    public void end() {
-      System.out.println("Set scoring position end");
+      Robot.log("Set scoring position end");
       ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition();
       ((MoveWristManual) Wrist.getInstance().getDefaultCommand()).setLastPosition();
+   }
+
+   @Override
+   public boolean isFinished() {
+         return super.isFinished() || MathUtil.mapJoystickOutput(Math.abs(OI.getInstance().getDriverGamepad().getRightY()), OI.DRIVER_DEADBAND) > 0 || 
+                  (OI.getInstance().getCurrentTriggerMode() == TriggerMode.WRIST_MANUAL && 
+                       (MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND_TRIGGER) > 0 ||
+                       MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND_TRIGGER) > 0));
    }
 
    public int getDesiredHeight () {
