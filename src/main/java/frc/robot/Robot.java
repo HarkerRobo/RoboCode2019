@@ -188,6 +188,8 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("DRIVER STATION TIME", DriverStation.getInstance().getMatchTime());
       SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
       SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
+      SmartDashboard.putBoolean("DPad UP ", OI.getInstance().getOperatorGamepad().getUpDPadButton().get());
+
       // SmartDashboard.putNumber("Left Error",
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
       // SmartDashboard.putNumber("Right Error",
@@ -313,10 +315,12 @@ public class Robot extends TimedRobot {
    public void disabledInit() {
       log("Disabled initialized.");
       resetPrintWriter();
+      ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).disableClosedLoop();
+      ((MoveWristManual) Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
       // drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
 
-      // elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
-      // wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
+      elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
+      wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
 
       // ((MoveWristManual)
       // Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
