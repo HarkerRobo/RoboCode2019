@@ -26,6 +26,7 @@ import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.ConditionalCommand;
 import frc.robot.util.Pair;
+import harkerrobolib.auto.ParallelCommandGroup;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
 import harkerrobolib.util.MathUtil;
@@ -177,7 +178,10 @@ public class SetScoringPosition extends CommandGroup {
                                                                                                                        // to
                                                                                                                        // max
                                                                                                                        // passthrough
-            new MoveElevatorMotionMagic(getSafePassthroughHeight)));
+            new ParallelCommandGroup(new MoveWristMotionMagic(() -> Wrist.getInstance().getCurrentSide() == Side.FRONT ? 
+                                                                  Wrist.FRONT_LOW_PASSTHROUGH_ANGLE
+                                                                  : Wrist.BACK_LOW_PASSTHROUGH_ANGLE
+                                                                  ), new MoveElevatorMotionMagic(getSafePassthroughHeight))));
       addSequential(
             new ConditionalCommand(() -> mustPassthroughLow.getAsBoolean(), new WaitCommand(PASSTHROUGH_WAIT_TIME)));
       addSequential(new MoveWristMotionMagic(
@@ -206,9 +210,13 @@ public class SetScoringPosition extends CommandGroup {
       addSequential(new ConditionalCommand(
             () -> HatchLatcher.getInstance().hasHatch() && desiredLocation != Location.HATCH_INTAKE
                   && desiredLocation != Location.CARGO_INTAKE
-                  && (desiredLocation != Location.PARALLEL_BACK || desiredLocation != Location.PARALLEL_FRONT),
+                  && desiredLocation != Location.PARALLEL_BACK 
+                  && desiredLocation != Location.PARALLEL_FRONT,
             new SetExtenderState(ExtenderDirection.OUT)));
-      addSequential(new ConditionalCommand(() -> desiredLocation != Location.CARGO_INTAKE, new SetArmPosition(ArmDirection.UP)));
+      addSequential(new ConditionalCommand(() -> desiredLocation != Location.CARGO_INTAKE && 
+                                                 desiredLocation != Location.PARALLEL_BACK && 
+                                                 desiredLocation != Location.PARALLEL_FRONT, 
+                        new SetArmPosition(ArmDirection.UP)));
    }
 
    public void end() {
