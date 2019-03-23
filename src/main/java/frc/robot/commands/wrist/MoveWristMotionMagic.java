@@ -33,13 +33,13 @@ public class MoveWristMotionMagic extends Command {
 
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-         KF = 2.6;
+         KF = 2.79;
          KP = 1.1;
          KI = 0.0025;
-         KD = 100;
+         KD = 75;
          IZONE = 150;
-         ACCELERATION = (int) (325 * 1.20);
-         CRUISE_VELOCITY = (int) (300 * 1.20);
+         ACCELERATION = (int) (315 * 1.20);
+         CRUISE_VELOCITY = (int) (300 * 1.28);
       } else {
          KF = 2.79;
          KP = 1.1;
