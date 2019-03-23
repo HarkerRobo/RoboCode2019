@@ -25,15 +25,16 @@ import harkerrobolib.commands.CallMethodCommand;
  */
 public class StowHatchAndCargoIntake extends SequentialCommandGroup {
 
-      public static final double ARM_WAIT_TIME = 4;
+      public static final double ARM_WAIT_TIME = 0.5;
    public StowHatchAndCargoIntake() {
       super(new CallMethodCommand(() -> Robot.log("Entering defense mode.")),
             new SetExtenderState(ExtenderDirection.IN),
-            new ConditionalCommand(
-                  () -> (Wrist.getInstance().getCurrentSide() == Side.FRONT
-                        && !Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)),
-                  new SetScoringPosition(Location.PARALLEL_FRONT), new SetScoringPosition(Location.PARALLEL_BACK)),
-            new CallMethodCommand(() -> System.out.println("Waiting for " + ARM_WAIT_TIME + "seconds")),
+            new SetScoringPosition(Location.CARGO_INTAKE, () -> false),
+            // new ConditionalCommand(
+            //       () -> (Wrist.getInstance().getCurrentSide() == Side.FRONT
+            //             && !Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)),
+            //       //new SetScoringPosition(Location.PARALLEL_FRONT), new SetScoringPosition(Location.PARALLEL_BACK)),
+            // new CallMethodCommand(() -> System.out.println("Waiting for " + ARM_WAIT_TIME + "seconds")),
             new MoveWristMotionMagic(Wrist.MID_POSITION), new WaitCommand(ARM_WAIT_TIME), new SetArmPosition(ArmDirection.UP));
    }
 }

@@ -383,7 +383,7 @@ public class Robot extends TimedRobot {
          } catch (Exception e) {
             e.printStackTrace();
          }
-      }
+      } 
    }
 
    private void resetPrintWriter() {
