@@ -23,6 +23,7 @@ public class SetLimelightLEDMode extends InstantCommand {
 
    public SetLimelightLEDMode(LEDMode mode) {
       this.mode = mode;
+      this.setRunWhenDisabled(true);
    }
 
    public void initialize() {

@@ -105,6 +105,7 @@ public class Robot extends TimedRobot {
        wrist.talonInit();
        rollers.talonInit();
        intake.controllerInit();
+       new SetLimelightLEDMode(LEDMode.OFF).start();
       // climber.talonInit();
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
