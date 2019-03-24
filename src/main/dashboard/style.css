@@ -3,6 +3,7 @@ div {
     display: inline-block;
     white-space: nowrap;
 }
+
 img {
     float:left;
 }
@@ -11,13 +12,12 @@ img {
     font-size: 30pt;
 }
 
-.hidden {
-    display: none;
+.medium {
+    font-size: 20pt;
 }
 
-#limelight, #canvas {
-    width: 30vw;
-    height: 22.5vw;
+.hidden {
+    display: none;
 }
 
 #canvas {
@@ -41,4 +41,12 @@ span {
 #pneumatics {
     position: absolute;
     right: 2vh;
+}
+
+.red {
+    color: red;
+}
+
+.green { 
+    color: green;
 }

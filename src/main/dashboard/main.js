@@ -1,33 +1,62 @@
-const ctx = document.getElementById("canvas").getContext("2d");
-let limelightLoaded = false;
+/**
+ * Loads the limelight feed, drawing an error message if a connection was not made.
+ */
+loadCameraOnConnect({
+    container: "#llfeed",
+    proto: "http://",
+    host: "10.10.72.11",
+    port: "5802",
+    attrs: {
+        width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) * 0.3, // replacement for hv and wv since 
+        height: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) * 0.225 // the library is bad
+    }
+});
 
-const updateToggleModes = () => {
-    let isCargoShipEnabled = NetworkTables.getValue("/SmartDashboard/Is scoring on cargo ship?");
-    let isHatchEnabled = NetworkTables.getValue("/SmartDashboard/Has hatch?");
-    let wristMode = Math.round(NetworkTables.getValue("/SmartDashboard/Trigger Mode"));
-    let isExtenderExtended = NetworkTables.getValue("/SmartDashboard/Is extended?");
+/**
+ * Updates whether the dashboard has a connection to the robot.
+ */
+NetworkTables.addRobotConnectionListener((connected) => {
+    document.getElementById("robot-connected").innerHTML = `Robot ${connected ? "Connected" : "Disconnected"}`;
+    if(connected) {
+        document.getElementById("robot-connected").classList.remove("red");
+        document.getElementById("robot-connected").classList.add("green");
+    } else {
+        document.getElementById("robot-connected").classList.remove("green");
+        document.getElementById("robot-connected").classList.add("red");
+    }
+}, true);
 
-    // let isCargoShipEnabled = true;
-    // let isHatchEnabled = false
-    // let wristMode = 2;
-    // let isExtenderExtended = true;
-
-    if(isCargoShipEnabled) {
+/**
+ * Updates cargo ship/rocket scoring mode.
+ */
+NetworkTables.addKeyListener("/SmartDashboard/Is scoring on cargo ship?", (key, value) => {
+    if(value) {
         document.getElementById("cargoship").style.display = "inline-block";
         document.getElementById("rocket").style.display = "none";
     } else {
         document.getElementById("cargoship").style.display = "none";
         document.getElementById("rocket").style.display = "inline-block";
     }
+}, true);
 
-    if(isHatchEnabled) {
+/**
+ * Updates whether the robot has a hatch or cargo.
+ */
+NetworkTables.addKeyListener("/SmartDashboard/Has hatch?", (key, value) => {
+    if(value) {
         document.getElementById("hatch").style.display = "inline-block";
         document.getElementById("cargo").style.display = "none";
     } else {
         document.getElementById("hatch").style.display = "none";
         document.getElementById("cargo").style.display = "inline-block";
     }
+}, true);
 
+/**
+ * Updates the action that performs when the trigger is actuated.
+ */
+NetworkTables.addKeyListener("/SmartDashboard/Trigger Mode", (key, value) => {
+    const wristMode = Math.round(value);
     if (wristMode == 0) { // Limelight align
         document.getElementById("wrist").style.display = "none";
         document.getElementById("align").style.display = "inline-block";
@@ -42,20 +71,33 @@ const updateToggleModes = () => {
         document.getElementById("align").style.display = "none";
         document.getElementById("climb").style.display = "inline-block"
     }
+}, true)
 
-    document.getElementById("extender").innerHTML = `${isExtenderExtended ? "Extended" : "Retracted"}`
-} 
+/**
+ * Updates the current elevator position, in encoder units.
+ */
+NetworkTables.addKeyListener("/SmartDashboard/Elevator Position", (key, value) => {
+    document.getElementById("elevatorPos").innerHTML = value;
+}, true);
 
-const updateSmartDashFields = () => {
-    let elevatorPosition = NetworkTables.getValue("/SmartDashboard/Elevator Position");
-    let wristPosition = NetworkTables.getValue("/SmartDashboard/Wrist Position");
-    console.log(new Date(NetworkTables.getValue("/SmartDashboard/date")).toString());
+/**
+ * Updates the current wrist position, in degrees rounded to one decimal place.
+ */
+NetworkTables.addKeyListener("/SmartDashboard/Wrist Position", (key, value) => {
+    document.getElementById("wristPos").innerHTML = `${value.toFixed(1)} degreees`;
+}, true);
 
-    document.getElementById("elevatorPos").innerHTML = elevatorPosition;
-    document.getElementById("wristPos").innerHTML = Math.round(wristPosition * 10) / 10 + " degrees";
-}
+/**
+ * Updates the date of the last received networktable message from the robot.
+ */
+NetworkTables.addKeyListener("/SmartDashboard/date", (key, value) => {
+        console.log(new Date(value).toString());
+});
 
-const updateKangarooBatteryPercentage = () => {
+/**
+ * Updates the current battery percentage of the kangaroo, if it is connected.
+ */
+setInterval(() => {
     const xhr = new XMLHttpRequest();
     xhr.open("GET", "http://10.10.72.12:5802", true);
     xhr.onload = () => {
@@ -65,53 +107,13 @@ const updateKangarooBatteryPercentage = () => {
         document.getElementById("kangaroo_battery").innerHTML = "<span style='color:red'>Kangaroo Not Connected</span>";
     }
     xhr.send();
-}
-
-const redrawLimelightFeed = () => {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.font = "100pt Comic Sans MS";
-    ctx.textAlign = "center"
-    ctx.fillStyle = "red";
-    ctx.fillText("No Limelight Feed", ctx.canvas.width / 2, ctx.canvas.height / 2);
-    ctx.drawImage(document.getElementById("limelight"), 0, 0, ctx.canvas.width, ctx.canvas.height);
-}
-
-const drawArrow = (direction, length) => {
-    const arrowColor = "black";
-    const centerMargin = 80; // How far offset the arrow is from the center of the canvas
-    const arrowBodyHeight = 100; // The height of the linear part of the arrow
-    const arrowHeadHeight = 150; // The max height of the triangular part of the arrow
-    const bodyHeadRatio = 0.5; // The ratio of the length of the body to the length of the  head
-
-    const sign = ((direction * 2 - 1) > 0) - ((direction * 2 - 1) < 0); // Safe signum
-    const startX = ctx.canvas.width;
-    const startY = ctx.canvas.height / 2;
-    ctx.fillStyle = arrowColor;
-    ctx.beginPath();
-    ctx.moveTo(startX / 2 + centerMargin * sign, startY + arrowBodyHeight / 2);
-    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY + arrowBodyHeight / 2);
-    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY + arrowHeadHeight / 2);
-    ctx.lineTo(startX / 2 + centerMargin * sign + length * sign, startY);
-    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY - arrowHeadHeight / 2);
-    ctx.lineTo(startX / 2 + centerMargin * sign + length * bodyHeadRatio * sign, startY - arrowBodyHeight / 2);
-    ctx.lineTo(startX / 2 + centerMargin * sign, startY - arrowBodyHeight / 2);
-    ctx.closePath()
-    ctx.fill();
-}
-
-const networkTableInterval = setInterval(() => {
-    updateToggleModes();
-    updateSmartDashFields();
-    updateKangarooBatteryPercentage();
-}, 100);
+}, 1000);
 
 
-const limelightDrawInterval = setInterval(() => {
-    redrawLimelightFeed();
-    // drawArrow(false, 500)
-    // drawArrow(true, 500)
-}, 50);
-
-document.getElementById("limelight").onprogress = () => {
-    limelightLoaded = true;
-}
+document.getElementById("cargoship").style.display = "inline-block";
+document.getElementById("rocket").style.display = "none";
+document.getElementById("hatch").style.display = "inline-block";
+document.getElementById("cargo").style.display = "none";
+document.getElementById("wrist").style.display = "none";
+document.getElementById("align").style.display = "inline-block";
+document.getElementById("climb").style.display = "none"

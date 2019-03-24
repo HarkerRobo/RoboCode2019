@@ -219,7 +219,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Elevator Position",
       Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
       // SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
-      // SmartDashboard.putNumber("date", System.currentTimeMillis());
+      SmartDashboard.putNumber("date", System.currentTimeMillis());
 
       if (pw != null) {
          pw.flush();

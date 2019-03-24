@@ -6,7 +6,6 @@
     <body>
         <section id="container">
             <div id="llfeed">
-                <canvas width="1440" height="1080" id="canvas"></canvas>
             </div>
             <div id="message">
                 <div id="cargoship">
@@ -41,19 +40,18 @@
                 </div>
             </div>
             <div id="pneumatics">
-                <span class="big"> <b> Extender: </b> </span><span class="big" id="extender"></span>
+                <span id="robot-connected" class="medium red">Robot Disconnected</span>
             </div>
             </div><br />
             <div id = "numberContainer">
-                    <span> <b> Elevator Position: </b> </span> <span id = "elevatorPos"></span> <br />
-                    <span> <b> Wrist Position: </b> </span> <span id = "wristPos"></span><br />
-                    <span><b>Kangaroo battery percentage: </b> <span id="kangaroo_battery"></span></span>
-                </div> 
+                <span> <b> Elevator Position: </b> </span> <span id = "elevatorPos"></span> <br />
+                <span> <b> Wrist Position: </b> </span> <span id = "wristPos"></span><br />
+                <span> <b> Kangaroo battery percentage: </b> <span id="kangaroo_battery"></span></span>
+            </div> 
         </section>
-
-        <!-- Hidden image of the limelight feed that the canvas pulls from -->
-        <img src="http://10.10.72.11:5802/" class="hidden" id="limelight"/>
         
+        <script src="/lib_jquery-3.3.1.js"></script>
+        <script src="/networktables/camera.js"></script>
         <script src="/networktables/networktables.js"></script>
         <script src="main.js"></script>
     </body>
