@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
@@ -45,6 +46,7 @@ public class Intake extends Subsystem {
    private final static boolean SPARK_INVERTED;
    private final static boolean VICTOR_INVERTED;
    private final static NeutralMode VICTOR_NEUTRAL_MODE = NeutralMode.Brake;
+  
 
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
@@ -57,6 +59,7 @@ public class Intake extends Subsystem {
 
    }
    public final static double DEFAULT_INTAKE_MAGNITUDE = 0.5;
+   public final static double DEFAULT_INTAKE_VELOCITY = 1500;
 
    public void setControllerOutput(double magnitude, IntakeDirection direction) {
       setControllerOutput(magnitude * direction.getSign());
@@ -114,4 +117,12 @@ public class Intake extends Subsystem {
    // public double getEncoderVelocity () {
    // return Intake.getInstance().getController().getEncoder().getVelocity();
    // }
+
+   public VictorSPX getVictor() {
+      return intakeVictor;
+   }
+
+   public CANSparkMax getSpark() {
+      return intakeSpark;
+   }
 }
