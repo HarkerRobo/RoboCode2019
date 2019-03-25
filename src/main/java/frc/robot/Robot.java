@@ -40,10 +40,12 @@ import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
+import frc.robot.commands.drivetrain.FollowPath;
 import frc.robot.commands.drivetrain.GenerateAndFollowPath;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
 import frc.robot.util.Pair;
+import frc.robot.util.Paths;
 import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
 import jaci.pathfinder.Waypoint;
@@ -125,17 +127,17 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-         //startTime = Timer.getFPGATimestamp();
-
-         Waypoint[] points =
-         {
-             new Waypoint(0, 0, 0),
-             new Waypoint(3, 0, 0)
-         };
          double dt = 0.05;
-         double cruiseVelocity = 5;
 
-         new GenerateAndFollowPath(points, dt, cruiseVelocity).start();
+         // Waypoint[] points =
+         // {
+         //     new Waypoint(0, 0, 0),
+         //     new Waypoint(3, 0, 0)
+         // };
+         // double cruiseVelocity = 5;
+
+         // new GenerateAndFollowPath(points, dt, cruiseVelocity).start();
+         new FollowPath(Paths.straightLineLeft, Paths.straightLineRight, dt).start();
     }
 
    /**

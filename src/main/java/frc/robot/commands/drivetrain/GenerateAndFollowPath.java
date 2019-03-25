@@ -387,7 +387,7 @@ public class GenerateAndFollowPath extends Command
 	}
 
     /**
-     * Creates a new TrajectoryPoint
+     * Creates a new TrajectoryPoint with the desired values
      *
      * @return the new TrajectoryPoint
      */
