@@ -41,7 +41,6 @@ import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Wrist;
 import frc.robot.util.Limelight;
 import frc.robot.util.Pair;
-import harkerrobolib.auto.CommandGroupWrapper;
 import harkerrobolib.util.Conversions;
 
 /**
@@ -90,23 +89,25 @@ public class Robot extends TimedRobot {
    @Override
    public void robotInit() {
       System.out.println("robotinit");
-       drivetrain = Drivetrain.getInstance();
-        arm = Arm.getInstance();
-       elevator = Elevator.getInstance();
-       intake = Intake.getInstance();
-       rollers = Rollers.getInstance();
-       wrist = Wrist.getInstance();
-       //climber = Climber.getInstance();
-       hatchLatcher = HatchLatcher.getInstance();
-       oi = OI.getInstance();
-       limelight = Limelight.getInstance();
-       drivetrain.talonInit();
-       elevator.talonInit();
-       wrist.talonInit();
-       rollers.talonInit();
-       intake.controllerInit();
-       new SetLimelightLEDMode(LEDMode.OFF).start();
+      drivetrain = Drivetrain.getInstance();
+      arm = Arm.getInstance();
+      elevator = Elevator.getInstance();
+      intake = Intake.getInstance();
+      rollers = Rollers.getInstance();
+      wrist = Wrist.getInstance();
+      //climber = Climber.getInstance();
+      hatchLatcher = HatchLatcher.getInstance();
+      oi = OI.getInstance();
+      limelight = Limelight.getInstance();
+      drivetrain.talonInit();
+      elevator.talonInit();
+      wrist.talonInit();
+      wrist.resetEncoderPosition();
+      rollers.talonInit();
+      intake.controllerInit();
+      new SetLimelightLEDMode(LEDMode.OFF).start();
       // climber.talonInit();
+
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
       // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);

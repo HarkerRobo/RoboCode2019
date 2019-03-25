@@ -90,18 +90,18 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
    }
 
    public void execute() {
-      double leftX = OI.getInstance().getDriveStraightMode() ? 0
-            : MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftX(), OI.DRIVER_DEADBAND);
-      double leftY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(), OI.DRIVER_DEADBAND);
+      double turn = OI.getInstance().getDriveStraightMode() ? 0
+            : (MathUtil.mapJoystickOutput(OI.currentDriveMode.getTurnFunction().get(), OI.DRIVER_DEADBAND));
+      double speed = MathUtil.mapJoystickOutput(OI.currentDriveMode.getSpeedFunction().get(), OI.DRIVER_DEADBAND);
       // Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) *
       // Math.signum(leftX));
       if (Drivetrain.getInstance().getRightMaster().getSensorCollection()
             .getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION
             || Drivetrain.getInstance().getLeftMaster().getSensorCollection()
                   .getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION) {
-         Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+         Drivetrain.getInstance().arcadeDrivePercentOutput(speed, Math.pow(turn, 2) * Math.signum(turn));
       } else {
-         Drivetrain.getInstance().arcadeDriveVelocity(leftY, Math.pow(leftX, 2) * Math.signum(leftX));
+         Drivetrain.getInstance().arcadeDriveVelocity(speed, Math.pow(turn, 2) * Math.signum(turn));
       }
 
       // if(OI.getInstance().getDriverGamepad().getLeftY() > 0.5)

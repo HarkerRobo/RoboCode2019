@@ -91,6 +91,7 @@ public class Wrist extends Subsystem {
    public static final int RANGE_OF_MOTION;
 
    public static final boolean SENSOR_PHASE;
+   public static final int ENCODER_OFFSET; // the fixed offset between the physical zero position (all the way at the front) and that position relative to the encoder's zero position
 
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
@@ -131,6 +132,7 @@ public class Wrist extends Subsystem {
          SAFE_FORWARD_POSITION = 70;
          SAFE_BACKWARD_POSITION = 110;
          RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+         ENCODER_OFFSET = 0;
 
          SENSOR_PHASE = false;
 
@@ -173,6 +175,7 @@ public class Wrist extends Subsystem {
          SAFE_FORWARD_POSITION = 70;
          SAFE_BACKWARD_POSITION = 110;
          RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
+         ENCODER_OFFSET = 0;
          SENSOR_PHASE = true;
 
          DEFENSE_POSITION = MID_POSITION + 5;
@@ -348,6 +351,10 @@ public class Wrist extends Subsystem {
       getMasterTalon().configMotionCruiseVelocity(MoveWristMotionMagic.CRUISE_VELOCITY);
 
       getMasterTalon().selectProfileSlot(Wrist.MOTION_MAGIC_SLOT, Global.PID_PRIMARY);
+   }
+
+   public void resetEncoderPosition() {
+      wristMaster.setSelectedSensorPosition(wristMaster.getSensorCollection().getPulseWidthPosition() - ENCODER_OFFSET);
    }
 
    /**

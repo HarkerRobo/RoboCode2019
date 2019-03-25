@@ -1,22 +1,24 @@
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.commands.arm.ToggleArmPosition;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
-import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
+import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
-import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.intake.SpinIntakeVelocity;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.ZeroWrist;
@@ -70,6 +72,42 @@ public class OI {
       }
    }
 
+   /*
+   * Represents the possible modes for driving. ARCADE_YX corresponds to an arcade drive using Y for speed and X for turn (
+   * on the same joystick); ARCADE_YY corresponds to an arcade drive using Y for speed and Y for turn (on two different
+   * joysticks).
+   */
+   public enum DriveMode {
+      ARCADE_YX(0, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getLeftX()), 
+      ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getRightY());
+
+      private int value;
+      private Supplier<Double> speedFunction;
+      private Supplier<Double> turnFunction;
+      private DriveMode (int value, Supplier<Double> speedFunction, Supplier<Double> turnFunction) {
+         this.value = value;
+         Supplier<Integer> x = () -> 1;
+         int c = x.get();
+
+         this.speedFunction = speedFunction;
+         this.turnFunction = turnFunction;
+      }
+
+      public int getValue() {
+         return value;
+      }
+
+      public static DriveMode getMode (int value) {
+         for (DriveMode mode : DriveMode.values()) {
+            if (mode.getValue() == value) { return mode; }
+         }
+         return null;
+      }
+
+      public Supplier<Double> getSpeedFunction () { return speedFunction; }
+      public Supplier<Double> getTurnFunction () { return turnFunction; }
+   }
+
    private HSGamepad driverGamepad;
    private CustomOperatorGamepad customOperatorGamepad;
    private static OI instance;
@@ -99,6 +137,8 @@ public class OI {
    private boolean wristToggleMode;
    private boolean driveStraightMode;
 
+   public static DriveMode currentDriveMode;
+
    private OI() {
       driver = Driver.CHRIS;
       driverGamepad = new XboxGamepad(DRIVER_PORT);
@@ -108,6 +148,7 @@ public class OI {
       wristToggleMode = false;
       driveStraightMode = false;
       currentTriggerMode = TriggerMode.ALIGN;
+      currentDriveMode = DriveMode.ARCADE_YY;
       initBindings();
    }
 
@@ -238,6 +279,17 @@ public class OI {
       
       Trigger rightTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.RIGHT);
       rightTriggerOperator.whileActive(new ZeroElevator()); 
+      
+      operatorGamepad.getButtonSelect().whenPressed(new InstantCommand() {
+                     public void initialize() {
+                        Scheduler.getInstance().removeAll();
+                     }
+                                       });
+      operatorGamepad.getButtonStart().whenPressed(new InstantCommand() {
+         public void initialize() {
+            currentDriveMode = DriveMode.getMode((currentDriveMode.getValue() + 1) % DriveMode.values().length);
+         }
+      });
    }
 
    public HSGamepad getDriverGamepad() {
