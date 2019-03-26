@@ -13,7 +13,7 @@ public class RobotMap {
       COMP, PRACTICE
    }
 
-   public static final RobotType ROBOT_TYPE = RobotType.COMP;
+   public static final RobotType ROBOT_TYPE = RobotType.PRACTICE;
 
    public static class CAN_IDs {
       public static final int DT_LEFT_MASTER, DT_RIGHT_MASTER, DT_LEFT_FOLLOWER, DT_RIGHT_FOLLOWER;

@@ -86,8 +86,6 @@ public class OI {
       private Supplier<Double> turnFunction;
       private DriveMode (int value, Supplier<Double> speedFunction, Supplier<Double> turnFunction) {
          this.value = value;
-         Supplier<Integer> x = () -> 1;
-         int c = x.get();
 
          this.speedFunction = speedFunction;
          this.turnFunction = turnFunction;

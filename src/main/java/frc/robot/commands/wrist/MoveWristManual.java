@@ -11,6 +11,7 @@ import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Wrist.WristDirection;
 import harkerrobolib.commands.IndefiniteCommand;
+import harkerrobolib.util.MathUtil;
 
 /**
  * Moves the wrist manually.
@@ -50,25 +51,28 @@ public class MoveWristManual extends IndefiniteCommand {
    public void execute() {
       double leftDriverTrigger = OI.getInstance().getDriverGamepad().getLeftTrigger();
       double rightDriverTrigger = OI.getInstance().getDriverGamepad().getRightTrigger();
+      double rightOperatorY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.OPERATOR_DEADBAND_JOYSTICK);
 
       double magnitude = 0;
       WristDirection direction;
       // double currentPosition =
       // Wrist.getInstance().getMasterTalon().getSelectedSensorPosition(Global.PID_PRIMARY);
-      if (OI.getInstance().getCurrentTriggerMode() == TriggerMode.WRIST_MANUAL && (leftDriverTrigger > OI.DRIVER_DEADBAND_TRIGGER
-            || rightDriverTrigger > OI.DRIVER_DEADBAND_TRIGGER)) {
+      // if (OI.getInstance().getCurrentTriggerMode() == TriggerMode.WRIST_MANUAL && (leftDriverTrigger > OI.DRIVER_DEADBAND_TRIGGER
+      //       || rightDriverTrigger > OI.DRIVER_DEADBAND_TRIGGER)) { 
+         if (Math.abs(rightOperatorY) > 0) {
          isHolding = false;
          shouldClosedLoop = true;
 
-         if (leftDriverTrigger > rightDriverTrigger) {
-            magnitude = 0.35 * leftDriverTrigger;
-            direction = WristDirection.TO_BACK;
-         } else {
-            magnitude = 0.35 * rightDriverTrigger;
-            direction = WristDirection.TO_FRONT;
-         }
 
-         Wrist.getInstance().setWristPercentOutput(magnitude, direction);
+         // if (leftDriverTrigger > rightDriverTrigger) {
+         //    magnitude = 0.35 * leftDriverTrigger;
+         //    direction = WristDirection.TO_BACK;
+         // } else {
+         //    magnitude = 0.35 * rightDriverTrigger;
+         //    direction = WristDirection.TO_FRONT;
+         // }
+
+         Wrist.getInstance().setWristPercentOutput(rightOperatorY, WristDirection.TO_BACK);
       } else {
          if (!isHolding) {
             lastPos = Wrist.getInstance().getCurrentAngleEncoder();

@@ -46,7 +46,7 @@ public class MoveElevatorManual extends IndefiniteCommand {
     */
    @Override
    public void execute() {
-      double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(),
+      double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getLeftY(),
             OI.DRIVER_DEADBAND);
       if (Math.abs(desiredSpeed) > 0) {
          isHolding = false;

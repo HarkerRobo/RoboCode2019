@@ -93,6 +93,9 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
       double turn = OI.getInstance().getDriveStraightMode() ? 0
             : (MathUtil.mapJoystickOutput(OI.currentDriveMode.getTurnFunction().get(), OI.DRIVER_DEADBAND));
       double speed = MathUtil.mapJoystickOutput(OI.currentDriveMode.getSpeedFunction().get(), OI.DRIVER_DEADBAND);
+
+      System.out.println("turn " + turn + " speed " + speed);
+      System.out.println(OI.currentDriveMode);
       // Drivetrain.getInstance().arcadeDrivePercentOutput(leftY, Math.pow(leftX, 2) *
       // Math.signum(leftX));
       if (Drivetrain.getInstance().getRightMaster().getSensorCollection()
