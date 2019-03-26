@@ -15,6 +15,7 @@ import java.util.Date;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -76,18 +77,15 @@ public class Robot extends TimedRobot {
    private static String logFileDir = "";
    private static String logFileName = "";
 
+   private static Compressor compressor;
+
    // private CANSparkMax talon;
 
    public enum Side {
       FRONT, BACK, AMBIGUOUS;
    }
 
-   /**
-    * This function is run when the robot is first started up and should be used
-    * for any initialization code.
-    */
-   @Override
-   public void robotInit() {
+   public static void setupRobot() {
       System.out.println("robotinit");
       drivetrain = Drivetrain.getInstance();
       arm = Arm.getInstance();
@@ -110,12 +108,23 @@ public class Robot extends TimedRobot {
 
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
 
+      compressor = new Compressor();
+
       // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);
       // sparkMax = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
       // talon.configFactoryDefault();
 
       // elevator.getMasterTalon().get
-      System.out.println("var vals " + Location.CARGO_INTAKE.getHasVariableValues());
+
+   }
+   /**
+    * This function is run when the robot is first started up and should be used
+    * for any initialization code.
+    */
+   @Override
+   public void robotInit() {
+      Robot.setupRobot();
+            System.out.println("var vals " + Location.CARGO_INTAKE.getHasVariableValues());
    }
 
    /**
@@ -192,6 +201,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
       SmartDashboard.putBoolean("DPad UP ", OI.getInstance().getOperatorGamepad().getUpDPadButton().get());
 
+      compressor.setClosedLoopControl(true);
       // SmartDashboard.putNumber("Left Error",
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
       // SmartDashboard.putNumber("Right Error",

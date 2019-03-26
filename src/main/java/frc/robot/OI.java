@@ -19,6 +19,7 @@ import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
+import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.intake.SpinIntakeVelocity;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.ZeroWrist;
@@ -268,8 +269,8 @@ public class OI {
       operatorGamepad.getButtonY().whenPressed(
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B2), () -> Robot.getSetScoringCommand()));
 
-      operatorGamepad.getButtonBumperLeft().whenPressed(new RunIfNotEqualCommand(
-            () -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand()));
+      operatorGamepad.getButtonBumperLeft().whenPressed(new ParallelCommandGroup(new SpinIntakeVelocity(IntakeDirection.IN, Intake.DEFAULT_INTAKE_VELOCITY), 
+                                                      new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand())));
       operatorGamepad.getButtonBumperRight().whenPressed(new RunIfNotEqualCommand(
          () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
       Trigger leftTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.LEFT);
@@ -280,6 +281,7 @@ public class OI {
       
       operatorGamepad.getButtonSelect().whenPressed(new InstantCommand() {
                      public void initialize() {
+                        Robot.setupRobot();
                         Scheduler.getInstance().removeAll();
                      }
                                        });
