@@ -13,6 +13,8 @@ import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
 import harkerrobolib.auto.Path;
 import harkerrobolib.util.Conversions;
+import harkerrobolib.util.Conversions.PositionUnit;
+import harkerrobolib.util.Conversions.SpeedUnit;
 
 /**
  * Follows the given Trajectories, which must have the same timestep, 
@@ -31,19 +33,19 @@ public class FollowPath extends Command
 
     //2018 Comp
     private static final double
-        LEFT_KF = 0.25,//DriveWithVelocityManual.LEFT_KF,
-        LEFT_KP = 0,//DriveWithVelocityManual.LEFT_KP,
-        LEFT_KI = 0,//DriveWithVelocityManual.LEFT_KI,
-        LEFT_KD = 0,//DriveWithVelocityManual.LEFT_KD,
+        LEFT_KF = 0.5,//0.5
+        LEFT_KP = 1.0,//1
+        LEFT_KI = 0,//0
+        LEFT_KD = 25,//35 or 30
 
-        RIGHT_KF = 0.25,//DriveWithVelocityManual.RIGHT_KF,
-        RIGHT_KP = 0,//DriveWithVelocityManual.RIGHT_KP,
-        RIGHT_KI = 0,//DriveWithVelocityManual.RIGHT_KI,
-        RIGHT_KD = 0;//DriveWithVelocityManual.RIGHT_KD;
+        RIGHT_KF = 0.5,//0.5
+        RIGHT_KP = 1.0,//1
+        RIGHT_KI = 0,//0
+        RIGHT_KD = 25;//35 or 30
 
     private static final int I_ZONE = 0;
 
-    private static final int MIN_POINTS = 10;
+    private static final int MIN_POINTS = 5;
 
     public FollowPath(double[][] leftPath, double[][] rightPath, double dt)
     {
@@ -58,7 +60,6 @@ public class FollowPath extends Command
     @Override
     protected void initialize()
     {
-        //Setup and begin Motion Profile
         configTalons();
     
         Drivetrain.getInstance().getLeftMaster().startMotionProfile(leftStream, MIN_POINTS, ControlMode.MotionProfile);
@@ -70,14 +71,9 @@ public class FollowPath extends Command
 		Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
 
 		SmartDashboard.putNumber("Top Buffer", status.topBufferCnt);
-		SmartDashboard.putNumber("Bottom Buffer", status.btmBufferCnt);
-		SmartDashboard.putBoolean("Is Valid", status.activePointValid);
-		System.out.println(Drivetrain.getInstance().getLeftMaster().getActiveTrajectoryVelocity(Global.PID_PRIMARY));
-		System.out.println(Drivetrain.getInstance().getRightMaster().getActiveTrajectoryPosition(Global.PID_PRIMARY));        
+        SmartDashboard.putNumber("Bottom Buffer", status.btmBufferCnt);        
 		SmartDashboard.putNumber("left error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
 		SmartDashboard.putNumber("right error", Drivetrain.getInstance().getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
-		SmartDashboard.putNumber("Left Encoder vel", Drivetrain.getInstance().getLeftMaster().getSelectedSensorVelocity(Global.PID_PRIMARY));
-		SmartDashboard.putNumber("Right Encoder vel", Drivetrain.getInstance().getRightMaster().getSelectedSensorVelocity(Global.PID_PRIMARY));
     }
 
     @Override
@@ -120,11 +116,15 @@ public class FollowPath extends Command
 
         for (int row = 0; row < points.length; row++)
 		{
-            double position = points[row][0];
-            double velocity = points[row][1];
+            double position = Conversions.convert(PositionUnit.FEET, points[row][0], PositionUnit.ENCODER_UNITS);
+            double velocity = Conversions.convert(SpeedUnit.FEET_PER_SECOND, points[row][1], SpeedUnit.ENCODER_UNITS);
             double heading = points[row][3];
 
-		    trajPoints[row] = createTrajectoryPoint(position, velocity, heading);
+            trajPoints[row] = createTrajectoryPoint(
+                position, 
+                velocity, 
+                heading
+            );
 		}
 
         BufferedTrajectoryPointStream path = new BufferedTrajectoryPointStream();
@@ -146,7 +146,6 @@ public class FollowPath extends Command
         point.headingDeg = headingDeg;
 
         point.profileSlotSelect0 = Drivetrain.MOTION_PROF_SLOT;
-        point.timeDur = (int)(dt * Conversions.MS_PER_SEC); //0
 
         return point;
     }
@@ -184,13 +183,15 @@ public class FollowPath extends Command
 		Drivetrain.getInstance().getLeftMaster().changeMotionControlFramePeriod(Math.max((int)(dt * Conversions.MS_PER_SEC / 2), 1));
 		Drivetrain.getInstance().getRightMaster().changeMotionControlFramePeriod(Math.max((int)(dt * Conversions.MS_PER_SEC / 2), 1));
 
-		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryPeriod(0); //We want no additional time per point
-		Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryPeriod(0); //(int)(dt * Conversions.MS_PER_SEC)
-
+		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryPeriod((int)(dt * Conversions.MS_PER_SEC)); //We want no additional time per point
+        Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryPeriod((int)(dt * Conversions.MS_PER_SEC)); //0
+        
 		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryInterpolationEnable(false);
         Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryInterpolationEnable(false);
 
         Drivetrain.getInstance().getLeftMaster().clearMotionProfileHasUnderrun();
         Drivetrain.getInstance().getRightMaster().clearMotionProfileHasUnderrun();
+        Drivetrain.getInstance().getLeftFollower().clearMotionProfileHasUnderrun(10);
+        Drivetrain.getInstance().getLeftFollower().clearMotionProfileHasUnderrun(10);
     }
 }

@@ -7,37 +7,18 @@
 
 package frc.robot;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
-import frc.robot.commands.elevator.MoveElevatorManual;
-import frc.robot.commands.groups.SetScoringPosition;
-import frc.robot.commands.groups.SetScoringPosition.Location;
-import frc.robot.commands.wrist.MoveWristManual;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.HatchLatcher;
-import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Rollers;
-import frc.robot.subsystems.Wrist;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
 import frc.robot.commands.drivetrain.FollowPath;
@@ -65,23 +46,9 @@ import jaci.pathfinder.Waypoint;
 public class Robot extends TimedRobot {
 
    private static Drivetrain drivetrain;
-   private static Arm arm;
-   private static Elevator elevator;
-   private static Rollers rollers;
-   private static Wrist wrist;
-   private static Intake intake;
-   //private static Climber climber;
-   private static HatchLatcher hatchLatcher;
    private static Limelight limelight;
    private static OI oi;
    private static double startTime;
-   private static TalonSRX talon;
-   private static PrintWriter pw;
-   private static SetScoringPosition currentSetScoringCommand;
-
-   private static final String LOG_FILE_PREFIX = "/home/lvuser/logs/";
-   private static String logFileDir = "";
-   private static String logFileName = "";
 
    // private CANSparkMax talon;
 
@@ -97,29 +64,10 @@ public class Robot extends TimedRobot {
    public void robotInit() {
       System.out.println("robotinit");
        drivetrain = Drivetrain.getInstance();
-    //    arm = Arm.getInstance();
-    //    elevator = Elevator.getInstance();
-    //    intake = Intake.getInstance();
-    //    rollers = Rollers.getInstance();
-    //    wrist = Wrist.getInstance();
-       //climber = Climber.getInstance();
-       //hatchLatcher = HatchLatcher.getInstance();
        oi = OI.getInstance();
        //limelight = Limelight.getInstance();
        drivetrain.talonInit();
-    //    elevator.talonInit();
-    //    wrist.talonInit();
-    //    rollers.talonInit();
-    //    intake.controllerInit();
-      // climber.talonInit();
       Conversions.setWheelDiameter(Drivetrain.WHEEL_DIAMETER);
-
-      // talon = new TalonSRX(CAN_IDs.WRIST_MASTER);
-      // sparkMax = new CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER, MotorType.kBrushless);
-      // talon.configFactoryDefault();
-
-      // elevator.getMasterTalon().get
-      //System.out.println("var vals " + Location.CARGO_INTAKE.getHasVariableValues());
    }
 
    /**
@@ -176,7 +124,10 @@ public class Robot extends TimedRobot {
     */
    @Override
    public void testPeriodic() {
+   }
 
+   @Override
+   public void disabledInit() {
    }
 
    /**
@@ -188,51 +139,6 @@ public class Robot extends TimedRobot {
       return drivetrain;
    }
 
-//    /**
-//     * Gets the instance of the elevator on the robot.
-//     * 
-//     * @return the elevator
-//     */
-//    public static Elevator getElevator() {
-//       return elevator;
-//    }
-
-//    /**
-//     * Gets the instance of the wrist on the robot.
-//     * 
-//     * @return the wrist
-//     */
-//    public static Wrist getWrist() {
-//       return wrist;
-//    }
-
-//    /**
-//     * Gets the instance of the rollers on the robot.
-//     * 
-//     * @return the rollers
-//     */
-//    public static Rollers getRollers() {
-//       return rollers;
-//    }
-
-//    /**
-//     * Gets the instance of the arm on the robot.
-//     * 
-//     * @return the arm
-//     */
-//    public static Arm getArm() {
-//       return arm;
-//    }
-
-//    /**
-//     * Gets the instance of the arm on the robot.
-//     * 
-//     * @return the arm
-//     */
-//    public static Intake getIntake() {
-//       return intake;
-//    }
-
    /**
     * Gets the current time elapsed (in milliseconds) since the robot was last
     * enabled, in either autonomous or teleop.
@@ -243,93 +149,12 @@ public class Robot extends TimedRobot {
       return (int) ((Timer.getFPGATimestamp() - startTime) * 1000);
    }
 
-   @Override
-   public void disabledInit() {
-      //log("Disabled initialized.");
-      //resetPrintWriter();
-      // drivetrain.setNeutralMode(RobotMap.Global.DISABLED_NEUTRAL_MODE);
-
-      // elevator.getMasterTalon().set(ControlMode.Disabled, 0.0);
-      // wrist.getMasterTalon().set(ControlMode.Disabled, 0.0);
-
-      // ((MoveWristManual)
-      // Wrist.getInstance().getDefaultCommand()).disableClosedLoop();
-      // ((MoveElevatorManual)
-      // Elevator.getInstance().getDefaultCommand()).disableClosedLoop();
-   }
-
    public static void log(String message) {
-      String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
-      System.out.println(prefix + ": " + message);
-      if (pw != null) {
-         pw.print(prefix + ": " + message + "\r\n");
-      }
-   }
-
-   /**
-    * Gets the log file name and its corresponding directory.
-    * 
-    * @return a pair with the first element as the file's directory (relative to
-    *         LOG_FILE_PREFIX) and the second element as the file's name
-    */
-   private Pair<String, String> getLogFileNameAndDirectory() {
-      String directory = "matches/" + DriverStation.getInstance().getEventName() + "/";
-      String name = DriverStation.getInstance().getEventName() + DriverStation.getInstance().getMatchType() + "Match"
-            + DriverStation.getInstance().getMatchNumber();
-      name = name.replaceAll(" ", "");
-
-      if (name.indexOf("None") >= 0) {
-         String date = new SimpleDateFormat("y-M-d_H-m-s").format(new Date());
-         name = date;
-         date = date.substring(0, date.lastIndexOf("-"));
-         directory = date.substring(0, date.indexOf("_")) + "/" + date.substring(date.indexOf("_") + 1, date.lastIndexOf("-")) + ":00/";
-      }
-
-      name += ".txt";
-      return new Pair<String, String>(directory, name);
-   }
-
-   private String getLogFileName() {
-      return "";
-   }
-
-   private void setupPrintWriter() {
-      if (pw == null) {
-         if (logFileName.equals("") || logFileDir.equals("")) {
-            logFileName = getLogFileNameAndDirectory().getSecond();
-            logFileDir = getLogFileNameAndDirectory().getFirst();
-         }
-
-         try {
-            String fileDir = LOG_FILE_PREFIX + logFileDir;
-            String fileLoc = fileDir + logFileName;
-
-            System.out.println("DIR " + fileDir + " LOC " + fileLoc);
-            File desiredDirectory = new File(fileDir);
-            while (desiredDirectory.mkdirs()); // to make all nested directories
-
-            new File(fileLoc).createNewFile();
-            pw = new PrintWriter(fileLoc);
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
-      }
-   }
-
-   private void resetPrintWriter() {
-      if (pw != null) {
-         pw.close();
-      }
-      pw = null;
-      logFileName = "";
-      logFileDir = "";
-   }
-
-   public static SetScoringPosition getSetScoringCommand() {
-      return currentSetScoringCommand;
-   }
-
-   public static void setScoringCommand(SetScoringPosition scoringCommand) {
-      currentSetScoringCommand = scoringCommand;
+      // String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
+      // System.out.println(prefix + ": " + message);
+      // if (pw != null) {
+      //    pw.print(prefix + ": " + message + "\r\n");
+      // }
    }
 }
+
