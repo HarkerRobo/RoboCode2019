@@ -245,6 +245,8 @@ public class Robot extends TimedRobot {
       // SmartDashboard.putNumber("left x",
       // OI.getInstance().getDriverGamepad().getLeftX());
 
+
+      SmartDashboard.putNumber("wrist", Wrist.getInstance().getMasterTalon().getPulseWidthPosition());
       // System.out.println(OI.getInstance().getCustomOperatorGamepad().getBackwardThreePressed());
    }
 

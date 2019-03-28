@@ -51,7 +51,7 @@ public class MoveWristManual extends IndefiniteCommand {
    public void execute() {
       double leftDriverTrigger = OI.getInstance().getDriverGamepad().getLeftTrigger();
       double rightDriverTrigger = OI.getInstance().getDriverGamepad().getRightTrigger();
-      double rightOperatorY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.OPERATOR_DEADBAND_JOYSTICK);
+      double rightOperatorY = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getRightY(), OI.OPERATOR_DEADBAND_JOYSTICK);
 
       double magnitude = 0;
       WristDirection direction;

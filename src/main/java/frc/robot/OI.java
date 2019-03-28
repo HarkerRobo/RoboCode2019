@@ -80,7 +80,7 @@ public class OI {
    */
    public enum DriveMode {
       ARCADE_YX(0, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getLeftX()), 
-      ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getRightY());
+      ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getRightX());
 
       private int value;
       private Supplier<Double> speedFunction;
