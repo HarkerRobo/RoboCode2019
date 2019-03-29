@@ -19,7 +19,6 @@ import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
-import frc.robot.commands.intake.SpinIntakeIndefinite;
 import frc.robot.commands.intake.SpinIntakeVelocity;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.ZeroWrist;
@@ -80,8 +79,11 @@ public class OI {
    */
    public enum DriveMode {
       ARCADE_YX(0, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getLeftX()), 
-      ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getRightX());
-
+      ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), 
+         () -> (OI.getInstance().getDriverGamepad().getButtonStickRight().get() || Math.abs(OI.getInstance().getDriverGamepad().getLeftY()) > 0) ?
+            ( (OI.getInstance().getDriverGamepad().getLeftY() > 0 ? 1 : -1 ) * OI.getInstance().getDriverGamepad().getRightX()) : 0);
+            
+      
       private int value;
       private Supplier<Double> speedFunction;
       private Supplier<Double> turnFunction;
@@ -105,6 +107,7 @@ public class OI {
 
       public Supplier<Double> getSpeedFunction () { return speedFunction; }
       public Supplier<Double> getTurnFunction () { return turnFunction; }
+
    }
 
    private HSGamepad driverGamepad;
@@ -148,6 +151,7 @@ public class OI {
       driveStraightMode = false;
       currentTriggerMode = TriggerMode.ALIGN;
       currentDriveMode = DriveMode.ARCADE_YY;
+
       initBindings();
    }
 
