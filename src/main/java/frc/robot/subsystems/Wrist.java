@@ -19,6 +19,7 @@ import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.commands.wrist.MoveWristPosition;
+import harkerrobolib.util.MathUtil;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -92,6 +93,8 @@ public class Wrist extends Subsystem {
 
    public static final boolean SENSOR_PHASE;
    public static final int ENCODER_OFFSET; // the fixed offset between the physical zero position (all the way at the front) and that position relative to the encoder's zero position
+   public static final int ENCODER_MAX_FORWARD_RISE_TO_FALL;
+   public static final int ENCODER_MAX_BACKWARD_RISE_TO_FALL;
 
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
@@ -133,6 +136,8 @@ public class Wrist extends Subsystem {
          SAFE_BACKWARD_POSITION = 110;
          RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
          ENCODER_OFFSET = 0;
+         ENCODER_MAX_FORWARD_RISE_TO_FALL = 15105;
+         ENCODER_MAX_BACKWARD_RISE_TO_FALL = 6415;
 
          SENSOR_PHASE = false;
 
@@ -164,7 +169,7 @@ public class Wrist extends Subsystem {
 
          ALLOWABLE_ERROR = 50;
          MAX_FORWARD_POSITION = 0;
-         MAX_BACKWARD_POSITION = 185; // TUNE
+         MAX_BACKWARD_POSITION = 201; // TUNE
          FRONT_HIGH_PASSTHROUGH_HATCH = 32;
          FRONT_HIGH_PASSTHROUGH_CARGO = 32;
          BACK_HIGH_PASSTHROUGH_ANGLE = 188;
@@ -175,7 +180,9 @@ public class Wrist extends Subsystem {
          SAFE_FORWARD_POSITION = 70;
          SAFE_BACKWARD_POSITION = 110;
          RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
-         ENCODER_OFFSET = 0;
+         ENCODER_OFFSET = 15105;
+         ENCODER_MAX_FORWARD_RISE_TO_FALL = 15105;
+         ENCODER_MAX_BACKWARD_RISE_TO_FALL = 6415;
          SENSOR_PHASE = true;
 
          DEFENSE_POSITION = MID_POSITION + 5;
@@ -354,7 +361,10 @@ public class Wrist extends Subsystem {
    }
 
    public void resetEncoderPosition() {
-      wristMaster.setSelectedSensorPosition(wristMaster.getSensorCollection().getPulseWidthPosition() - ENCODER_OFFSET);
+      // wristMaster.getSensorCollection().syncQuadratureWithPulseWidth(bookend0, bookend1, bCrossZeroOnInterval);
+      // wristMaster.getSensorCollection().
+      wristMaster.setSelectedSensorPosition((int) convertDegreesToEncoder(MathUtil.map(wristMaster.getSensorCollection().getPulseWidthRiseToFallUs(), ENCODER_MAX_FORWARD_RISE_TO_FALL, ENCODER_MAX_BACKWARD_RISE_TO_FALL, MAX_FORWARD_POSITION, MAX_BACKWARD_POSITION)));
+      // wristMaster.getSensorCollection().setP
    }
 
    /**

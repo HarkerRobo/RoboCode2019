@@ -80,8 +80,8 @@ public class OI {
    public enum DriveMode {
       ARCADE_YX(0, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getLeftX()), 
       ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), 
-         () -> (OI.getInstance().getDriverGamepad().getButtonStickRight().get() || Math.abs(OI.getInstance().getDriverGamepad().getLeftY()) > 0) ?
-            ( (OI.getInstance().getDriverGamepad().getLeftY() > 0 ? 1 : -1 ) * OI.getInstance().getDriverGamepad().getRightX()) : 0);
+         () -> (OI.getInstance().getDriverGamepad().getButtonStickRight().get() || Math.abs(OI.getInstance().getDriverGamepad().getLeftY()) > DRIVER_DEADBAND) ?
+            ((OI.getInstance().getDriverGamepad().getLeftY() > 0 ? 1 : -1 ) * OI.getInstance().getDriverGamepad().getRightX()) : 0);
             
       
       private int value;
