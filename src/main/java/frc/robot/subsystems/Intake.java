@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
@@ -66,7 +65,6 @@ public class Intake extends Subsystem {
    }
 
    public void setControllerOutput(double percentOutput) {
-      // getController().set(percentOutput);
       if (isSpark) {
          intakeSpark.set(percentOutput);
       } else {
@@ -82,9 +80,6 @@ public class Intake extends Subsystem {
          intakeVictor = new VictorSPX(CAN_IDs.BALL_INTAKE_MASTER_VICTOR);
       }
       isSpark = RobotMap.ROBOT_TYPE == RobotType.COMP;
-      // intakeVictor = new
-      // VictorSPX(CAN_IDs.BALL_INTAKE_MASTER);//CANSparkMax(CAN_IDs.BALL_INTAKE_MASTER,
-      // MotorType.kBrushless);
    }
 
    public void controllerInit() {
@@ -107,7 +102,6 @@ public class Intake extends Subsystem {
 
    @Override
    protected void initDefaultCommand() {
-      // setDefaultCommand(new SpinIntakeManual());
    }
 
    // public double getEncoderPosition () {

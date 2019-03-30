@@ -13,7 +13,6 @@ import frc.robot.RobotMap.Global;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.elevator.MoveElevatorPosition;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -105,16 +104,6 @@ public class Elevator extends Subsystem {
 
          FFGRAV = 0.095;
          ZERO_CURRENT_SPIKE = 0;
-
-         // LOW_SCORING_POSITION_HATCH = 7746;
-         // LOW_ROCKET_SCORING_POSITION_CARGO = 5418;
-         // MEDIUM_SCORING_POSITION_HATCH = 12000;
-         // MEDIUM_SCORING_POSITION_HATCH_BACK = MEDIUM_SCORING_POSITION_HATCH;
-         // MEDIUM_ROCKET_SCORING_POSITION_CARGO = 12000;
-         // HIGH_SCORING_POSITION_HATCH = 22500;
-         // HIGH_ROCKET_SCORING_POSITION_CARGO = 22500;
-         // CARGO_SHIP_SCORING_POSITION_CARGO_FRONT = 18375;
-         // CARGO_SHIP_SCORING_POSITION_CARGO_BACK = 15151;
 
          LOW_SCORING_POSITION_HATCH = 8100;
          LOW_ROCKET_SCORING_POSITION_CARGO = 5418;
@@ -232,10 +221,7 @@ public class Elevator extends Subsystem {
       masterTalon.setSensorPhase(SENSOR_PHASE);
       masterTalon.configNominalOutputForward(NOMINAL_OUTPUT);
       masterTalon.configNominalOutputReverse(NOMINAL_OUTPUT);
-      // masterTalon.configRemoteFeedbackFilter(followerTalon.getDeviceID(),
-      // RemoteSensorSource.TalonSRX_SelectedSensor, Global.REMOTE_0);
-      // masterTalon.configSelectedFeedbackCoefficient(Elevator.RIGHT_TALON_FEEDBACK_COEFFICIENT);
-      // masterTalon.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+
 
       masterTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
       masterTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
@@ -253,28 +239,12 @@ public class Elevator extends Subsystem {
       getMasterTalon().set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
    }
 
-   public void setUpPositionPID() {
-      // getMasterTalon().configClosedLoopConstants(POSITION_PID_SLOT_INDEX, new
-      // Gains().kP(MoveElevatorPosition.KP)
-      // .kI(MoveElevatorPosition.KI)
-      // .kD(MoveElevatorPosition.KD)
-      // .kF(MoveElevatorPosition.KF));
-      getMasterTalon().config_kF(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KF);
-      getMasterTalon().config_kP(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KP);
-      getMasterTalon().config_kI(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KI);
-      getMasterTalon().config_kD(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.KD);
-      getMasterTalon().config_IntegralZone(POSITION_PID_SLOT_INDEX, MoveElevatorPosition.IZONE);
-   }
 
    public void setUpMotionMagic() {
       Elevator.getInstance().getMasterTalon()
             .configMotionAcceleration(MoveElevatorMotionMagic.MOTION_MAGIC_ACCELERATION);
       Elevator.getInstance().getMasterTalon().configMotionCruiseVelocity(MoveElevatorMotionMagic.CRUISE_VELOCITY);
-      // getMasterTalon().configClosedLoopConstants(MOTION_MAGIC_SLOT_INDEX, new
-      // Gains().kP(MoveElevatorMotionMagic.KP)
-      // .kI(MoveElevatorMotionMagic.KI)
-      // .kD(MoveElevatorMotionMagic.KD)
-      // .kF(MoveElevatorMotionMagic.KF));
+
       getMasterTalon().config_kF(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.KF);
       getMasterTalon().config_kP(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.KP);
       getMasterTalon().config_kI(MOTION_MAGIC_SLOT_INDEX, MoveElevatorMotionMagic.KI);

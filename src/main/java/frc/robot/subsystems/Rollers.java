@@ -5,15 +5,11 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.Robot.Side;
 import frc.robot.OI;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.groups.SetScoringPosition.Location;
-import frc.robot.commands.rollers.SpinRollersManual;
-import frc.robot.util.Pair;
-import harkerrobolib.util.MathUtil;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -79,7 +75,6 @@ public class Rollers extends Subsystem {
 
    @Override
    protected void initDefaultCommand() {
-       setDefaultCommand(new SpinRollersManual());
    }
 
    /**
@@ -131,8 +126,7 @@ public class Rollers extends Subsystem {
             && Elevator.getInstance().isAt(Location.CARGO_SHIP_BACK.getCargoHeight())) {
          return DEFAULT_ROLLER_MAGNITUDE - CARGO_BAY_OUTPUT_REDUCTION;
       }
-      // if(Math.abs(wristAngle - 90)
-      // return ROLLER_SHOOTING_SPEED;
+
       return DEFAULT_ROLLER_MAGNITUDE;
    }
 

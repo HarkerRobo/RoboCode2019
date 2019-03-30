@@ -67,8 +67,6 @@ public class MoveElevatorMotionMagic extends Command {
 
    public MoveElevatorMotionMagic(int setpoint) {
       requires(Elevator.getInstance());
-      // try {throw new RuntimeException();} catch (Exception e)
-      // {e.printStackTrace();}
       this.setpoint = setpoint;
    }
 
@@ -91,11 +89,6 @@ public class MoveElevatorMotionMagic extends Command {
     */
    @Override
    protected void initialize() {
-
-      // if(Elevator.getInstance().isBelow(Elevator.SAFE_LOW_PASSTHROUGH_POSITION) &&
-      // Arm.getInstance().getDirection() == ArmDirection.UP) {
-      // new SetArmPosition(ArmDirection.DOWN).start();
-      // }
       if (setpointLambda != null) {
          this.setpoint = setpointLambda.get();
       }

@@ -2,15 +2,12 @@ package frc.robot.commands.groups;
 
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
-import frc.robot.Robot.Side;
 import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.hatchpanelintake.SetExtenderState;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
 import frc.robot.subsystems.Arm.ArmDirection;
 import frc.robot.subsystems.HatchLatcher.ExtenderDirection;
-import frc.robot.util.ConditionalCommand;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Wrist;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
@@ -38,19 +35,3 @@ public class StowHatchAndCargoIntake extends SequentialCommandGroup {
             new MoveWristMotionMagic(Wrist.MID_POSITION), new WaitCommand(ARM_WAIT_TIME), new SetArmPosition(ArmDirection.UP));
    }
 }
-
-// sequential(new CommandGroupWrapper()
-// .parallel(new LoadOrScoreHatch(ScoreState.LOAD))
-// .parallel(new CommandGroupWrapper().sequential(new ConditionalCommand(new
-// PassthroughLow(Robot.Side.FRONT, Wrist.SAFE_BACKWARD_POSITION)) {
-// @Override
-// public boolean condition() {
-// return Wrist.getInstance().getCurrentSide() == Robot.Side.FRONT &&
-// Elevator.getInstance().isAbove(Elevator.BALL_INTAKING_HEIGHT) &&
-// Arm.getInstance().getDirection() == ArmDirection.DOWN;
-// }
-// })
-// .sequential(new SetArmPosition(ArmDirection.UP))
-// )
-// );
-// sequential(new MoveWristPosition(Wrist.MID_POSITION));

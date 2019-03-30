@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.Global;
@@ -103,12 +102,7 @@ public class Drivetrain extends HSDrivetrain {
       getRightMaster().configVoltageCompSaturation(Global.BAT_SATURATION_VOLTAGE);
       getLeftMaster().enableVoltageCompensation(true);
       getRightMaster().enableVoltageCompensation(true);
-      // getLeftMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
-      // getRightMaster().configContinuousCurrentLimit(TALON_CONTINUOUS_LIMIT, 10);
-      // getLeftMaster().configPeakCurrentDuration(TALON_PEAK_TIME, 10);
-      // getRightMaster().configPeakCurrentDuration(TALON_PEAK_TIME, 10);
-      // getLeftMaster().configPeakCurrentLimit(TALON_PEAK_LIMIT, 10);
-      // getRightMaster().configPeakCurrentLimit(TALON_PEAK_LIMIT, 10);
+
       setCurrentLimit(TALON_PEAK_LIMIT, TALON_PEAK_TIME, TALON_CONTINUOUS_LIMIT);
       getLeftMaster().enableCurrentLimit(true);
       getRightMaster().enableCurrentLimit(true);
@@ -164,11 +158,6 @@ public class Drivetrain extends HSDrivetrain {
       double turnSpeed = Conversions.convertSpeed(SpeedUnit.FEET_PER_SECOND, turnPercent * MAX_TURN_VELOCITY,
             SpeedUnit.ENCODER_UNITS);
 
-      SmartDashboard.putNumber("left velocity", forwardSpeed);
-      SmartDashboard.putNumber("current percent", getLeftMaster().getMotorOutputPercent());
-      SmartDashboard.putNumber("current velocity", getLeftMaster().getSelectedSensorVelocity());
-
-      // SmartDashboard.putNumber("", getLeftMaster().);
       getLeftMaster().set(ControlMode.Velocity, forwardSpeed + turnSpeed);
       getRightMaster().set(ControlMode.Velocity, forwardSpeed - turnSpeed);
    }

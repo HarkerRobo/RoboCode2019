@@ -73,9 +73,6 @@ public class AlignWithLimelightIndefinite extends IndefiniteCommand {
       turnController.enable();
       forwardController.enable();
 
-      // turnController.setSetpoint(txSetpoint);
-      // forwardController.setSetpoint(thorSetpoint);
-
       Drivetrain.getInstance().invertTalons(LEFT_MASTER_INVERTED, RIGHT_MASTER_INVERTED, LEFT_FOLLOWER_INVERTED,
             RIGHT_FOLLOWER_INVERTED);
    }
