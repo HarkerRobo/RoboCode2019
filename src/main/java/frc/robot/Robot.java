@@ -116,6 +116,9 @@ public class Robot extends TimedRobot {
 
       // elevator.getMasterTalon().get
 
+      
+      Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
+
    }
    /**
     * This function is run when the robot is first started up and should be used
@@ -124,7 +127,6 @@ public class Robot extends TimedRobot {
    @Override
    public void robotInit() {
       Robot.setupRobot();
-            System.out.println("var vals " + Location.CARGO_INTAKE.getHasVariableValues());
    }
 
    /**
@@ -141,6 +143,7 @@ public class Robot extends TimedRobot {
       HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
       new SetArmPosition(ArmDirection.UP).start();
 
+      Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
    }
 
    /**
@@ -246,7 +249,9 @@ public class Robot extends TimedRobot {
       // OI.getInstance().getDriverGamepad().getLeftX());
  
 
-      SmartDashboard.putNumber("wrist", Wrist.getInstance().getMasterTalon().getSensorCollection().getPulseWidthPosition());
+      SmartDashboard.putNumber("wrist rise to fall", Wrist.getInstance().getMasterTalon().getSensorCollection().getPulseWidthRiseToFallUs());
+      // SmartDashboard.putNumber("wrist quadrature", Wrist.getInstance().getMasterTalon().getSensorCollection().getQuadraturePosition());
+      // SmartDashboard.putNumber("wrist analog raw", Wrist.getInstance().getMasterTalon().getSensorCollection().getAnalogInRaw());
       // System.out.println(OI.getInstance().getCustomOperatorGamepad().getBackwardThreePressed());
    }
 

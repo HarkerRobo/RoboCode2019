@@ -47,7 +47,7 @@ public class MoveWristMotionMagic extends Command {
          KD = 75;
          IZONE = 150;
          ACCELERATION = (int) (315 * 1.20);
-         CRUISE_VELOCITY = (int) (300 * 1.28);
+         CRUISE_VELOCITY = (int) (300 * 2.1);
       }
    }
 
