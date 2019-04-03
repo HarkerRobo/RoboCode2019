@@ -321,6 +321,14 @@ public class Robot extends TimedRobot {
    }
 
    /**
+    * Gets the instance of the climber  on the robot.
+
+    * @return the climber
+    */
+    public static Climber getClimber() {
+       return climber;
+    }
+   /**
     * Gets the current time elapsed (in milliseconds) since the robot was last
     * enabled, in either autonomous or teleop.
     * 

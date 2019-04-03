@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
-import frc.robot.commands.climber.MoveClimberManual;
+import frc.robot.commands.climber.MoveClimber;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -25,8 +25,8 @@ public class Climber extends Subsystem {
    private HSTalon leftTalon;
    private HSTalon rightTalon;
     
-   private static final boolean TALON_INVERTED; 
-   private static final boolean VICTOR_INVERTED; 
+   private static final boolean LEFT_TALON_INVERTED; 
+   private static final boolean RIGHT_TALON_INVERTED; 
     
    private static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake; 
    private static final int CONT_CURRENT_LIMIT_LEFT;
@@ -37,39 +37,24 @@ public class Climber extends Subsystem {
    public static final double CLIMB_SPEED = 1;
    public static final double ARBITRARY_FF = 0.04;
     
+   public static final double DEFAULT_SUCTION_OUTPUT = 0.0;
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-         TALON_INVERTED = false;
-         VICTOR_INVERTED = false;
+         LEFT_TALON_INVERTED = false;
+         RIGHT_TALON_INVERTED = false;
          CONT_CURRENT_LIMIT_LEFT = 40;
          PEAK_CURRENT_LIMIT_LEFT = 80;
          CONT_CURRENT_LIMIT_RIGHT = 40; 
          PEAK_CURRENT_LIMIT_RIGHT = 80;
          PEAK_TIME = 1000;
       } else {
-         TALON_INVERTED = false;
-         VICTOR_INVERTED = false;
+         LEFT_TALON_INVERTED = false;
+         RIGHT_TALON_INVERTED = false;
          CONT_CURRENT_LIMIT_LEFT = 40; 
          PEAK_CURRENT_LIMIT_LEFT = 80;
          CONT_CURRENT_LIMIT_RIGHT = 40; 
          PEAK_CURRENT_LIMIT_RIGHT = 80;
          PEAK_TIME = 1000;
-      }
-   }
-
-   /**
-    * Represents the direction in which the robot should climb. 
-    * UP means to begin climbing onto level 3; DOWN means to perform a reverse climb.
-    */
-    public enum ClimbDirection {
-      UP (1), DOWN(-1);
-      private int sign;
-      private ClimbDirection(int direction) {
-         this.sign = direction;
-      }
-
-      public int getSign () {
-         return sign;
       }
    }
     
@@ -82,8 +67,8 @@ public class Climber extends Subsystem {
       leftTalon.setNeutralMode(NEUTRAL_MODE);
       rightTalon.setNeutralMode(NEUTRAL_MODE);
 
-      leftTalon.setInverted(TALON_INVERTED);
-      rightTalon.setInverted(VICTOR_INVERTED);
+      leftTalon.setInverted(LEFT_TALON_INVERTED);
+      rightTalon.setInverted(RIGHT_TALON_INVERTED);
 
       leftTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT_LEFT);
       rightTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT_RIGHT);
@@ -96,21 +81,16 @@ public class Climber extends Subsystem {
    }
 
     public void initDefaultCommand() {
-        setDefaultCommand(new MoveClimberManual(ClimbDirection.UP));
+        setDefaultCommand(new MoveClimber(DEFAULT_SUCTION_OUTPUT));
    }
 
-   public void setClimberMotionMagic(double leftPosition, double rightPosition) {
-      leftTalon.set(ControlMode.MotionMagic, leftPosition, DemandType.ArbitraryFeedForward, Climber.ARBITRARY_FF);
-      rightTalon.set(ControlMode.MotionMagic, rightPosition, DemandType.ArbitraryFeedForward, Climber.ARBITRARY_FF);
+   public void setClimberOutput(double magnitude) {
+      setClimberOutput(magnitude, magnitude);
    }
 
-   public void setClimberOutput(ClimbDirection direction, double magnitude) {
-      setClimberOutput(direction, magnitude, magnitude);
-   }
-
-   public void setClimberOutput(ClimbDirection direction, double leftMagnitude, double rightMagnitude) {
-      leftTalon.set(ControlMode.PercentOutput, leftMagnitude * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF);
-      rightTalon.set(ControlMode.PercentOutput, rightMagnitude * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF);
+   public void setClimberOutput(double leftMagnitude, double rightMagnitude) {
+      leftTalon.set(ControlMode.PercentOutput, leftMagnitude, DemandType.ArbitraryFeedForward, ARBITRARY_FF);
+      rightTalon.set(ControlMode.PercentOutput, rightMagnitude, DemandType.ArbitraryFeedForward, ARBITRARY_FF);
    }
 
    public void disableClimber() {

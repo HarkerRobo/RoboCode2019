@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.commands.arm.ToggleArmPosition;
+import frc.robot.commands.climber.MoveClimber;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
@@ -22,6 +23,7 @@ import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.intake.SpinIntakeVelocity;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
 import frc.robot.commands.wrist.ZeroWrist;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
 import frc.robot.subsystems.Rollers;
@@ -294,6 +296,9 @@ public class OI {
             currentDriveMode = DriveMode.getMode((currentDriveMode.getValue() + 1) % DriveMode.values().length);
          }
       });
+
+      operatorGamepad.getButtonStickLeft().whenPressed(new MoveClimber(Climber.DEFAULT_SUCTION_OUTPUT));
+      operatorGamepad.getButtonStickRight().whenPressed(new MoveClimber(0));
    }
 
    public HSGamepad getDriverGamepad() {
