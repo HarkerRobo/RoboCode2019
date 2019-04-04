@@ -20,8 +20,13 @@ public class MoveClimber extends IndefiniteCommand {
       Robot.log("MoveClimberSuction constructed with " + magnitude + "output.");
    }
 
+   @Override
    public void execute() {
       Climber.getInstance().setClimberOutput(magnitude);
    }
 
+   @Override
+   public void end() {
+      Climber.getInstance().setClimberOutput(0);
+   }
 }
