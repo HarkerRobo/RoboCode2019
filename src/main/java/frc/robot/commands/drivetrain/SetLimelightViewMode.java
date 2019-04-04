@@ -5,8 +5,10 @@ import frc.robot.Robot;
 import frc.robot.util.Limelight;
 
 /**
- * Toggles the Limelight view mode between one for low-exposure vision
+ * Sets the Limelight view mode to either one for low-exposure vision
  * processing and one for high-exposure human view.
+ * 
+ * @author Finn Frankis
  */
 public class SetLimelightViewMode extends InstantCommand {
    private ViewMode mode;

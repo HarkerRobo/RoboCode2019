@@ -9,7 +9,7 @@ import harkerrobolib.auto.ParallelCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
 
 /**
- * Spins the Intake and Rollers Indefinitely
+ * Spins the intake and rollers (in parallel) indefinitely.
  * 
  * @author Chirag Kaushik
  * @since 1/17/19

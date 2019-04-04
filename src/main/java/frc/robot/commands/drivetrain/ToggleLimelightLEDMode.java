@@ -4,6 +4,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.util.Limelight;
 
+/**
+ * Toggles the Limelight LEDs between on and off.
+ * 
+ * @author Finn Frankis
+ */
 public class ToggleLimelightLEDMode extends InstantCommand {
    public void initialize() {
       int currentLEDValue = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").getNumber(0.0)

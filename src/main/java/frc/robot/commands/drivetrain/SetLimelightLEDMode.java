@@ -5,6 +5,11 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.robot.Robot;
 import frc.robot.util.Limelight;
 
+/**
+ * Sets the Limelight LEDs to either on and off.
+ * 
+ * @author Finn Frankis
+ */
 public class SetLimelightLEDMode extends InstantCommand {
    private LEDMode mode;
 
