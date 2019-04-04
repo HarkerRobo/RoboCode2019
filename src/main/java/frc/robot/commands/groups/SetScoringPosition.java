@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.OI;
-import frc.robot.Robot;
 import frc.robot.OI.TriggerMode;
+import frc.robot.Robot;
 import frc.robot.Robot.Side;
-import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.arm.SetArmState;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.elevator.MoveElevatorMotionMagic;
 import frc.robot.commands.hatchpanelintake.SetExtenderState;
@@ -159,8 +159,8 @@ public class SetScoringPosition extends CommandGroup {
             new ConditionalCommand(
                   () -> Wrist.getInstance().getCurrentSide() == Side.FRONT
                         && Elevator.getInstance().isBelow(Elevator.ARM_COLLISION_HEIGHT),
-                  new SequentialCommandGroup(new SetArmPosition(ArmDirection.DOWN),
-                        new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)), new SetArmPosition(ArmDirection.DOWN))));
+                  new SequentialCommandGroup(new SetArmState(ArmDirection.DOWN),
+                        new WaitCommand(Arm.DOWN_SAFE_ACTUATION_TIME)), new SetArmState(ArmDirection.DOWN))));
       addSequential(new ConditionalCommand(
             () -> (mustPassthroughHigh.getAsBoolean() || mustPassthroughLow.getAsBoolean()
                   || desiredLocation == Location.HATCH_INTAKE || desiredLocation == Location.CARGO_INTAKE),
@@ -204,7 +204,7 @@ public class SetScoringPosition extends CommandGroup {
       addSequential(new MoveElevatorMotionMagic(getDesiredHeight));
       if (desiredLocation == Location.F1 || desiredLocation == Location.F2 || desiredLocation == Location.F3
             || desiredLocation == Location.CARGO_SHIP_FRONT) {
-         addSequential(new SetArmPosition(ArmDirection.UP));
+         addSequential(new SetArmState(ArmDirection.UP));
       }
 
       addSequential(new ConditionalCommand(
@@ -216,7 +216,7 @@ public class SetScoringPosition extends CommandGroup {
       addSequential(new ConditionalCommand(() -> desiredLocation != Location.CARGO_INTAKE && 
                                                  desiredLocation != Location.PARALLEL_BACK && 
                                                  desiredLocation != Location.PARALLEL_FRONT, 
-                        new SetArmPosition(ArmDirection.UP)));
+                        new SetArmState(ArmDirection.UP)));
    }
 
    public void end() {

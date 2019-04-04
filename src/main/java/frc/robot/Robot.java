@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.arm.SetArmState;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode;
@@ -141,7 +141,7 @@ public class Robot extends TimedRobot {
       new SetLimelightViewMode(ViewMode.DRIVER).start();
 
       HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
-      new SetArmPosition(ArmDirection.UP).start();
+      new SetArmState(ArmDirection.UP).start();
 
       Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
    }

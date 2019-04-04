@@ -12,10 +12,10 @@ import frc.robot.subsystems.Arm.ArmDirection;
  * @author Chirag Kaushik
  * @since 1/11/19
  */
-public class SetArmPosition extends InstantCommand {
+public class SetArmState extends InstantCommand {
    private ArmDirection direction;
 
-   public SetArmPosition(ArmDirection direction) {
+   public SetArmState(ArmDirection direction) {
       requires(Arm.getInstance());
       this.direction = direction;
 

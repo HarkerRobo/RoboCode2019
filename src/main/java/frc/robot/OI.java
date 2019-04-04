@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import frc.robot.commands.arm.ToggleArmPosition;
+import frc.robot.commands.arm.ToggleArmState;
 import frc.robot.commands.climber.MoveClimber;
 import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
 import frc.robot.commands.drivetrain.SetLimelightLEDMode;
@@ -174,7 +174,7 @@ public class OI {
          }
       });
 
-      driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmPosition());
+      driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmState());
       driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
       driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
       driverGamepad.getButtonY()

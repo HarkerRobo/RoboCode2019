@@ -2,7 +2,7 @@ package frc.robot.commands.groups;
 
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
-import frc.robot.commands.arm.SetArmPosition;
+import frc.robot.commands.arm.SetArmState;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.hatchpanelintake.SetExtenderState;
 import frc.robot.commands.wrist.MoveWristMotionMagic;
@@ -32,6 +32,6 @@ public class StowHatchAndCargoIntake extends SequentialCommandGroup {
             //             && !Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)),
             //       //new SetScoringPosition(Location.PARALLEL_FRONT), new SetScoringPosition(Location.PARALLEL_BACK)),
             // new CallMethodCommand(() -> System.out.println("Waiting for " + ARM_WAIT_TIME + "seconds")),
-            new MoveWristMotionMagic(Wrist.MID_POSITION), new WaitCommand(ARM_WAIT_TIME), new SetArmPosition(ArmDirection.UP));
+            new MoveWristMotionMagic(Wrist.MID_POSITION), new WaitCommand(ARM_WAIT_TIME), new SetArmState(ArmDirection.UP));
    }
 }

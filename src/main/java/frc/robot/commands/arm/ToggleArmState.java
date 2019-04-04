@@ -13,9 +13,9 @@ import frc.robot.subsystems.Arm.ArmDirection;
  * @author Chirag Kaushik
  * @since 1/11/19
  */
-public class ToggleArmPosition extends InstantCommand {
+public class ToggleArmState extends InstantCommand {
 
-   public ToggleArmPosition() {
+   public ToggleArmState() {
       requires(Arm.getInstance());
    }
 
