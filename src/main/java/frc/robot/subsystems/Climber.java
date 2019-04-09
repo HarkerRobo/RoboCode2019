@@ -90,12 +90,10 @@ public class Climber extends Subsystem {
 
    public void setClimberOutput(double leftMagnitude, double rightMagnitude) {
       leftTalon.set(ControlMode.PercentOutput, leftMagnitude, DemandType.ArbitraryFeedForward, ARBITRARY_FF);
-      rightTalon.set(ControlMode.PercentOutput, rightMagnitude, DemandType.ArbitraryFeedForward, ARBITRARY_FF);
    }
 
    public void disableClimber() {
       leftTalon.set(ControlMode.Disabled, 0);
-      rightTalon.set(ControlMode.Disabled, 0);
    }
 
    public static Climber getInstance() {

@@ -69,6 +69,7 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
                   .getPulseWidthPosition() == Global.DISCONNECTED_PULSE_WIDTH_POSITION) { 
          Drivetrain.getInstance().arcadeDrivePercentOutput(speed, Math.pow(turn, 2) * Math.signum(turn));
       } else {
+         System.out.println(speed + " " + turn);
          Drivetrain.getInstance().arcadeDriveVelocity(speed, Math.pow(turn, 2) * Math.signum(turn));
       }
    }

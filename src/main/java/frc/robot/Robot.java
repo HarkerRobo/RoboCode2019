@@ -203,7 +203,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
       SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
       SmartDashboard.putBoolean("DPad UP ", OI.getInstance().getOperatorGamepad().getUpDPadButton().get());
-
+      SmartDashboard.putNumber("Rollers current limit ", Rollers.getInstance().getTopTalon().getOutputCurrent());
       compressor.setClosedLoopControl(true);
       // SmartDashboard.putNumber("Left Error",
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));

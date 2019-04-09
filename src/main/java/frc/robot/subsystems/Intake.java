@@ -58,6 +58,7 @@ public class Intake extends Subsystem {
 
    }
    public final static double DEFAULT_INTAKE_MAGNITUDE = 0.5;
+   public final static double SLOW_INTAKE_VELOCITY = 0.5;
    public final static double DEFAULT_INTAKE_VELOCITY = 1500;
 
    public void setControllerOutput(double magnitude, IntakeDirection direction) {
