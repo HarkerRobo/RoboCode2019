@@ -22,6 +22,7 @@ import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
 import frc.robot.commands.intake.SpinIntakeVelocity;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
+import frc.robot.commands.rollers.ToggleRollers;
 import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
@@ -178,9 +179,7 @@ public class OI {
       driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
       driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
       driverGamepad.getButtonY()
-            .whilePressed(new ParallelCommandGroup(
-                  new SpinIntakeVelocity( IntakeDirection.IN, Intake.DEFAULT_INTAKE_VELOCITY),
-                  new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN)));
+            .whenPressed(new ToggleRollers());
       driverGamepad.getButtonX()
             .whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersOutput, RollerDirection.OUT));
       driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
