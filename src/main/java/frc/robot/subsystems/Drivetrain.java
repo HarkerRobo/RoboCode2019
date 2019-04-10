@@ -51,7 +51,8 @@ public class Drivetrain extends HSDrivetrain {
       }
    }
 
-   private final static double MAX_FORWARD_VELOCITY = 13; // 12
+   private final static double 
+   MAX_FORWARD_VELOCITY = 13; // 12
    private final static double MAX_TURN_VELOCITY = 7.25; // 5
 
    private static int TALON_PEAK_LIMIT = 20;

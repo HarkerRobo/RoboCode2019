@@ -84,7 +84,7 @@ public class OI {
       ARCADE_YX(0, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getLeftX()), 
       ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), 
          () -> (OI.getInstance().getDriverGamepad().getButtonStickRight().get() || Math.abs(OI.getInstance().getDriverGamepad().getLeftY()) > DRIVER_DEADBAND) ?
-            ((OI.getInstance().getDriverGamepad().getLeftY() > 0 ? 1 : -1 ) * OI.getInstance().getDriverGamepad().getRightX()) : 0);
+            ((OI.getInstance().getDriverGamepad().getLeftY() > 0 || OI.getInstance().getDriverGamepad().getButtonStickRight().get() ? 1 : -1 ) * OI.getInstance().getDriverGamepad().getRightX()) : 0);
             
       
       private int value;
@@ -274,7 +274,7 @@ public class OI {
       operatorGamepad.getButtonY().whenPressed(
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B2), () -> Robot.getSetScoringCommand()));
 
-      operatorGamepad.getButtonBumperLeft().whenPressed(new ParallelCommandGroup(new SpinIntakeVelocity(IntakeDirection.IN, Intake.DEFAULT_INTAKE_VELOCITY), 
+      operatorGamepad.getButtonBumperLeft().whenPressed(new ParallelCommandGroup(new SpinIntakeVelocity(IntakeDirection.IN, Intake.SLOW_INTAKE_VELOCITY),  
                                                       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand())));
       operatorGamepad.getButtonBumperRight().whenPressed(new RunIfNotEqualCommand(
          () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));

@@ -10,6 +10,7 @@ import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
 import frc.robot.RobotMap.RobotType;
 import frc.robot.commands.groups.SetScoringPosition.Location;
+import frc.robot.commands.rollers.SpinRollersManual;
 import harkerrobolib.wrappers.HSTalon;
 
 /**
@@ -42,7 +43,7 @@ public class Rollers extends Subsystem {
          TOP_INVERTED = true;
          BOTTOM_INVERTED = false;
       } else {
-         TOP_INVERTED = true;
+         TOP_INVERTED = false;
          BOTTOM_INVERTED = true;
       }
    }
@@ -70,11 +71,12 @@ public class Rollers extends Subsystem {
     * Creates new Talons
     */
    private Rollers() {
-      rTalonTop = new HSTalon(CAN_IDs.RO_TOP);
+      rTalonTop = new HSTalon(CAN_IDs.RO_BOTTOM);
    }
 
    @Override
    protected void initDefaultCommand() {
+      setDefaultCommand(new SpinRollersManual());
    }
 
    /**
@@ -111,7 +113,8 @@ public class Rollers extends Subsystem {
    }
 
    public void moveRollers(double output, RollerDirection direction) {
-      rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign(), DemandType.ArbitraryFeedForward, output < 10e-7 ? ARBITRARY_FF * RollerDirection.IN.getSign() : 0);
+      System.out.println("running with feed forward " + ARBITRARY_FF);
+      rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF * RollerDirection.IN.getSign());
    }
 
    public double getRecommendedRollersInput() {
