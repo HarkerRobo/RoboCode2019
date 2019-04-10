@@ -275,7 +275,8 @@ public class OI {
       operatorGamepad.getButtonY().whenPressed(
             new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B2), () -> Robot.getSetScoringCommand()));
 
-      operatorGamepad.getButtonBumperLeft().whenPressed(new ParallelCommandGroup(new SpinIntakeVelocity(IntakeDirection.IN, Intake.SLOW_INTAKE_VELOCITY),  
+      operatorGamepad.getButtonBumperLeft().whenPressed(new ParallelCommandGroup(new SpinIntakeVelocity(IntakeDirection.IN, Intake.SLOW_INTAKE_VELOCITY),
+                                                                                 new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN),
                                                       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand())));
       operatorGamepad.getButtonBumperRight().whenPressed(new RunIfNotEqualCommand(
          () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
