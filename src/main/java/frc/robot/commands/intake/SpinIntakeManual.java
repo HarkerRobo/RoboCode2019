@@ -35,7 +35,7 @@ public class SpinIntakeManual extends IndefiniteCommand {
       // only actuate if pulling cargo in
       // //Intake.getInstance().setControllerOutput(operatorBallIntakeOutput);
       // }
-      if (OI.getInstance().getDriverGamepad().getButtonYState()) {
+      if (OI.getInstance().getDriverGamepad().getButtonYState() && OI.getInstance().getRunRollersAndIntake()) {
          Intake.getInstance().setControllerOutput(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN);
       } else {
          Intake.getInstance().setControllerOutput(0.0, IntakeDirection.IN);

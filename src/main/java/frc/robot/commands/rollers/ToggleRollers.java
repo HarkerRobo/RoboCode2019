@@ -25,11 +25,12 @@ public class ToggleRollers extends CommandGroup {
                                             new SpinIntakeVelocity(IntakeDirection.IN, 0)));
         addParallel(new ConditionalCommand(() -> toggle, 
                     new SpinRollersIndefinite(Rollers.getInstance().getRecommendedRollersInput(), RollerDirection.IN),
-                    new SpinRollersIndefinite(Rollers.getInstance().getRecommendedRollersInput(), RollerDirection.IN)));
+                    new SpinRollersIndefinite(0, RollerDirection.IN)));
     }
 
     public void initialize() {
         toggle = !toggle;
+        System.out.println("toggle " + toggle);
     }
 
     public boolean getToggle() {

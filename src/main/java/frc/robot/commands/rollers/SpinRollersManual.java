@@ -1,5 +1,6 @@
 package frc.robot.commands.rollers;
 
+import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
@@ -26,6 +27,10 @@ public class SpinRollersManual extends IndefiniteCommand {
     */
    @Override
    public void execute() {
-      Rollers.getInstance().moveRollers(0, RollerDirection.IN);
+      if(OI.getInstance().getRunRollersAndIntake()) {
+         Rollers.getInstance().moveRollers(Rollers.DEFAULT_ROLLER_MAGNITUDE, RollerDirection.IN);
+      } else {
+         Rollers.getInstance().moveRollers(0, RollerDirection.IN);
+      }
    }
 }

@@ -20,8 +20,11 @@ import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
 import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
+import frc.robot.commands.intake.SpinIntakeIndefinite;
+import frc.robot.commands.intake.SpinIntakeManual;
 import frc.robot.commands.intake.SpinIntakeVelocity;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
+import frc.robot.commands.rollers.SpinRollersManual;
 import frc.robot.commands.rollers.ToggleRollers;
 import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.subsystems.Climber;
@@ -141,6 +144,7 @@ public class OI {
    private boolean cargoBayToggleMode;
    private boolean wristToggleMode;
    private boolean driveStraightMode;
+   private boolean runRollersAndIntake;
 
    public static DriveMode currentDriveMode;
 
@@ -152,6 +156,7 @@ public class OI {
       cargoBayToggleMode = false;
       wristToggleMode = false;
       driveStraightMode = false;
+      runRollersAndIntake = false;
       currentTriggerMode = TriggerMode.ALIGN;
       currentDriveMode = DriveMode.ARCADE_YY;
 
@@ -179,7 +184,11 @@ public class OI {
       driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
       driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
       driverGamepad.getButtonY()
-            .whenPressed(new ToggleRollers());
+            .whenPressed(new ConditionalCommand(() -> Math.abs(Rollers.getInstance().getTopTalon().getMotorOutputPercent()) > Rollers.ARBITRARY_FF,
+            new ParallelCommandGroup(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN), 
+                                     new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN)),
+            new ParallelCommandGroup(new SpinRollersIndefinite(0, RollerDirection.IN), 
+                                     new SpinIntakeIndefinite(0, IntakeDirection.IN))));
       driverGamepad.getButtonX()
             .whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersOutput, RollerDirection.OUT));
       driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
@@ -339,4 +348,9 @@ public class OI {
    public TriggerMode getCurrentTriggerMode() {
       return currentTriggerMode;
    }
+
+   public boolean getRunRollersAndIntake() {
+      return runRollersAndIntake;
+   }
+
 }

@@ -59,7 +59,7 @@ public class Rollers extends Subsystem {
    public static final double ROLLER_SHOOTING_SPEED = 0.65;
    public static final double HATCH_STOW_SPEED = 0.75;
 
-   public static final double CARGO_BAY_OUTPUT_REDUCTION = 0.55;
+   public static final double CARGO_BAY_OUTPUT_REDUCTION = 0.35;
 
    public static final double STOP_INTAKING_CURRENT = 15;
 
@@ -113,7 +113,6 @@ public class Rollers extends Subsystem {
    }
 
    public void moveRollers(double output, RollerDirection direction) {
-      System.out.println("running with feed forward " + ARBITRARY_FF);
       rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF * RollerDirection.IN.getSign());
    }
 
