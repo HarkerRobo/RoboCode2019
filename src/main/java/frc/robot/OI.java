@@ -31,6 +31,7 @@ import frc.robot.commands.wrist.ZeroWrist;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeDirection;
+
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import frc.robot.util.ConditionalCommand;
@@ -182,13 +183,13 @@ public class OI {
          }
       });
 
-      driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmState());
+      driverGamepad.getButtonBumperLeft().whilePressed(new ParallelCommandGroup(
+         new SpinIntakeVelocity( IntakeDirection.IN, Intake.DEFAULT_INTAKE_VELOCITY),
+         new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN)));
       driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
       driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
       driverGamepad.getButtonY()
-            .whilePressed(new ParallelCommandGroup(
-                  new SpinIntakeVelocity( IntakeDirection.IN, Intake.DEFAULT_INTAKE_VELOCITY),
-                  new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN)));
+            .whenPressed(new ToggleArmState());
       driverGamepad.getButtonX()
             .whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersOutput, RollerDirection.OUT));
       driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
