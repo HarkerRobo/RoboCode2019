@@ -185,18 +185,10 @@ public class OI {
       driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmState());
       driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
       driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
-      // operatorGamepad.getButtonX().whenPressed(new PrintCommand("X PRESSED"));
-      operatorGamepad.getButtonX()
-            .whenPressed(new ConditionalCommand(() -> {
-               System.out.println(Rollers.getInstance().getCurrentOutput());
-               return Math.abs(Rollers.getInstance().getCurrentOutput()) < Rollers.ARBITRARY_FF;
-            }, new SpinIntakeAndRollers(), new PrintCommand("rollers off")));
-            
-            // new ParallelCommandGroup(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN), 
-            //                          new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN), new PrintCommand("TOGGLE ROLL IN") ),
-            // new ParallelCommandGroup(new SpinRollersIndefinite(0, RollerDirection.IN), 
-            //                          new SpinIntakeIndefinite(0, IntakeDirection.IN), new PrintCommand("TOGGLE ROLL STOP"))));
-      driverGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN));
+      driverGamepad.getButtonY()
+            .whilePressed(new ParallelCommandGroup(
+                  new SpinIntakeVelocity( IntakeDirection.IN, Intake.DEFAULT_INTAKE_VELOCITY),
+                  new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN)));
       driverGamepad.getButtonX()
             .whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersOutput, RollerDirection.OUT));
       driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
