@@ -16,6 +16,7 @@ import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.groups.SetScoringPosition;
+import frc.robot.commands.groups.SpinIntakeAndRollers;
 import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.groups.StowHatchAndCargoIntake;
 import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
@@ -40,6 +41,7 @@ import frc.robot.util.TriggerButton.TriggerSide;
 import harkerrobolib.auto.ParallelCommandGroup;
 import harkerrobolib.auto.SequentialCommandGroup;
 import harkerrobolib.commands.CallMethodCommand;
+import harkerrobolib.commands.PrintCommand;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
@@ -183,12 +185,18 @@ public class OI {
       driverGamepad.getButtonBumperLeft().whenPressed(new ToggleArmState());
       driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
       driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
-      driverGamepad.getButtonY()
-            .whenPressed(new ConditionalCommand(() -> Math.abs(Rollers.getInstance().getTopTalon().getMotorOutputPercent()) > Rollers.ARBITRARY_FF,
-            new ParallelCommandGroup(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN), 
-                                     new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN)),
-            new ParallelCommandGroup(new SpinRollersIndefinite(0, RollerDirection.IN), 
-                                     new SpinIntakeIndefinite(0, IntakeDirection.IN))));
+      // operatorGamepad.getButtonX().whenPressed(new PrintCommand("X PRESSED"));
+      operatorGamepad.getButtonX()
+            .whenPressed(new ConditionalCommand(() -> {
+               System.out.println(Rollers.getInstance().getCurrentOutput());
+               return Math.abs(Rollers.getInstance().getCurrentOutput()) < Rollers.ARBITRARY_FF;
+            }, new SpinIntakeAndRollers(), new PrintCommand("rollers off")));
+            
+            // new ParallelCommandGroup(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN), 
+            //                          new SpinIntakeIndefinite(Intake.DEFAULT_INTAKE_MAGNITUDE, IntakeDirection.IN), new PrintCommand("TOGGLE ROLL IN") ),
+            // new ParallelCommandGroup(new SpinRollersIndefinite(0, RollerDirection.IN), 
+            //                          new SpinIntakeIndefinite(0, IntakeDirection.IN), new PrintCommand("TOGGLE ROLL STOP"))));
+      driverGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN));
       driverGamepad.getButtonX()
             .whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersOutput, RollerDirection.OUT));
       driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
@@ -197,6 +205,7 @@ public class OI {
             Robot.log(wristToggleMode ? "Enabled wrist scoring mode." : "Enabled Limelight align mode.");
          }
       });
+
         
       // driverGamepad.getButtonSelect()
       //      .whenPressed(new CallMethodCommand(() -> currentTriggerMode = TriggerMode.CLIMB));

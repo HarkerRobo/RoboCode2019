@@ -234,6 +234,9 @@ public class Robot extends TimedRobot {
       Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
       // SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
       SmartDashboard.putNumber("date", System.currentTimeMillis());
+      SmartDashboard.putNumber("motor output % intake", Rollers.getInstance().getTopTalon().getMotorOutputPercent());
+
+      SmartDashboard.putNumber("intake output measured", Rollers.getInstance().getCurrentOutput());
 
       if (pw != null) {
          pw.flush();

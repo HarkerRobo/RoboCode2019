@@ -67,11 +67,14 @@ public class Rollers extends Subsystem {
    private static Rollers instance;
    private HSTalon rTalonTop;
 
+   private static double currentOutput;
+
    /**
     * Creates new Talons
     */
    private Rollers() {
       rTalonTop = new HSTalon(CAN_IDs.RO_BOTTOM);
+      currentOutput = 0.0;
    }
 
    @Override
@@ -109,10 +112,12 @@ public class Rollers extends Subsystem {
    }
 
    public void stopRollers() {
+      currentOutput = 0;
       rTalonTop.set(ControlMode.Disabled, 0);
    }
 
    public void moveRollers(double output, RollerDirection direction) {
+      currentOutput = output;
       rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF * RollerDirection.IN.getSign());
    }
 
@@ -141,5 +146,9 @@ public class Rollers extends Subsystem {
       if (instance == null)
          instance = new Rollers();
       return instance;
+   }
+
+   public double getCurrentOutput() {
+      return currentOutput;
    }
 }

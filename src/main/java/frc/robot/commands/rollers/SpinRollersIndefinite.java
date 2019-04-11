@@ -2,6 +2,7 @@ package frc.robot.commands.rollers;
 
 import java.util.function.Supplier;
 
+import frc.robot.Robot;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import harkerrobolib.commands.IndefiniteCommand;
@@ -20,6 +21,8 @@ public class SpinRollersIndefinite extends IndefiniteCommand {
 
    public final static double magnitude2 = 0.49;
    public final static double magnitude1 = 0.5;
+
+   private double prevTime = 0.0;
 
    public SpinRollersIndefinite(double magnitude, RollerDirection direction) {
       this(() -> magnitude, direction);
@@ -41,6 +44,7 @@ public class SpinRollersIndefinite extends IndefiniteCommand {
     */
    @Override
    public void execute() {
+      prevTime = Robot.getTime();
       if(Rollers.getInstance().getTopTalon().getOutputCurrent() > Integer.MAX_VALUE)
          isStopped = true;
       if(!isStopped)
