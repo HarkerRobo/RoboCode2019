@@ -203,6 +203,13 @@ public class Elevator extends Subsystem {
       leftBackVictor.configFactoryDefault();
       followerTalon.configFactoryDefault();
 
+      try {
+         Thread.sleep(50);
+      } catch (InterruptedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+
       leftFrontVictor.follow(masterTalon);
       leftBackVictor.follow(masterTalon);
       followerTalon.follow(masterTalon);
