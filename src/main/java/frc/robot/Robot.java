@@ -28,7 +28,6 @@ import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.groups.SetScoringPosition;
-import frc.robot.commands.groups.SetScoringPosition.Location;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmDirection;
@@ -203,7 +202,7 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
       SmartDashboard.putNumber("Wrist Current", Wrist.getInstance().getMasterTalon().getOutputCurrent());
       SmartDashboard.putBoolean("DPad UP ", OI.getInstance().getOperatorGamepad().getUpDPadButton().get());
-      SmartDashboard.putNumber("Rollers current limit ", Rollers.getInstance().getTopTalon().getOutputCurrent());
+      SmartDashboard.putNumber("Rollers current limit ", Rollers.getInstance().talon().getOutputCurrent());
       compressor.setClosedLoopControl(true);
       // SmartDashboard.putNumber("Left Error",
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
@@ -234,7 +233,7 @@ public class Robot extends TimedRobot {
       Elevator.getInstance().getMasterTalon().getSelectedSensorPosition());
       // SmartDashboard.putNumber("Rollers Current", Rollers.getInstance().getTopTalon().getOutputCurrent());
       SmartDashboard.putNumber("date", System.currentTimeMillis());
-      SmartDashboard.putNumber("motor output % intake", Rollers.getInstance().getTopTalon().getMotorOutputPercent());
+      SmartDashboard.putNumber("motor output % intake", Rollers.getInstance().talon().getMotorOutputPercent());
 
       SmartDashboard.putNumber("intake output measured", Rollers.getInstance().getCurrentOutput());
 

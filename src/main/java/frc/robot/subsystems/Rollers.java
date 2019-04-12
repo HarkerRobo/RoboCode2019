@@ -35,15 +35,15 @@ public class Rollers extends Subsystem {
       }
    }
 
-   private static final boolean TOP_INVERTED;
+   private static final boolean INVERTED;
    private static final boolean BOTTOM_INVERTED;
 
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-         TOP_INVERTED = true;
+         INVERTED = true;
          BOTTOM_INVERTED = false;
       } else {
-         TOP_INVERTED = false;
+         INVERTED = false;
          BOTTOM_INVERTED = true;
       }
    }
@@ -65,7 +65,7 @@ public class Rollers extends Subsystem {
 
    public static final double ARBITRARY_FF = 0.15;
    private static Rollers instance;
-   private HSTalon rTalonTop;
+   private HSTalon talon;
 
    private static double currentOutput;
 
@@ -73,7 +73,7 @@ public class Rollers extends Subsystem {
     * Creates new Talons
     */
    private Rollers() {
-      rTalonTop = new HSTalon(CAN_IDs.RO_BOTTOM);
+      talon = new HSTalon(CAN_IDs.RO_BOTTOM);
       currentOutput = 0.0;
    }
 
@@ -86,39 +86,39 @@ public class Rollers extends Subsystem {
     * Initialises the Talons
     */
    public void talonInit() {
-      rTalonTop.configFactoryDefault();
+      talon.configFactoryDefault();
 
-      rTalonTop.setNeutralMode(NeutralMode.Coast);
+      talon.setNeutralMode(NeutralMode.Coast);
 
-      rTalonTop.setInverted(TOP_INVERTED);
+      talon.setInverted(INVERTED);
 
-      System.out.println(TOP_INVERTED);
+      System.out.println(INVERTED);
 
       setupCurrentLimits();
    }
 
    public void setupCurrentLimits() {
-      rTalonTop.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
+      talon.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
 
-      rTalonTop.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+      talon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
 
-      rTalonTop.configPeakCurrentDuration(PEAK_TIME);
+      talon.configPeakCurrentDuration(PEAK_TIME);
 
-      rTalonTop.enableCurrentLimit(false);
+      talon.enableCurrentLimit(false);
    }
 
-   public HSTalon getTopTalon() {
-      return rTalonTop;
+   public HSTalon talon() {
+      return talon;
    }
 
    public void stopRollers() {
       currentOutput = 0;
-      rTalonTop.set(ControlMode.Disabled, 0);
+      talon.set(ControlMode.Disabled, 0);
    }
 
    public void moveRollers(double output, RollerDirection direction) {
       currentOutput = output;
-      rTalonTop.set(ControlMode.PercentOutput, output * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF * RollerDirection.IN.getSign());
+      talon.set(ControlMode.PercentOutput, output * direction.getSign(), DemandType.ArbitraryFeedForward, ARBITRARY_FF * RollerDirection.IN.getSign());
    }
 
    public double getRecommendedRollersInput() {

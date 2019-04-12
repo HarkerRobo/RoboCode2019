@@ -45,7 +45,7 @@ public class SpinRollersIndefinite extends IndefiniteCommand {
    @Override
    public void execute() {
       prevTime = Robot.getTime();
-      if(Rollers.getInstance().getTopTalon().getOutputCurrent() > Integer.MAX_VALUE)
+      if(Rollers.getInstance().talon().getOutputCurrent() > Integer.MAX_VALUE)
          isStopped = true;
       if(!isStopped)
          Rollers.getInstance().moveRollers(magnitudeLambda.get(), direction);
