@@ -1,15 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-=======
-import edu.wpi.first.wpilibj.VictorSP;
->>>>>>> 44fec7e5b7dbb699e510b15d729b3c254f9c99c1
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
@@ -28,17 +23,12 @@ public class Climber extends Subsystem {
 
    private static Climber instance;
 
-<<<<<<< HEAD
-   private HSTalon leftTalon;
-   private HSTalon rightTalon;
-   private DoubleSolenoid solenoid;
-=======
    private HSTalon talon;
    private VictorSPX victor;
->>>>>>> 44fec7e5b7dbb699e510b15d729b3c254f9c99c1
     
    private static final boolean LEFT_TALON_INVERTED; 
-   private static final boolean RIGHT_TALON_INVERTED; 
+   private static final boolean RIGHT_TALON_INVERTED;
+   private DoubleSolenoid solenoid; 
     
    private static final NeutralMode NEUTRAL_MODE = NeutralMode.Brake; 
    private static final int CONT_CURRENT_LIMIT_LEFT;
@@ -51,12 +41,7 @@ public class Climber extends Subsystem {
    public static final double CLIMB_SPEED = 1;
    public static final double ARBITRARY_FF = 0.04;
     
-<<<<<<< HEAD
-   public static final double DEFAULT_SUCTION_OUTPUT = 0.0;
-
-=======
    public static final double DEFAULT_SUCTION_OUTPUT = 0.5;
->>>>>>> 44fec7e5b7dbb699e510b15d729b3c254f9c99c1
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
          LEFT_TALON_INVERTED = false;
@@ -81,7 +66,6 @@ public class Climber extends Subsystem {
       }
    }
     
-<<<<<<< HEAD
    public enum ClimberState {
       FREE(CLIMBER_FREE_VALUE), RIGID(CLIMBER_RIGID_VALUE);
       private DoubleSolenoid.Value state;
@@ -93,14 +77,10 @@ public class Climber extends Subsystem {
       }
    }
 
-    private Climber() {
-      leftTalon = new HSTalon(CAN_IDs.CLIMBER_TALON_LEFT);
-      rightTalon = new HSTalon(CAN_IDs.CLIMBER_TALON_RIGHT);
-=======
    private Climber() {
       talon = new HSTalon(CAN_IDs.CLIMBER_TALON);
       victor = new VictorSPX(CAN_IDs.CLIMBER_VICTOR);
->>>>>>> 44fec7e5b7dbb699e510b15d729b3c254f9c99c1
+      solenoid = new DoubleSolenoid(CAN_IDs.CLIMBER_ARM_FORWARD_CHANNEL, CAN_IDs.CLIMBER_ARM_REVERSE_CHANNEL);
    }
     
     public void talonInit() {
@@ -148,15 +128,9 @@ public class Climber extends Subsystem {
       }
       return instance;
    }
-<<<<<<< HEAD
-   
-   public HSTalon getLeftTalon() {
-      return leftTalon;
-=======
     
    public HSTalon getTalon() {
       return talon;
->>>>>>> 44fec7e5b7dbb699e510b15d729b3c254f9c99c1
    }
 
    public VictorSPX getVictor() {
