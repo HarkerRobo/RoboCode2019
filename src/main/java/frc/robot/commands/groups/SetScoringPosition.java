@@ -227,10 +227,8 @@ public class SetScoringPosition extends CommandGroup {
 
    @Override
    public boolean isFinished() {
-         return super.isFinished() || MathUtil.mapJoystickOutput(Math.abs(OI.getInstance().getDriverGamepad().getRightY()), OI.DRIVER_DEADBAND) > 0 || 
-                  (OI.getInstance().getCurrentTriggerMode() == TriggerMode.WRIST_MANUAL && 
-                       (MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND_TRIGGER) > 0 ||
-                       MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND_TRIGGER) > 0));
+         return super.isFinished() || MathUtil.mapJoystickOutput(Math.abs(OI.getInstance().getOperatorGamepad().getRightY()), OI.OPERATOR_DEADBAND_JOYSTICK) > 0 || 
+         MathUtil.mapJoystickOutput(Math.abs(OI.getInstance().getOperatorGamepad().getLeftY()), OI.OPERATOR_DEADBAND_JOYSTICK) > 0;
    }
 
    public int getDesiredHeight () {

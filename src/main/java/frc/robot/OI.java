@@ -308,8 +308,10 @@ public class OI {
          }
       });
 
-      operatorGamepad.getButtonStickLeft().whenPressed(new MoveClimber(Climber.DEFAULT_SUCTION_OUTPUT));
-      operatorGamepad.getButtonStickRight().whenPressed(new MoveClimber(0));
+      operatorGamepad.getButtonX().whenPressed(new MoveClimber(Climber.DEFAULT_SUCTION_OUTPUT));
+      operatorGamepad.getButtonB().whenPressed(new MoveClimber(0));
+
+
    }
 
    public HSGamepad getDriverGamepad() {

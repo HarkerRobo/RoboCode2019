@@ -7,7 +7,7 @@ public class TriggerButton extends Trigger {
     private HSGamepad gamepad;
     private TriggerSide side;
 
-    public static final double TRIGGER_DEADBAND = 0.1;
+    public static final double TRIGGER_DEADBAND = 0.5;
 
     public enum TriggerSide {
         LEFT, RIGHT;

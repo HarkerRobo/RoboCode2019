@@ -358,11 +358,11 @@ public class Robot extends TimedRobot {
    }
 
    public static void log(String message) {
-      String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
-      System.out.println(prefix + ": " + message);
-      if (pw != null) {
-         pw.print(prefix + ": " + message + "\r\n");
-      }
+      // String prefix = 150 - DriverStation.getInstance().getMatchTime() + "";
+      // System.out.println(prefix + ": " + message);
+      // if (pw != null) {
+      //    pw.print(prefix + ": " + message + "\r\n");
+      // }
    }
 
    /**

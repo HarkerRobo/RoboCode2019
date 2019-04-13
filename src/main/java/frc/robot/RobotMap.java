@@ -25,7 +25,7 @@ public class RobotMap {
       public static final int EXTENDER_FORWARD_CHANNEL, EXTENDER_REVERSE_CHANNEL;
       public static final int FLOWER_FORWARD_CHANNEL, FLOWER_REVERSE_CHANNEL;
       public static final int PCM, PIGEON;
-      public static final int CLIMBER_TALON_LEFT, CLIMBER_TALON_RIGHT;
+      public static final int CLIMBER_TALON, CLIMBER_VICTOR;
 
       static {
          if (ROBOT_TYPE == RobotType.COMP) {
@@ -45,8 +45,8 @@ public class RobotMap {
             BALL_INTAKE_MASTER_SPARK = 1;
             BALL_INTAKE_MASTER_VICTOR = 4;
             ARM_MASTER = 0;
-            CLIMBER_TALON_LEFT = 0;
-            CLIMBER_TALON_RIGHT = 0;
+            CLIMBER_TALON = 0;
+            CLIMBER_VICTOR = 0;
 
             RO_TOP = 7;
             RO_BOTTOM = 3;
@@ -79,8 +79,8 @@ public class RobotMap {
             BALL_INTAKE_MASTER_SPARK = 3;
             BALL_INTAKE_MASTER_VICTOR = 0;
             ARM_MASTER = 0;
-            CLIMBER_TALON_LEFT = 1;
-            CLIMBER_TALON_RIGHT = 4;
+            CLIMBER_TALON = 0;
+            CLIMBER_VICTOR = 4;
 
             RO_TOP = 0;
             RO_BOTTOM = 1;
