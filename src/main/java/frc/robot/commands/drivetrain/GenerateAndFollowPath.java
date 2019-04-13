@@ -18,7 +18,8 @@ import frc.robot.util.Limelight;
 import harkerrobolib.util.Conversions;
 import harkerrobolib.util.Conversions.PositionUnit;
 import harkerrobolib.util.Conversions.SpeedUnit;
-import frc.robot.SmoothPathPlanner.FalconPathPlanner;
+
+import frc.robot.util.FalconPathPlanner;
 
 /**
  * Generates a Cubic Hermite Spline for the Drivetrain to use as a trajectory.
