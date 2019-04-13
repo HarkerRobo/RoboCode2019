@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 import frc.robot.RobotMap.CAN_IDs;
@@ -24,6 +25,7 @@ public class Climber extends Subsystem {
 
    private HSTalon leftTalon;
    private HSTalon rightTalon;
+   private DoubleSolenoid solenoid;
     
    private static final boolean LEFT_TALON_INVERTED; 
    private static final boolean RIGHT_TALON_INVERTED; 
@@ -34,10 +36,13 @@ public class Climber extends Subsystem {
    private static final int CONT_CURRENT_LIMIT_RIGHT;
    private static final int PEAK_CURRENT_LIMIT_RIGHT;
    private static final int PEAK_TIME;
+   private static final DoubleSolenoid.Value CLIMBER_FREE_VALUE;
+   private static final DoubleSolenoid.Value CLIMBER_RIGID_VALUE;
    public static final double CLIMB_SPEED = 1;
    public static final double ARBITRARY_FF = 0.04;
     
    public static final double DEFAULT_SUCTION_OUTPUT = 0.0;
+
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
          LEFT_TALON_INVERTED = false;
@@ -47,6 +52,8 @@ public class Climber extends Subsystem {
          CONT_CURRENT_LIMIT_RIGHT = 40; 
          PEAK_CURRENT_LIMIT_RIGHT = 80;
          PEAK_TIME = 1000;
+         CLIMBER_FREE_VALUE = DoubleSolenoid.Value.kForward;
+         CLIMBER_RIGID_VALUE = DoubleSolenoid.Value.kReverse;
       } else {
          LEFT_TALON_INVERTED = false;
          RIGHT_TALON_INVERTED = false;
@@ -55,9 +62,22 @@ public class Climber extends Subsystem {
          CONT_CURRENT_LIMIT_RIGHT = 40; 
          PEAK_CURRENT_LIMIT_RIGHT = 80;
          PEAK_TIME = 1000;
+         CLIMBER_FREE_VALUE = DoubleSolenoid.Value.kForward;
+         CLIMBER_RIGID_VALUE = DoubleSolenoid.Value.kReverse;
       }
    }
     
+   public enum ClimberState {
+      FREE(CLIMBER_FREE_VALUE), RIGID(CLIMBER_RIGID_VALUE);
+      private DoubleSolenoid.Value state;
+      private ClimberState(DoubleSolenoid.Value state) {
+         this.state = state;
+      }
+      public DoubleSolenoid.Value getState() {
+         return state;
+      }
+   }
+
     private Climber() {
       leftTalon = new HSTalon(CAN_IDs.CLIMBER_TALON_LEFT);
       rightTalon = new HSTalon(CAN_IDs.CLIMBER_TALON_RIGHT);
@@ -96,13 +116,21 @@ public class Climber extends Subsystem {
       leftTalon.set(ControlMode.Disabled, 0);
    }
 
+   public void setClimberArmState(DoubleSolenoid.Value value) {
+      solenoid.set(value);
+   }
+
+   public DoubleSolenoid.Value getState() {
+      return solenoid.get();
+   }
+
    public static Climber getInstance() {
       if(instance == null) {
          instance = new Climber();
       }
       return instance;
    }
-    
+   
    public HSTalon getLeftTalon() {
       return leftTalon;
    }
