@@ -62,7 +62,6 @@ public class Robot extends TimedRobot {
     */
    @Override
    public void robotInit() {
-      System.out.println("robotinit");
        drivetrain = Drivetrain.getInstance();
        oi = OI.getInstance();
        //limelight = Limelight.getInstance();
@@ -76,16 +75,11 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
          double dt = 0.05;
+         double pathTime = 5;
 
-         // Waypoint[] points =
-         // {
-         //     new Waypoint(0, 0, 0),
-         //     new Waypoint(3, 0, 0)
-         // };
-         // double cruiseVelocity = 5;
-
-         // new GenerateAndFollowPath(points, dt, cruiseVelocity).start();
-         new FollowPath(Paths.straightLineLeft, Paths.straightLineRight, dt).start();
+         new GenerateAndFollowPath(dt, pathTime).start();
+         //new FollowPath(Paths.straightLineLeft, Paths.straightLineRight, dt).start();
+         //new FollowPath(Paths.curveLeft, Paths.curveRight, dt).start();
     }
 
    /**
