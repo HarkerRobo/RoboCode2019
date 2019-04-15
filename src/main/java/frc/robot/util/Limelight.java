@@ -177,9 +177,9 @@ public class Limelight {
     }
 
     /**
-     * Returns vertical distance from the target
+     * Returns horizontal distance from the target
      * 
-     * @return The camera's vertical distance from the target.
+     * @return The camera's horizontal distance from the target.
      */
     public double getCamtranX()
     {
@@ -197,9 +197,9 @@ public class Limelight {
     }
 
     /**
-     * Returns horizontal distance from the target
+     * Returns vertical distance from the target
      * 
-     * @return The camera's horizontal distance from the target.
+     * @return The camera's vertical distance from the target.
      */
     public double getCamtranZ()
     {

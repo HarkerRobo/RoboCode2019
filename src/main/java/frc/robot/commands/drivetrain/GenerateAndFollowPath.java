@@ -1,415 +1,303 @@
-// package frc.robot.commands.drivetrain;
+package frc.robot.commands.drivetrain;
 
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.function.Function;
+import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
+import com.ctre.phoenix.motion.MotionProfileStatus;
+import com.ctre.phoenix.motion.SetValueMotionProfile;
+import com.ctre.phoenix.motion.TrajectoryPoint;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-// import com.ctre.phoenix.motion.MotionProfileStatus;
-// import com.ctre.phoenix.motion.TrajectoryPoint;
-// import com.ctre.phoenix.motorcontrol.ControlMode;
-// import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap.Global;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.util.Limelight;
+import harkerrobolib.util.Conversions;
+import harkerrobolib.util.Conversions.PositionUnit;
+import harkerrobolib.util.Conversions.SpeedUnit;
 
-// import edu.wpi.first.wpilibj.Notifier;
-// import edu.wpi.first.wpilibj.Timer;
-// import edu.wpi.first.wpilibj.command.Command;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import frc.robot.RobotMap.Global;
-// import frc.robot.subsystems.Drivetrain;
-// import harkerrobolib.auto.Path;
-// import harkerrobolib.util.Conversions;
-// import harkerrobolib.util.Gains;
-// import harkerrobolib.util.Conversions.PositionUnit;
-// import harkerrobolib.util.Conversions.SpeedUnit;
-// import jaci.pathfinder.Waypoint;
+import frc.robot.util.FalconPathPlanner;
 
-// /**
-//  * Generates a Cubic Hermite Spline for the Drivetrain to use as a trajectory.
-//  * Uses data from the limelight to generate the two waypoints needed for the path.
-//  * 
-//  * https://en.wikipedia.org/wiki/Cubic_Hermite_spline
-//  * 
-//  * @author Jatin Kohli
-//  * @author Arnav Gupta
-//  */
-// public class GenerateAndFollowPath extends Command
-// {
-//     //double startTime;
+/**
+ * Generates a Cubic Hermite Spline for the Drivetrain to use as a trajectory.
+ * Uses data from the limelight to generate the two waypoints needed for the path.
+ * Closed loops to each point's velocity during the profile.
+ *
+ * https://en.wikipedia.org/wiki/Cubic_Hermite_spline
+ *
+ * @author Jatin Kohli
+ * @author Arnav Gupta
+ */
+public class GenerateAndFollowPath extends Command
+{
+    private MotionProfileStatus status; //status of left Talon
 
-// 	private double dt = Path.DT_DEFAULT;
-//     private double maxVelocity = Path.V_DEFAULT;
-// 	private double maxAcceleration = Path.ACCEL_DEFAULT;
-// 	private double wheelBase = Path.WHEELBASE_DEFAULT;
+	private double dt = 0.05;
+    private static final double WHEELBASE = Drivetrain.DRIVETRAIN_DIAMETER;
+    private double pathTime = 5;
 
-// 	public static final double SMALL_NUMBER = 0.01;
+    BufferedTrajectoryPointStream left;
+    BufferedTrajectoryPointStream right;
 
-// 	private Function<Double, Double> function;
+    //2018 Comp
+    private static final double
+        LEFT_KF = 0.5,//0.5
+        LEFT_KP = 1.0,//1
+        LEFT_KI = 0,//0
+        LEFT_KD = 25,//35 or 30
 
-//     public static final Function<Double, Double> BASIS_FUNCTION_00 = 
-//         t -> 2*Math.pow(t, 3) - 3*Math.pow(t, 2) + 1;
-//     public static final Function<Double, Double> BASIS_FUNCTION_10 = 
-//         t -> Math.pow(t, 3) - 2*Math.pow(t, 2) + t;
-//     public static final Function<Double, Double> BASIS_FUNCTION_01 = 
-//         t -> -2*Math.pow(t, 3) + 3*Math.pow(t, 2);
-//     public static final Function<Double, Double> BASIS_FUNCTION_11 = 
-//         t -> Math.pow(t, 3) - Math.pow(t, 2); 
+        RIGHT_KF = 0.5,//0.5
+        RIGHT_KP = 1.0,//1
+        RIGHT_KI = 0,//0
+        RIGHT_KD = 25;//35 or 30
 
+    private static final int I_ZONE = 0;
 
-// 	private Function<Double, Double> derivative;
+    private static final int MIN_POINTS = 5;
 
-//     public static final Function<Double, Double> BASIS_DERIVATIVE_00 = 
-//         t -> 6*Math.pow(t, 2) - 6*t;
-//     public static final Function<Double, Double> BASIS_DERIVATIVE_10 = 
-//         t -> 3*Math.pow(t, 2) - 4*t + 1;
-//     public static final Function<Double, Double> BASIS_DERIVATIVE_01 = 
-//         t -> -6*Math.pow(t, 2) + 6*t;
-//     public static final Function<Double, Double> BASIS_DERIVATIVE_11 = 
-//         t -> 3*Math.pow(t, 2) - 2*t; 
+    public GenerateAndFollowPath()
+    {
+        requires(Drivetrain.getInstance());
+        status = new MotionProfileStatus();
+    }
 
-//     private Waypoint[] points;
-//     private static final int INITIAL_POINT_INDEX = 0;
-//     private static final int FINAL_POINT_INDEX = 1;
+    /**
+     * @param dt The timestep between segments in seconds
+     */
+    public GenerateAndFollowPath(double dt)
+    {
+        this();
+        this.dt = dt;
+    }
 
-//     private double initialX;
-//     private double initialY;
-//     private double initialDx;
+    /**
+     * @param dt The timestep between segments in seconds
+     * @param pathTime The maximum time for the path to execute
+     */
+    public GenerateAndFollowPath(double dt, double pathTime)
+    {
+        this(dt);
+        this.pathTime = pathTime;
+    }
 
-//     private double finalX;
-//     private double finalY;
-//     private double finalDx;
+    @Override
+    protected void initialize()
+    {
+        status = new MotionProfileStatus();
 
-//     private double x;
-//     private double y;
+        //double[][] waypoints = getPointsFromLimeLight();
+        double[][] waypoints = {
+            {0, 0},
+            {1, 0},
+            {4, 0},
+            {5, 0}
+        };   
 
-//     private double initialVelocity;
-//     private double position;
-//     private double prevHeading;
-//     private double angularVelocity;
-    
-//     private double prevLeftX;
-//     private double prevRightX;
+        System.out.println("2. " + status);
 
-//     private double prevleftY;
-//     private double prevRightY;
+        FalconPathPlanner f = new FalconPathPlanner(waypoints);
+        f.calculate(pathTime, dt, WHEELBASE);
+        System.out.println("numPoints: " + f.getNumFinalPoints());
 
-//     private double leftPosition;
-//     private double rightPosition;
+        System.out.println("3. " + status);
 
-//     private boolean isGenerationComplete = false;
+        left = fillStream(f.leftPath, f.smoothLeftVelocity, f.heading);
+        right = fillStream(f.rightPath, f.smoothRightVelocity, f.heading);
 
-//     private List<TrajectoryPoint> leftTrajectory;
-//     private List<TrajectoryPoint> rightTrajectory;
-	
-// 	public static final double 
-// 		LEFT_KF = 0,
-// 		LEFT_KD = 0, 
-// 		LEFT_KI = 0, 
-// 		LEFT_KP = 0,
+        System.out.println("4. " + status);
 
-// 		RIGHT_KF = 0,
-// 		RIGHT_KD = 0, 
-// 		RIGHT_KI = 0, 
-// 		RIGHT_KP = 0;
+        configTalons();
 
-// 	private MotionProfileStatus status; //status of left Talon
-// 	private Notifier notifier;
+        System.out.println("5. " + status);
 
-// 	double period;
-// 	// public static final double MIN_POINTS = 10;
+        Drivetrain.getInstance().getLeftMaster().startMotionProfile(left, MIN_POINTS, ControlMode.MotionProfile);
+        Drivetrain.getInstance().getRightMaster().startMotionProfile(right, MIN_POINTS, ControlMode.MotionProfile);
 
-//     public GenerateAndFollowPath(Waypoint[] points)
-//     {
-//         requires(Drivetrain.getInstance());
-// 		this.points = points;
+        System.out.println("6. " + status);
+    }
 
-//         for (Waypoint p : this.points)
-//         {
-//             p.angle = Math.tan(Math.toRadians(p.angle)); //Convert headings to derivatives on a xy coordinate plane for calculations
-// 		}
-		
-// 		// status = new MotionProfileStatus();
+    @Override
+    protected void execute() 
+    {
+        if (status != null)
+        {
+            Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
+            SmartDashboard.putString("status", "not null");
+            SmartDashboard.putString("output type", status.outputEnable.toString());
 
-// 		notifier = new Notifier(
-// 			new Runnable(){
-// 				@Override
-// 				public void run() {
-// 					Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
-// 					Drivetrain.getInstance().getLeftMaster().processMotionProfileBuffer();
+            SmartDashboard.putNumber("Top Buffer", status.topBufferCnt);
+            SmartDashboard.putNumber("Bottom Buffer", status.btmBufferCnt);  
+            SmartDashboard.putBoolean("Is Valid", status.activePointValid);
+            SmartDashboard.putNumber("Right Position", Drivetrain.getInstance().getRightMaster().getActiveTrajectoryPosition(Global.PID_PRIMARY)); 
+		    SmartDashboard.putNumber("Left Position",Drivetrain.getInstance().getLeftMaster().getActiveTrajectoryPosition(Global.PID_PRIMARY));       
+            SmartDashboard.putNumber("Right Velocity", Drivetrain.getInstance().getRightMaster().getActiveTrajectoryVelocity(Global.PID_PRIMARY)); 
+		    SmartDashboard.putNumber("Left Velocity",Drivetrain.getInstance().getLeftMaster().getActiveTrajectoryVelocity(Global.PID_PRIMARY));       
+            SmartDashboard.putNumber("left error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
+            SmartDashboard.putNumber("right error", Drivetrain.getInstance().getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
+		    SmartDashboard.putNumber("Left Encoder vel", Drivetrain.getInstance().getLeftMaster().getSelectedSensorVelocity(Global.PID_PRIMARY));
+		    SmartDashboard.putNumber("Right Encoder vel", Drivetrain.getInstance().getRightMaster().getSelectedSensorVelocity(Global.PID_PRIMARY));
+        }
+        else
+        {
+            SmartDashboard.putString("status", "null");
+        }
+    }
 
-// 					Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
-// 				}
-// 			}
-//         );
+    @Override
+    protected boolean isFinished() {
+        return false;
+    }
+
+	@Override
+	protected void end()
+	{
+        Drivetrain.getInstance().getLeftMaster().set(ControlMode.Disabled, 0);
+        Drivetrain.getInstance().getRightMaster().set(ControlMode.Disabled, 0);
+
+		Drivetrain.getInstance().getLeftMaster().clearMotionProfileTrajectories();
+        Drivetrain.getInstance().getRightMaster().clearMotionProfileTrajectories();
+
+        Drivetrain.getInstance().getLeftMaster().setNeutralMode(NeutralMode.Coast);
+    	Drivetrain.getInstance().getRightMaster().setNeutralMode(NeutralMode.Coast);
+    }
+
+	@Override
+	protected void interrupted()
+	{
+		end();
+	}
+
+    /**
+     * Gets the waypoints for the necessary path from the Limelight's localization features
+     */
+    private double[][] getPointsFromLimeLight()
+    {
+        Limelight instance = Limelight.getInstance();
+
+        double finalX = -instance.getCamtranZ() / Conversions.INCHES_PER_FOOT;
+        double finalY = instance.getCamtranX() / Conversions.INCHES_PER_FOOT;
+        double finalHeading = instance.getCamtranYaw();
+
+        System.out.println("finalX: "+finalX);
+        System.out.println("finalY:"+ finalY);
+        System.out.println("finalHeading:"+finalHeading);
+
+        double offset = Math.tan(Math.toRadians(finalHeading))*finalX/5;
+
+		double[][] waypoints = new double[][]{
+			{0, 0},
+			{finalX/5, 0},
+			{finalX*4/5, finalY - offset},
+			{finalX, finalY}
+		};
+
+        return waypoints;
+    }
+
+    /**
+     * Creates a new TrajectoryPoint with the desired values
+     *
+     * @return the new TrajectoryPoint
+     */
+    private TrajectoryPoint createTrajectoryPoint(double position, double velocity, double headingDeg)
+    {
+        TrajectoryPoint point = new TrajectoryPoint();
+
+        point.position = position;
+        point.velocity = velocity;
+        point.headingDeg = headingDeg;
+
+        point.profileSlotSelect0 = Drivetrain.MOTION_PROF_SLOT;
+
+        return point;
+    }
+
+    /**
+     * Converts a 2-D array representing a path into TractoryPoints and writes
+     * the TrajectoryPoints into a BufferedTrajectoryPointStream for Motion Profiling
+     * 
+     * @param path The 2-D Array representing the x and y coordinates of the robot for every point
+     * @param velocity The 2-D Array with the 2nd column representing the velocity of the robot at every point
+     * @param heading The 2-D Array with the 2nd column representing the heading of the robot at every point
+     * 
+     * @return A BufferedTrajectoryPointStream with all the TrajectoryPoints of the path
+     */
+    private BufferedTrajectoryPointStream fillStream(double[][] path, double[][] velocity, double[][] heading)
+    {
+        TrajectoryPoint[] trajPoints = new TrajectoryPoint[path.length];
+
+        double p = 0;
+        for (int row = 0; row < path.length; row++)
+		{
+            double v = Conversions.convert(SpeedUnit.FEET_PER_SECOND, velocity[row][1], SpeedUnit.ENCODER_UNITS);
+            double h = heading[row][1];
+
+            trajPoints[row] = createTrajectoryPoint(
+                p, 
+                v, 
+                h
+            );
+
+            int modifier = (row == path.length - 1 || path[row + 1][0] - path[row][0] > 0) ? 1 : -1;
+
+            double prevX = row == 0 ? path[0][0] : path[row - 1][0];
+            double prevY = row == 0 ? path[0][1] : path[row - 1][1];
+
+            p += modifier * Conversions.convert(PositionUnit.FEET, 
+                Math.sqrt(Math.pow(path[row][0] - prevX, 2) + Math.pow(path[row][1] - prevY, 2)),
+                PositionUnit.ENCODER_UNITS);
+        }
+
+        BufferedTrajectoryPointStream stream = new BufferedTrajectoryPointStream();
+        stream.Write(trajPoints);
+        return stream;
+    }
+
+	private void configTalons()
+	{
+        Drivetrain.getInstance().getLeftMaster().config_kP(Drivetrain.MOTION_PROF_SLOT, LEFT_KP);
+        Drivetrain.getInstance().getLeftMaster().config_kI(Drivetrain.MOTION_PROF_SLOT, LEFT_KI);
+        Drivetrain.getInstance().getLeftMaster().config_kD(Drivetrain.MOTION_PROF_SLOT, LEFT_KD);
+        Drivetrain.getInstance().getLeftMaster().config_kF(Drivetrain.MOTION_PROF_SLOT, LEFT_KF);
+
+        Drivetrain.getInstance().getRightMaster().config_kP(Drivetrain.MOTION_PROF_SLOT, RIGHT_KP);
+        Drivetrain.getInstance().getRightMaster().config_kI(Drivetrain.MOTION_PROF_SLOT, RIGHT_KI);
+        Drivetrain.getInstance().getRightMaster().config_kD(Drivetrain.MOTION_PROF_SLOT, RIGHT_KD);
+        Drivetrain.getInstance().getRightMaster().config_kF(Drivetrain.MOTION_PROF_SLOT, RIGHT_KF);
+
+        Drivetrain.getInstance().getLeftMaster().config_IntegralZone(Drivetrain.MOTION_PROF_SLOT, I_ZONE);
+        Drivetrain.getInstance().getRightMaster().config_IntegralZone(Drivetrain.MOTION_PROF_SLOT, I_ZONE);
+
+		Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
         
-//         leftTrajectory = new ArrayList<TrajectoryPoint>();
-//         rightTrajectory = new ArrayList<TrajectoryPoint>();
-//     }
+		Drivetrain.getInstance().getLeftMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
 
-//     /**
-//      * 
-//      * @param points The waypoints to follow
-//      * @param dt The timestep between segments in seconds
-//      */
-//     public GenerateAndFollowPath(Waypoint [] points, double dt)
-//     {
-// 		this(points);
-//         this.dt = dt;
-//     }
+		Drivetrain.getInstance().getLeftMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
+		Drivetrain.getInstance().getRightMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
 
-//     /**
-//      * 
-//      * @param points The waypoints to follow
-//      * @param dt The timestep between segments in seconds
-//      * @param maxVelocity The maximum velocity for the robot to have at any given point in ft/s
-//      * @param maxAcceleration The maximum acceleration for the robot to have at any given point in ft/s^2
-//      */
-//     public GenerateAndFollowPath(Waypoint [] points, double dt, double maxVelocity, double maxAcceleration)
-//     {
-//         this(points, dt);
-//         this.maxVelocity = maxVelocity;
-//         this.maxAcceleration = maxAcceleration;
-// 	}
-	
-// 	/**
-//      * 
-//      * @param points The waypoints to follow
-//      * @param dt The timestep between segments in seconds
-//      * @param maxVelocity The maximum velocity for the robot to have at any given point in ft/s
-//      * @param maxAcceleration The maximum acceleration for the robot to have at any given point in ft/s^2
-// 	 * @param wheelBase	The diameter of the drivetrain in ft
-//      */
-//     public GenerateAndFollowPath(Waypoint [] points, double dt, double maxVelocity, double maxAcceleration, double wheelBase)
-//     {
-// 		this(points, dt, maxVelocity, maxAcceleration);
-//         this.wheelBase = wheelBase;
-//     }
+		Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
+        Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
 
-//     @Override
-//     protected void initialize() 
-//     {
-// 		//startTime = Timer.getFPGATimestamp();
-
-//         initialX = points[INITIAL_POINT_INDEX].x;
-//         initialY = points[INITIAL_POINT_INDEX].y;
-//         initialDx = points[INITIAL_POINT_INDEX].angle;
-
-//         finalX = points[FINAL_POINT_INDEX].x;
-//         finalY = points[FINAL_POINT_INDEX].y;
-//         finalDx = points[FINAL_POINT_INDEX].angle;
-
-//         double range = finalX - initialX;
-
-//         function = ( x -> //Formula for smooth spline between two waypoints
-//             initialY * BASIS_FUNCTION_00.apply((x - initialX)/range) + 
-//             initialDx * range * BASIS_FUNCTION_10.apply((x - initialX)/range) + 
-//             finalY * BASIS_FUNCTION_01.apply((x - initialX)/range) + 
-//             finalDx * range * BASIS_FUNCTION_11.apply((x - initialX)/range)
-//         );
-
-//         derivative = ( x -> //Derivative of the spline, used to find heading at any point
-//             initialY * BASIS_DERIVATIVE_00.apply((x - initialX)/range) / range + 
-//             initialDx * BASIS_DERIVATIVE_10.apply((x - initialX)/range) + 
-//             finalY * BASIS_DERIVATIVE_01.apply((x - initialX)/range) / range + 
-//             finalDx * BASIS_DERIVATIVE_11.apply((x - initialX)/range)
-//         );
-
-//         isGenerationComplete = false;
-
-//         x = initialX;
-//         y = initialY;
-//         prevHeading = Math.atan(initialDx);
-
-//         angularVelocity = 0;
-//         position = 0;
-
-//         leftPosition = 0;
-//         rightPosition = 0;
-
-//         prevLeftX = initialX - wheelBase/2 * Math.cos(Math.atan(initialDx) - Math.PI/2);
-//         prevRightX = initialX + wheelBase/2 * Math.cos(Math.atan(initialDx) - Math.PI/2);
-
-//         prevleftY = initialY - wheelBase/2 * Math.sin(Math.atan(initialDx) - Math.PI/2);
-//         prevRightY = initialY + wheelBase/2 * Math.sin(Math.atan(initialDx) - Math.PI/2);
-
-//         //Motion Profile Setup
-//         period = dt/2;
-// 		configTalons();
-//         //notifier.startPeriodic(period);
-// 	}
-
-//     @Override
-//     protected void execute() 
-//     { 
-//         if (!isGenerationComplete)
-//         {
-//             double distanceLeft;
-//             double velocity;
-//             double heading;
-
-//             double leftX, leftY, rightX, rightY;
-//             double leftVelocity, rightVelocity;
-
-//             //estimate distance remaining and calculate robot's velocity
-//             distanceLeft = Math.sqrt(Math.pow(finalX - x, 2) + Math.pow(finalY - y, 2));
-//             velocity = calculateVelocityOutput(position, distanceLeft, angularVelocity);
-
-//             position += velocity * dt;
-
-//             x += velocity * Math.cos(Math.atan(derivative.apply(x))) * dt; //x portion of velocity vector
-//             y = function.apply(x);
-
-//             heading = Math.toDegrees(Math.atan(derivative.apply(x)));
-
-//             //Use robot's x and y to calculate values for left and right sides
-//             leftX = x - wheelBase/2 * Math.cos(heading - Math.PI/2);
-//             rightX = x + wheelBase/2 * Math.cos(heading - Math.PI/2);
-
-//             leftY = y - wheelBase/2 * Math.sin(heading - Math.PI/2);
-//             rightY = y + wheelBase/2 * Math.sin(heading - Math.PI/2);
-
-//             //recalculate, find better estimation
-//             leftVelocity = Math.sqrt(Math.pow(leftX - prevLeftX, 2) + Math.pow(leftY - prevleftY, 2)) / dt;
-//             rightVelocity = Math.sqrt(Math.pow(rightX - prevRightX, 2) + Math.pow(rightY - prevRightY, 2)) / dt;
-
-//             leftPosition += leftVelocity * dt;
-//             rightPosition += rightVelocity * dt;
-
-//             TrajectoryPoint leftPoint = createTrajectoryPoint(
-//                 Conversions.convert(PositionUnit.FEET, leftPosition, PositionUnit.ENCODER_UNITS), 
-//                 Conversions.convert(SpeedUnit.FEET_PER_SECOND, leftVelocity, SpeedUnit.ENCODER_UNITS), 
-//                 heading
-//             );
-
-//             TrajectoryPoint rightPoint = createTrajectoryPoint(
-//                 Conversions.convert(PositionUnit.FEET, rightPosition, PositionUnit.ENCODER_UNITS), 
-//                 Conversions.convert(SpeedUnit.FEET_PER_SECOND, rightVelocity, SpeedUnit.ENCODER_UNITS), 
-//                 heading
-//             );
-
-//             initialVelocity = 0; //Calculate
-            
-//             angularVelocity = (heading - prevHeading)/dt;
-//             prevHeading = heading;
-
-//             prevLeftX = leftX;
-//             prevRightX = rightX;
-
-//             prevleftY = leftY;
-//             prevRightY = rightY;
-
-//             leftTrajectory.add(leftPoint);
-//             rightTrajectory.add(rightPoint);
-
-//             isGenerationComplete = x - finalX >= 0; //Past the desired x
-//         }
-//         else
-//         {
-//             leftTrajectory.get(leftTrajectory.size()).isLastPoint = true;
-//         }
-
-//     }
-
-// 	@Override
-// 	protected void end()
-// 	{
-// 		Drivetrain.getInstance().getLeftMaster().clearMotionProfileTrajectories();
-// 		Drivetrain.getInstance().getRightMaster().clearMotionProfileTrajectories();
-
-// 		Drivetrain.getInstance().getLeftMaster().set(ControlMode.Disabled, 0);
-// 		Drivetrain.getInstance().getRightMaster().set(ControlMode.Disabled, 0);
-//     }
-    
-//     @Override
-//     protected boolean isFinished() {
-//         return isGenerationComplete;
-//     }
-
-// 	@Override
-// 	protected void interrupted()
-// 	{
-// 		end();
-// 	}
-
-//     /**
-//      * Creates a new TrajectoryPoint
-//      * 
-//      * @return the new TrajectoryPoint
-//      */
-//     private TrajectoryPoint createTrajectoryPoint(double position, double velocity, double headingDeg)        
-//     {
-//         TrajectoryPoint point = new TrajectoryPoint();
+        Drivetrain.getInstance().getLeftMaster().setNeutralMode(NeutralMode.Brake);
+        Drivetrain.getInstance().getRightMaster().setNeutralMode(NeutralMode.Brake);
         
-//         point.position = position;
-//         point.velocity = velocity;
-//         point.headingDeg =  headingDeg;        
-//         point.isLastPoint = false;
-//         point.timeDur = (int)(dt * Conversions.MS_PER_SEC);
+		Drivetrain.getInstance().getLeftMaster().changeMotionControlFramePeriod(Math.max((int)(dt * Conversions.MS_PER_SEC / 2), 1));
+		Drivetrain.getInstance().getRightMaster().changeMotionControlFramePeriod(Math.max((int)(dt * Conversions.MS_PER_SEC / 2), 1));
+
+		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryPeriod((int)(dt * Conversions.MS_PER_SEC)); //We want no additional time per point
+        Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryPeriod((int)(dt * Conversions.MS_PER_SEC)); //0
         
-//         return point;
-//     }
-    
-//     /**
-//      * 
-//      * @param distanceTravelled The current distance travelled from the first waypoint to the next
-//      * @param splineLength (Approximation of) the length of the spline
-// 	 * @param angularVelocity The angular velocity of the robot
-//      * @return
-//      */
-//     private double calculateVelocityOutput(double distanceTravelled, double distanceLeft, double angularVelocity)
-//     {
-// 		double velPosAccel = isApproximately(distanceTravelled, 0) ? 
-// 			maxAcceleration * dt : Math.sqrt(Math.pow(initialVelocity, 2) + 2*maxAcceleration*distanceTravelled);
-//         double velNegAccel = Math.sqrt(Math.pow(initialVelocity, 2) + 2*maxAcceleration*distanceLeft);
-        
-// 		//double turningMultiplier = maxVelocity / (Math.abs(angularVelocity * wheelBase/2) + maxVelocity);
-// 		double velMax = maxVelocity /* turningMultiplier*/;
+		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryInterpolationEnable(false);
+        Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryInterpolationEnable(false);
 
-//         return Math.min(velMax, Math.min(velPosAccel, velNegAccel));
-//     }
-
-// 	private boolean isApproximately(double a, double b)
-// 	{
-// 		return Math.abs(a - b) <= SMALL_NUMBER;
-// 	}
-
-// 	private void configTalons()
-// 	{
-// 		Drivetrain.getInstance().getLeftMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
-// 		Drivetrain.getInstance().getRightMaster().selectProfileSlot(Drivetrain.MOTION_PROF_SLOT, Global.PID_PRIMARY);
-
-// 		Drivetrain.getInstance().getLeftMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-// 		Drivetrain.getInstance().getRightMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-	
-// 		Drivetrain.getInstance().getLeftMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
-// 		Drivetrain.getInstance().getRightMaster().setSelectedSensorPosition(0, Global.PID_PRIMARY);
-
-// 		Drivetrain.getInstance().getLeftMaster().setSensorPhase(Drivetrain.LEFT_POSITION_PHASE);
-// 		Drivetrain.getInstance().getRightMaster().setSensorPhase(Drivetrain.RIGHT_POSITION_PHASE);
-
-// 		Drivetrain.getInstance().configClosedLoopConstants(Drivetrain.MOTION_PROF_SLOT, 
-// 				new Gains()
-// 					.kF(LEFT_KF)
-// 					.kP(LEFT_KP)
-// 					.kI(LEFT_KI)
-// 					.kD(LEFT_KD), 
-// 				new Gains()
-// 					.kF(RIGHT_KF)
-// 					.kP(RIGHT_KP)
-// 					.kI(RIGHT_KI)
-// 					.kD(RIGHT_KD));
-
-// 		Drivetrain.getInstance().getLeftMaster().changeMotionControlFramePeriod((int)period);
-// 		Drivetrain.getInstance().getRightMaster().changeMotionControlFramePeriod((int)period);
-
-// 		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryPeriod(0);
-// 		Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryPeriod(0);
-
-// 		Drivetrain.getInstance().getLeftMaster().configMotionProfileTrajectoryInterpolationEnable(false);
-// 		Drivetrain.getInstance().getRightMaster().configMotionProfileTrajectoryInterpolationEnable(false);
-//     }
-
-//     private void setLastTrajectoryPoints()
-//     {
-//         leftTrajectory.get(leftTrajectory.size()).isLastPoint = true;
-//         rightTrajectory.get(rightTrajectory.size()).isLastPoint = true;
-//     }
-// }
+        Drivetrain.getInstance().getLeftMaster().clearMotionProfileHasUnderrun();
+        Drivetrain.getInstance().getRightMaster().clearMotionProfileHasUnderrun();
+        Drivetrain.getInstance().getLeftFollower().clearMotionProfileHasUnderrun(10);
+        Drivetrain.getInstance().getLeftFollower().clearMotionProfileHasUnderrun(10);
+    }
+}
