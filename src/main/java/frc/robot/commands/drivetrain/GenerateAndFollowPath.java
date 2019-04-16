@@ -39,20 +39,22 @@ public class GenerateAndFollowPath extends Command
     private static final double WHEELBASE = Drivetrain.DRIVETRAIN_DIAMETER;
     private double pathTime = 5;
 
+    private static final double VERT_OFFSET = -26.9;
+
     BufferedTrajectoryPointStream left;
     BufferedTrajectoryPointStream right;
 
     //2018 Comp
     private static final double
         LEFT_KF = 0.5,//0.5
-        LEFT_KP = 1.0,//1
+        LEFT_KP = 1.1,//1
         LEFT_KI = 0,//0
-        LEFT_KD = 25,//35 or 30
+        LEFT_KD = 15,//35 or 30
 
         RIGHT_KF = 0.5,//0.5
-        RIGHT_KP = 1.0,//1
+        RIGHT_KP = 1.1,//1
         RIGHT_KI = 0,//0
-        RIGHT_KD = 25;//35 or 30
+        RIGHT_KD = 15;//35 or 30
 
     private static final int I_ZONE = 0;
 
@@ -88,35 +90,25 @@ public class GenerateAndFollowPath extends Command
     {
         status = new MotionProfileStatus();
 
-        //double[][] waypoints = getPointsFromLimeLight();
-        double[][] waypoints = {
-            {0, 0},
-            {1, 0},
-            {4, 0},
-            {5, 0}
-        };   
-
-        System.out.println("2. " + status);
+        double[][] waypoints = getPointsFromLimeLight();
+        // double[][] waypoints = {
+        //     {0, 0},
+        //     {2, 0},
+        //     {8, 10},
+        //     {10, 10}
+        // };   
 
         FalconPathPlanner f = new FalconPathPlanner(waypoints);
         f.calculate(pathTime, dt, WHEELBASE);
         System.out.println("numPoints: " + f.getNumFinalPoints());
 
-        System.out.println("3. " + status);
-
         left = fillStream(f.leftPath, f.smoothLeftVelocity, f.heading);
         right = fillStream(f.rightPath, f.smoothRightVelocity, f.heading);
 
-        System.out.println("4. " + status);
-
         configTalons();
-
-        System.out.println("5. " + status);
 
         Drivetrain.getInstance().getLeftMaster().startMotionProfile(left, MIN_POINTS, ControlMode.MotionProfile);
         Drivetrain.getInstance().getRightMaster().startMotionProfile(right, MIN_POINTS, ControlMode.MotionProfile);
-
-        System.out.println("6. " + status);
     }
 
     @Override
@@ -177,8 +169,8 @@ public class GenerateAndFollowPath extends Command
     {
         Limelight instance = Limelight.getInstance();
 
-        double finalX = -instance.getCamtranZ() / Conversions.INCHES_PER_FOOT;
-        double finalY = instance.getCamtranX() / Conversions.INCHES_PER_FOOT;
+        double finalX = (instance.getCamtranZ() - VERT_OFFSET) / Conversions.INCHES_PER_FOOT;
+        double finalY = (instance.getCamtranX()) / Conversions.INCHES_PER_FOOT;
         double finalHeading = instance.getCamtranYaw();
 
         System.out.println("finalX: "+finalX);
@@ -192,7 +184,7 @@ public class GenerateAndFollowPath extends Command
 			{finalX/5, 0},
 			{finalX*4/5, finalY - offset},
 			{finalX, finalY}
-		};
+        };
 
         return waypoints;
     }

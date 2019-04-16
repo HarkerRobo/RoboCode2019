@@ -51,8 +51,7 @@ public class Drivetrain extends HSDrivetrain {
       }
    }
 
-   private final static double 
-   MAX_FORWARD_VELOCITY = 13; // 12
+   private final static double MAX_FORWARD_VELOCITY = 13; // 12
    private final static double MAX_TURN_VELOCITY = 7.25; // 5
 
    private static int TALON_PEAK_LIMIT = 20;
@@ -70,6 +69,7 @@ public class Drivetrain extends HSDrivetrain {
    public static final boolean LEFT_POSITION_PHASE = false;
 
    public static final int WHEEL_DIAMETER = 4;
+   public static final double DRIVETRAIN_DIAMETER = 27.5 / Conversions.INCHES_PER_FOOT;
 
    /**
     * Creates new instance of Drivetrain.
