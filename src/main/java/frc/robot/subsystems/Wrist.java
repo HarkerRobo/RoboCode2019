@@ -230,6 +230,12 @@ public class Wrist extends Subsystem {
       wristMaster.configFactoryDefault();
       wristFollower.configFactoryDefault();
 
+      try {
+         Thread.sleep(50);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+
       wristFollower.follow(wristMaster);
 
       wristMaster.setNeutralMode(NeutralMode.Brake);
@@ -256,6 +262,8 @@ public class Wrist extends Subsystem {
       wristMaster.configReverseSoftLimitEnable(true);
 
       setupMotionMagic();
+
+      wristFollower.follow(wristMaster);
    }
 
    public HSTalon getMasterTalon() {

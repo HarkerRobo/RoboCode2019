@@ -88,6 +88,12 @@ public class Rollers extends Subsystem {
    public void talonInit() {
       talon.configFactoryDefault();
 
+      try {
+         Thread.sleep(50);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+      
       talon.setNeutralMode(NeutralMode.Coast);
 
       talon.setInverted(INVERTED);

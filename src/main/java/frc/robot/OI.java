@@ -294,17 +294,17 @@ public class OI {
       Trigger rightTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.RIGHT);
       rightTriggerOperator.whileActive(new ZeroElevator()); 
       
-      operatorGamepad.getButtonSelect().whenPressed(new InstantCommand() {
-                     public void initialize() {
-                        Robot.setupRobot();
-                        Scheduler.getInstance().removeAll();
-                     }
-                                       });
-      operatorGamepad.getButtonStart().whenPressed(new InstantCommand() {
-         public void initialize() {
-            currentDriveMode = DriveMode.getMode((currentDriveMode.getValue() + 1) % DriveMode.values().length);
-         }
-      });
+      // operatorGamepad.getButtonSelect().whenPressed(new InstantCommand() {
+      //                public void initialize() {
+      //                   Robot.setupRobot();
+      //                   Scheduler.getInstance().removeAll();
+      //                }
+      //                                  });
+      // operatorGamepad.getButtonStart().whenPressed(new InstantCommand() {
+      //    public void initialize() {
+      //       currentDriveMode = DriveMode.getMode((currentDriveMode.getValue() + 1) % DriveMode.values().length);
+      //    }
+      // });
 
 
    }

@@ -206,6 +206,9 @@ public class Robot extends TimedRobot {
       compressor.setClosedLoopControl(true);
       SmartDashboard.putNumber("rise", Wrist.getInstance().getMasterTalon().getSensorCollection().getPulseWidthRiseToFallUs());
       SmartDashboard.putNumber("intake", Intake.getInstance().getSpark().getEncoder().getVelocity());
+      SmartDashboard.putNumber("dt left", Drivetrain.getInstance().getLeftMaster().getSelectedSensorPosition());
+      SmartDashboard.putNumber("dt right", Drivetrain.getInstance().getRightMaster().getSelectedSensorPosition());
+
       // SmartDashboard.putNumber("Left Erro
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
       // SmartDashboard.putNumber("Right Error",

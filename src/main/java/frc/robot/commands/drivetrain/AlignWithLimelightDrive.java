@@ -88,6 +88,8 @@ public class AlignWithLimelightDrive extends Command {
       double turnOutputVal = turnOutput.getOutput();
 
       SmartDashboard.putNumber("Turn Error", turnController.getError());
+      SmartDashboard.putNumber("Left Vel", Drivetrain.getInstance().getLeftMaster().getSelectedSensorVelocity());
+      SmartDashboard.putNumber("Right Vel", Drivetrain.getInstance().getRightMaster().getSelectedSensorVelocity());
 
       double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(),
             OI.DRIVER_DEADBAND);

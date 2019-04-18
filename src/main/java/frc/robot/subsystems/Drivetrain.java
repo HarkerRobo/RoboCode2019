@@ -96,6 +96,12 @@ public class Drivetrain extends HSDrivetrain {
       getLeftMaster().configFactoryDefault();
       getRightMaster().configFactoryDefault();
 
+      try {
+         Thread.sleep(50);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+
       followMasters();
       resetTalonInverts();
       setNeutralMode(NeutralMode.Brake);

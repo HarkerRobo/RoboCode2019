@@ -138,6 +138,7 @@ public class SetScoringPosition extends CommandGroup {
       BooleanSupplier isDefenseMode = () -> Wrist.getInstance().isAmbiguous()
             && Arm.getInstance().getDirection() == ArmDirection.UP;
 
+      addSequential(new CallMethodCommand(() -> Wrist.getInstance().getFollowerTalon().follow(Wrist.getInstance().getMasterTalon())));
       addSequential(new CallMethodCommand(() -> Robot.log("SetScoringPosition to " + desiredLocation.name()
             + " with desired Height, " + getDesiredHeight.get() + " , desired Angle, " + getDesiredAngle.get() + ".")));
       addSequential(new InstantCommand() {
