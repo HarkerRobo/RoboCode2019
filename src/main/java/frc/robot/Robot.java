@@ -257,15 +257,26 @@ public class Robot extends TimedRobot {
       // System.out.println(OI.getInstance().getCustomOperatorGamepad().getBackwardThreePressed());
    }
 
+   @Override
+   public void testInit() {
+      double pathTime = 5;
+      double dt = 0.05;
+
+      new SetLimelightLEDMode(LEDMode.ON);
+
+      // SetScoringPosition s = new SetScoringPosition(Location.F2);
+      // setScoringCommand(s);
+      // s.start();
+
+      new GenerateAndFollowPath(dt, pathTime).start();
+   }
+
    /**
     * This function is called periodically during test mode.
     */
    @Override
    public void testPeriodic() {
-      // System.out.println("elevator limit " +
-      // elevator.getMasterTalon().getSensorCollection().isRevLimitSwitchClosed());
-      // System.out.println("elevator limit fwd" +
-      // elevator.getMasterTalon().getSensorCollection().isFwdLimitSwitchClosed());
+
    }
 
    /**
