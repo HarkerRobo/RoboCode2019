@@ -31,7 +31,6 @@ import frc.robot.commands.groups.SetScoringPosition;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.HatchLatcher;
@@ -63,7 +62,6 @@ public class Robot extends TimedRobot {
    private static Rollers rollers;
    private static Wrist wrist;
    private static Intake intake;
-   private static Climber climber;
    private static HatchLatcher hatchLatcher;
    private static Limelight limelight;
    private static OI oi;
@@ -204,7 +202,9 @@ public class Robot extends TimedRobot {
       SmartDashboard.putBoolean("DPad UP ", OI.getInstance().getOperatorGamepad().getUpDPadButton().get());
       SmartDashboard.putNumber("Rollers current limit ", Rollers.getInstance().talon().getOutputCurrent());
       compressor.setClosedLoopControl(true);
-      // SmartDashboard.putNumber("Left Error",
+      SmartDashboard.putNumber("rise", Wrist.getInstance().getMasterTalon().getSensorCollection().getPulseWidthRiseToFallUs());
+      SmartDashboard.putNumber("intake", Intake.getInstance().getSpark().getEncoder().getVelocity());
+      // SmartDashboard.putNumber("Left Erro
       // drivetrain.getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
       // SmartDashboard.putNumber("Right Error",
       // drivetrain.getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
@@ -321,15 +321,7 @@ public class Robot extends TimedRobot {
    public static Intake getIntake() {
       return intake;
    }
-
-   /**
-    * Gets the instance of the climber  on the robot.
-
-    * @return the climber
-    */
-    public static Climber getClimber() {
-       return climber;
-    }
+   
    /**
     * Gets the current time elapsed (in milliseconds) since the robot was last
     * enabled, in either autonomous or teleop.

@@ -8,7 +8,7 @@ import harkerrobolib.commands.IndefiniteCommand;
 
 public class SpinIntakeVelocity extends IndefiniteCommand {
 
-    private static final double kP = 0.001;
+    private static final double kP = 0.00025;
     private static final double kF = 1/4000.0;
     private IntakeDirection direction;
     private double setpoint;

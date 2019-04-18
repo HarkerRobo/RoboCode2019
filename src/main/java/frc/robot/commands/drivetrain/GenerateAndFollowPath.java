@@ -1,5 +1,7 @@
 package frc.robot.commands.drivetrain;
 
+import java.awt.Color;
+
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
@@ -33,6 +35,8 @@ import frc.robot.util.FalconPathPlanner;
  */
 public class GenerateAndFollowPath extends Command
 {
+    private FalconPathPlanner f;
+
     private MotionProfileStatus status; //status of left Talon
 
 	private double dt = 0.05;
@@ -85,22 +89,26 @@ public class GenerateAndFollowPath extends Command
         this.pathTime = pathTime;
     }
 
+    private void initPath()
+    {
+        //double[][] waypoints = getPointsFromLimeLight();
+        double[][] waypoints = {
+            {0, 0},
+            {1, 0},
+            {4, 5},
+            {5, 5}
+        };  
+
+        f = new FalconPathPlanner(waypoints);
+        f.calculate(pathTime, dt, WHEELBASE);
+    }
+
     @Override
     protected void initialize()
     {
         status = new MotionProfileStatus();
 
-        double[][] waypoints = getPointsFromLimeLight();
-        // double[][] waypoints = {
-        //     {0, 0},
-        //     {2, 0},
-        //     {8, 10},
-        //     {10, 10}
-        // };   
-
-        FalconPathPlanner f = new FalconPathPlanner(waypoints);
-        f.calculate(pathTime, dt, WHEELBASE);
-        System.out.println("numPoints: " + f.getNumFinalPoints());
+        initPath();
 
         left = fillStream(f.leftPath, f.smoothLeftVelocity, f.heading);
         right = fillStream(f.rightPath, f.smoothRightVelocity, f.heading);
@@ -173,10 +181,6 @@ public class GenerateAndFollowPath extends Command
         double finalY = (instance.getCamtranX()) / Conversions.INCHES_PER_FOOT;
         double finalHeading = instance.getCamtranYaw();
 
-        System.out.println("finalX: "+finalX);
-        System.out.println("finalY:"+ finalY);
-        System.out.println("finalHeading:"+finalHeading);
-
         double offset = Math.tan(Math.toRadians(finalHeading))*finalX/5;
 
 		double[][] waypoints = new double[][]{
@@ -185,6 +189,11 @@ public class GenerateAndFollowPath extends Command
 			{finalX*4/5, finalY - offset},
 			{finalX, finalY}
         };
+
+        for (double[] point : waypoints)
+        {
+            System.out.println("{" + point[0] + ", " + point[1] + "},");
+        }
 
         return waypoints;
     }

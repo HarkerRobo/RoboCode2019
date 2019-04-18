@@ -73,7 +73,7 @@ public class Rollers extends Subsystem {
     * Creates new Talons
     */
    private Rollers() {
-      talon = new HSTalon(CAN_IDs.RO_BOTTOM);
+      talon = new HSTalon(CAN_IDs.ROLLERS_TALON);
       currentOutput = 0.0;
    }
 
