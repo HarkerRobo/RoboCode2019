@@ -50,3 +50,9 @@ span {
 .green { 
     color: green;
 }
+
+#ll-feed-canvas {
+    width: 30vw;
+    height: 22.5vw;
+    border: 1px solid black;
+}

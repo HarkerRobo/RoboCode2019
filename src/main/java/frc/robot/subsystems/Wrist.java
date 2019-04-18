@@ -136,8 +136,8 @@ public class Wrist extends Subsystem {
          SAFE_BACKWARD_POSITION = 110;
          RANGE_OF_MOTION = Math.abs(MAX_FORWARD_POSITION - MAX_BACKWARD_POSITION);
          ENCODER_OFFSET = 0;
-         ENCODER_MAX_FORWARD_RISE_TO_FALL = 5174;
-         ENCODER_MAX_BACKWARD_RISE_TO_FALL = 12380;
+         ENCODER_MAX_FORWARD_RISE_TO_FALL = 12983;
+         ENCODER_MAX_BACKWARD_RISE_TO_FALL = 4715;
 
          SENSOR_PHASE = false;
 
@@ -366,12 +366,12 @@ public class Wrist extends Subsystem {
    public void resetEncoderPosition() {
       // wristMaster.getSensorCollection().syncQuadratureWithPulseWidth(bookend0, bookend1, bCrossZeroOnInterval);
       // wristMaster.getSensorCollection().
-      //wristMaster.setSelectedSensorPosition((int) convertDegreesToEncoder(MathUtil.map(wristMaster.getSensorCollection().getPulseWidthRiseToFallUs(), ENCODER_MAX_FORWARD_RISE_TO_FALL, ENCODER_MAX_BACKWARD_RISE_TO_FALL, MAX_FORWARD_POSITION, MAX_BACKWARD_POSITION)));
+      wristMaster.setSelectedSensorPosition((int) convertDegreesToEncoder(MathUtil.map(wristMaster.getSensorCollection().getPulseWidthRiseToFallUs(), ENCODER_MAX_FORWARD_RISE_TO_FALL, ENCODER_MAX_BACKWARD_RISE_TO_FALL, MAX_FORWARD_POSITION, MAX_BACKWARD_POSITION)));
       // wristMaster.getSensorCollection().setP
-      if(wristMaster.getSensorCollection().getPulseWidthRiseToFallUs() > 3000 && wristMaster.getSensorCollection().getPulseWidthRiseToFallUs() < 5300) {
-         System.out.println("less  +  " + wristMaster.getSensorCollection().getPulseWidthRiseToFallUs());
-         wristMaster.setSelectedSensorPosition(0);
-      }
+      // if(wristMaster.getSensorCollection().getPulseWidthRiseToFallUs() > 3000 && wristMaster.getSensorCollection().getPulseWidthRiseToFallUs() < 5300) {
+      //    System.out.println("less  +  " + wristMaster.getSensorCollection().getPulseWidthRiseToFallUs());
+      //    wristMaster.setSelectedSensorPosition(0);
+      // }
    }
 
    /**

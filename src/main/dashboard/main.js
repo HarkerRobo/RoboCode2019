@@ -1,16 +1,3 @@
-/**
- * Loads the limelight feed, drawing an error message if a connection was not made.
- */
-loadCameraOnConnect({
-    container: "#llfeed",
-    proto: "http://",
-    host: "10.10.72.11",
-    port: "5802",
-    attrs: {
-        width: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) * 0.3, // replacement for hv and wv since 
-        height: Math.max(document.documentElement.clientWidth, window.innerWidth || 0) * 0.225 // the library is bad
-    }
-});
 
 /**
  * Updates whether the dashboard has a connection to the robot.
@@ -117,3 +104,16 @@ document.getElementById("cargo").style.display = "none";
 document.getElementById("wrist").style.display = "none";
 document.getElementById("align").style.display = "inline-block";
 document.getElementById("climb").style.display = "none"
+
+
+function drawLimelightFeed() {
+    const ctx = document.getElementById("ll-feed-canvas").getContext("2d");
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "red";
+    ctx.fillText("No Limelight Feed", ctx.canvas.width / 2, ctx.canvas.height / 2);
+    ctx.drawImage(document.getElementById("ll-image"), 0, 0, ctx.canvas.width, ctx.canvas.height);
+    requestAnimationFrame(drawLimelightFeed);
+}
+
+requestAnimationFrame(drawLimelightFeed);
