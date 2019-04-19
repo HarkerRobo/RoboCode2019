@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.OI;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
@@ -39,7 +40,8 @@ public class GenerateAndFollowPath extends Command
     private static final double WHEELBASE = Drivetrain.DRIVETRAIN_DIAMETER;
     private double pathTime = 5;
 
-    private static final double VERT_OFFSET = -26.9;
+    private static final double LL_Z_OFFSET = -36.7;
+    private static final double LL_X_OFFSET = 4.0;
 
     BufferedTrajectoryPointStream left;
     BufferedTrajectoryPointStream right;
@@ -100,25 +102,25 @@ public class GenerateAndFollowPath extends Command
         initPath();
         System.out.println("Gen time: " + (Timer.getFPGATimestamp() - startTime));
 
-        //left = fillStream(f.leftPath, f.smoothLeftVelocity, f.heading);
-        //right = fillStream(f.rightPath, f.smoothRightVelocity, f.heading);
+        left = fillStream(f.leftPath, f.smoothLeftVelocity, f.heading);
+        right = fillStream(f.rightPath, f.smoothRightVelocity, f.heading);
 
-        //configTalons();
+        configTalons();
 
-        // Drivetrain.getInstance().getLeftMaster().startMotionProfile(left, MIN_POINTS, ControlMode.MotionProfile);
-        // Drivetrain.getInstance().getRightMaster().startMotionProfile(right, MIN_POINTS, ControlMode.MotionProfile);
+        Drivetrain.getInstance().getLeftMaster().startMotionProfile(left, MIN_POINTS, ControlMode.MotionProfile);
+        Drivetrain.getInstance().getRightMaster().startMotionProfile(right, MIN_POINTS, ControlMode.MotionProfile);
     }
 
     @Override
     protected void execute() 
     {
-        //Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
+        Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
 
-        // SmartDashboard.putNumber("Top Buffer", status.topBufferCnt);
-        // SmartDashboard.putNumber("Bottom Buffer", status.btmBufferCnt);  
-        // SmartDashboard.putBoolean("Is Valid", status.activePointValid);
-        // SmartDashboard.putNumber("left error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
-        // SmartDashboard.putNumber("right error", Drivetrain.getInstance().getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
+        SmartDashboard.putNumber("Top Buffer", status.topBufferCnt);
+        SmartDashboard.putNumber("Bottom Buffer", status.btmBufferCnt);  
+        SmartDashboard.putBoolean("Is Valid", status.activePointValid);
+        SmartDashboard.putNumber("left error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
+        SmartDashboard.putNumber("right error", Drivetrain.getInstance().getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
         
         SmartDashboard.putNumber("Yaw", Limelight.getInstance().getCamtranYaw());
         SmartDashboard.putNumber("X distance (corrected)", Limelight.getInstance().getCamtranZ());
@@ -127,7 +129,9 @@ public class GenerateAndFollowPath extends Command
 
     @Override
     protected boolean isFinished() {
-        return false;
+        return status.isLast || 
+                Math.abs(OI.getInstance().getDriverGamepad().getLeftX()) >= OI.DRIVER_DEADBAND ||
+                Math.abs(OI.getInstance().getDriverGamepad().getLeftY()) >= OI.DRIVER_DEADBAND;
     }
 
 	@Override
@@ -156,22 +160,22 @@ public class GenerateAndFollowPath extends Command
     {
         Limelight instance = Limelight.getInstance();
 
-        double finalX = (instance.getCamtranZ() - VERT_OFFSET) / Conversions.INCHES_PER_FOOT;
+        double finalX = (instance.getCamtranZ() - LL_Z_OFFSET) / Conversions.INCHES_PER_FOOT;
         double finalY = (instance.getCamtranX()) / Conversions.INCHES_PER_FOOT;
         double finalHeading = instance.getCamtranYaw();
 
         double offset = Math.tan(Math.toRadians(finalHeading))*finalX/5;
 
 		double[][] waypoints = new double[][]{
-			{0, 0},
-			{finalX/5, 0},
+			{0, LL_X_OFFSET},
+			{finalX/5, LL_X_OFFSET},
 			{finalX*4/5, finalY - offset},
 			{finalX, finalY}
         };
 
         for (double[] point : waypoints)
         {
-            System.out.println("{" + point[0] + ", " + point[1] + "},");
+            System.out.println("{" + -point[0] + ", " + -point[1] + "},");
         }
 
         return waypoints;
