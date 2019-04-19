@@ -58,6 +58,10 @@ public class DriveWithVelocityManual extends IndefiniteCommand {
       Robot.log("DriveWithVelocityManual constructed.");
    }
 
+   public void initialize() {
+      Drivetrain.getInstance().followMasters();
+   }
+
    public void execute() {
       double turn = OI.getInstance().getDriveStraightMode() ? 0
             : (MathUtil.mapJoystickOutput(OI.currentDriveMode.getTurnFunction().get(), OI.DRIVER_DEADBAND));
