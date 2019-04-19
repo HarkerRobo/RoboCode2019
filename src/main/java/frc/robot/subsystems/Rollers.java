@@ -48,8 +48,8 @@ public class Rollers extends Subsystem {
       }
    }
 
-   private static final int CONTINUOUS_CURRENT_LIMIT = 7;
-   private static final int PEAK_CURRENT_LIMIT = 10;
+   private static final int CONTINUOUS_CURRENT_LIMIT = 10;
+   private static final int PEAK_CURRENT_LIMIT = 12;
    private static final int PEAK_TIME = 500;
    private static final double ROCKET_HIGH_SCORING_SPEED = 0.8;
    private static final double TOP_SPIN = 0.1;
