@@ -87,6 +87,16 @@ public class Limelight {
             table.getEntry(MODE_KEY).setNumber(VISION_MODE);
     }
 
+    public void setCamModeDriver()
+    {
+        table.getEntry(MODE_KEY).setNumber(DRIVER_MODE);
+    }
+
+    public void setCamModeVision()
+    {
+        table.getEntry(MODE_KEY).setNumber(VISION_MODE);
+    }
+
     /**
      * Determines the vertical angular distance from the crosshair to the center of the bounding box representing the target.
      * 

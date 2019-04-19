@@ -31,9 +31,9 @@ public class AlignWithLimelightDrive extends Command {
 
    static {
       if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
-         TURN_KP = .03; // 0.09
+         TURN_KP = .015; // 0.09
          TURN_KI = 0;// 0.001;
-         TURN_KD = 0.1;
+         TURN_KD = 0.15;
          TURN_KF = 0;
          FORWARD_KF = 0;
          FORWARD_KP = 0.045;
@@ -73,12 +73,22 @@ public class AlignWithLimelightDrive extends Command {
    @Override
    public void initialize() {
       System.out.println("align with limelight");
+
+      Limelight.getInstance().setCamModeVision();
+
       turnController = new PIDController(TURN_KP, TURN_KI, TURN_KD, TURN_KF,
             new PIDSourceCustomGet(() -> Limelight.getInstance().getTx(), PIDSourceType.kDisplacement), turnOutput);
 
-      turnController.enable();
-
       turnController.setSetpoint(txSetpoint);
+
+      try {
+         Thread.sleep(100);
+      } catch (InterruptedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+
+      turnController.enable();
    }
 
    /**
@@ -88,9 +98,7 @@ public class AlignWithLimelightDrive extends Command {
       double turnOutputVal = turnOutput.getOutput();
 
       SmartDashboard.putNumber("Turn Error", turnController.getError());
-      SmartDashboard.putNumber("Left Vel", Drivetrain.getInstance().getLeftMaster().getSelectedSensorVelocity());
-      SmartDashboard.putNumber("Right Vel", Drivetrain.getInstance().getRightMaster().getSelectedSensorVelocity());
-
+     
       double leftDriverY = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftY(),
             OI.DRIVER_DEADBAND);
 
@@ -107,6 +115,7 @@ public class AlignWithLimelightDrive extends Command {
    public void end() {
       Drivetrain.getInstance().setBoth(ControlMode.Disabled, 0);
       turnController.disable();
+      Limelight.getInstance().setCamModeDriver();
    }
 
    /**
