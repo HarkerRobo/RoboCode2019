@@ -253,7 +253,6 @@ public class Wrist extends Subsystem {
 
       wristMaster.setSensorPhase(SENSOR_PHASE);
       // wristMaster.setSelectedSensorPosition(0);
-      System.out.println("taloninit");
 
       wristMaster.configForwardSoftLimitThreshold(convertDegreesToEncoder(FORWARD_SOFT_LIMIT));
       wristMaster.configReverseSoftLimitThreshold(convertDegreesToEncoder(REVERSE_SOFT_LIMIT));

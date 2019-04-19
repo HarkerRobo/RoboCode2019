@@ -97,7 +97,7 @@ public class Drivetrain extends HSDrivetrain {
       getRightMaster().configFactoryDefault();
 
       try {
-         Thread.sleep(50);
+         Thread.sleep(100);
       } catch (InterruptedException e) {
          e.printStackTrace();
       }
@@ -188,6 +188,7 @@ public class Drivetrain extends HSDrivetrain {
    public boolean hasCargo() {
       return getRightMaster().getSensorCollection().isFwdLimitSwitchClosed();
    }
+
 
    /**
     * Gets outputs for the left and right talons in order to travel at a given

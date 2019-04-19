@@ -228,7 +228,8 @@ public class SetScoringPosition extends CommandGroup {
 
    @Override
    public boolean isFinished() {
-         return super.isFinished() || MathUtil.mapJoystickOutput(Math.abs(OI.getInstance().getOperatorGamepad().getRightY()), OI.OPERATOR_DEADBAND_JOYSTICK) > 0 || 
+         return super.isFinished() || 
+         MathUtil.mapJoystickOutput(Math.abs(OI.getInstance().getOperatorGamepad().getRightY()), OI.OPERATOR_DEADBAND_JOYSTICK) > 0 || 
          MathUtil.mapJoystickOutput(Math.abs(OI.getInstance().getOperatorGamepad().getLeftY()), OI.OPERATOR_DEADBAND_JOYSTICK) > 0;
    }
 

@@ -209,10 +209,8 @@ public class Elevator extends Subsystem {
          e.printStackTrace();
       }
 
-      leftFrontVictor.follow(masterTalon);
-      leftBackVictor.follow(masterTalon);
-      followerTalon.follow(masterTalon);
-
+      followMasters();
+      
       masterTalon.setNeutralMode(NeutralMode.Brake);
       leftFrontVictor.setNeutralMode(NeutralMode.Brake);
       leftBackVictor.setNeutralMode(NeutralMode.Brake);
@@ -241,6 +239,11 @@ public class Elevator extends Subsystem {
       setUpMotionMagic();
    }
 
+   public void followMasters() {
+      leftFrontVictor.follow(masterTalon);
+      leftBackVictor.follow(masterTalon);
+      followerTalon.follow(masterTalon);
+   }
    public void moveElevatorPercentOutput(double speed) {
       getMasterTalon().set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
    }
