@@ -43,6 +43,7 @@ import harkerrobolib.commands.CallMethodCommand;
 import harkerrobolib.commands.PrintCommand;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
+import harkerrobolib.wrappers.LogitechGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
 /**
@@ -152,14 +153,14 @@ public class OI {
    private OI() {
       driver = Driver.CHRIS;
       driverGamepad = new XboxGamepad(DRIVER_PORT);
-      operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);
+      operatorGamepad = new LogitechGamepad(OPERATOR_PORT);
       //customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
       cargoBayToggleMode = false;
       wristToggleMode = false;
       driveStraightMode = false;
       runRollersAndIntake = false;
       currentTriggerMode = TriggerMode.ALIGN;
-      currentDriveMode = DriveMode.ARCADE_YY;
+      currentDriveMode = DriveMode.ARCADE_YX;
 
       initBindings();
    }
@@ -214,11 +215,13 @@ public class OI {
 
       // driverGamepad.getDownDPadButton().whenPressed(new ZeroForMatch());
 
+      final double LL_TX_SETPOINT = -10.5;
+
       Trigger rightTrigger = new TriggerButton(driverGamepad, TriggerSide.RIGHT);
       rightTrigger.whileActive(new ConditionalCommand(() -> currentTriggerMode == TriggerMode.ALIGN,
             new SequentialCommandGroup(new CallMethodCommand(() -> Robot.log("Aligning with Limelight.")),
                   new SetLimelightLEDMode(LEDMode.ON), new SetLimelightViewMode(ViewMode.VISION),
-                  new AlignWithLimelightDrive(0.0)))); // align to center
+                  new AlignWithLimelightDrive(LL_TX_SETPOINT)))); // align to center
       rightTrigger.whenInactive(new ConditionalCommand(() -> currentTriggerMode == TriggerMode.ALIGN, new SequentialCommandGroup(new SetLimelightViewMode(ViewMode.DRIVER),
             new SetLimelightLEDMode(LEDMode.OFF))));
       Trigger leftTrigger = new TriggerButton(driverGamepad, TriggerSide.LEFT);
@@ -288,6 +291,10 @@ public class OI {
                                                       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand())));
       operatorGamepad.getButtonBumperRight().whenPressed(new RunIfNotEqualCommand(
          () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
+      
+
+      //operatorGamepad.trig
+         
       Trigger leftTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.LEFT);
       leftTriggerOperator.whileActive(new ZeroWrist());
       
