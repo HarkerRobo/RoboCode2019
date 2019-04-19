@@ -72,7 +72,7 @@ public class MoveWristManual extends IndefiniteCommand {
          //    direction = WristDirection.TO_FRONT;
          // }
 
-         Wrist.getInstance().setWristPercentOutput(rightOperatorY, WristDirection.TO_BACK);
+         Wrist.getInstance().setWristPercentOutput(0.28 * rightOperatorY, WristDirection.TO_BACK);
       } else {
          if (!isHolding) {
             lastPos = Wrist.getInstance().getCurrentAngleEncoder();
