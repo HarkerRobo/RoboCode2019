@@ -203,6 +203,8 @@ public class SetScoringPosition extends CommandGroup {
       }
 
       addSequential(new MoveElevatorMotionMagic(getDesiredHeight));
+      if (desiredLocation == Location.CARGO_INTAKE)
+            addSequential(new SetExtenderState(ExtenderDirection.OUT));
       if (desiredLocation == Location.F1 || desiredLocation == Location.F2 || desiredLocation == Location.F3
             || desiredLocation == Location.CARGO_SHIP_FRONT) {
          addSequential(new SetArmState(ArmDirection.UP));

@@ -48,22 +48,22 @@ public class Rollers extends Subsystem {
       }
    }
 
-   private static final int CONTINUOUS_CURRENT_LIMIT = 10;
-   private static final int PEAK_CURRENT_LIMIT = 12;
+   private static final int CONTINUOUS_CURRENT_LIMIT = 7;
+   private static final int PEAK_CURRENT_LIMIT = 10;
    private static final int PEAK_TIME = 500;
    private static final double ROCKET_HIGH_SCORING_SPEED = 0.8;
    private static final double TOP_SPIN = 0.1;
-   private static final double INTAKE_SPEED = 0.7;
+   private static final double INTAKE_SPEED = 1.0;
 
-   public static final double DEFAULT_ROLLER_MAGNITUDE = 0.7;
+   public static final double DEFAULT_ROLLER_MAGNITUDE = 1.0;
    public static final double ROLLER_SHOOTING_SPEED = 0.65;
    public static final double HATCH_STOW_SPEED = 0.75;
 
-   public static final double CARGO_BAY_OUTPUT_REDUCTION = 0.35;
+   public static final double CARGO_BAY_OUTPUT_REDUCTION = 0.85;
 
    public static final double STOP_INTAKING_CURRENT = 15;
 
-   public static final double ARBITRARY_FF = 0.15;
+   public static final double ARBITRARY_FF = 0.08;
    private static Rollers instance;
    private HSTalon talon;
 
