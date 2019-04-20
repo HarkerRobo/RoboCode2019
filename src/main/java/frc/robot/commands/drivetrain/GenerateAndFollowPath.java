@@ -1,19 +1,16 @@
 package frc.robot.commands.drivetrain;
 
-import java.awt.Color;
-
 import com.ctre.phoenix.motion.BufferedTrajectoryPointStream;
 import com.ctre.phoenix.motion.MotionProfileStatus;
-import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.OI;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Limelight;
@@ -24,11 +21,11 @@ import harkerrobolib.util.Conversions.SpeedUnit;
 import frc.robot.util.FalconPathPlanner;
 
 /**
- * Generates a Cubic Hermite Spline for the Drivetrain to use as a trajectory.
- * Uses data from the limelight to generate the two waypoints needed for the path.
- * Closed loops to each point's velocity during the profile.
+ * Uses data from the limelight to generate the two waypoints needed for the path
+ * and uses SmoothPathPlanner to generate a trajectory for each side of the drivetrain.
+ * Uses Talon SRX Motion Profiling to follow each trajectory accurately.
  *
- * https://en.wikipedia.org/wiki/Cubic_Hermite_spline
+ * https://github.com/KHEngineering/SmoothPathPlanner
  *
  * @author Jatin Kohli
  * @author Arnav Gupta
@@ -43,7 +40,8 @@ public class GenerateAndFollowPath extends Command
     private static final double WHEELBASE = Drivetrain.DRIVETRAIN_DIAMETER;
     private double pathTime = 5;
 
-    private static final double VERT_OFFSET = -26.9;
+    private static final double LL_Z_OFFSET = -36.7;
+    private static final double LL_X_OFFSET = 4.0;
 
     BufferedTrajectoryPointStream left;
     BufferedTrajectoryPointStream right;
@@ -91,13 +89,7 @@ public class GenerateAndFollowPath extends Command
 
     private void initPath()
     {
-        //double[][] waypoints = getPointsFromLimeLight();
-        double[][] waypoints = {
-            {0, 0},
-            {1, 0},
-            {4, 5},
-            {5, 5}
-        };  
+        double[][] waypoints = getPointsFromLimeLight(); 
 
         f = new FalconPathPlanner(waypoints);
         f.calculate(pathTime, dt, WHEELBASE);
@@ -106,9 +98,9 @@ public class GenerateAndFollowPath extends Command
     @Override
     protected void initialize()
     {
-        status = new MotionProfileStatus();
-
+        double startTime = Timer.getFPGATimestamp();
         initPath();
+        System.out.println("Gen time: " + (Timer.getFPGATimestamp() - startTime));
 
         left = fillStream(f.leftPath, f.smoothLeftVelocity, f.heading);
         right = fillStream(f.rightPath, f.smoothRightVelocity, f.heading);
@@ -122,33 +114,24 @@ public class GenerateAndFollowPath extends Command
     @Override
     protected void execute() 
     {
-        if (status != null)
-        {
-            Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
-            SmartDashboard.putString("status", "not null");
-            SmartDashboard.putString("output type", status.outputEnable.toString());
+        Drivetrain.getInstance().getLeftMaster().getMotionProfileStatus(status);
 
-            SmartDashboard.putNumber("Top Buffer", status.topBufferCnt);
-            SmartDashboard.putNumber("Bottom Buffer", status.btmBufferCnt);  
-            SmartDashboard.putBoolean("Is Valid", status.activePointValid);
-            SmartDashboard.putNumber("Right Position", Drivetrain.getInstance().getRightMaster().getActiveTrajectoryPosition(Global.PID_PRIMARY)); 
-		    SmartDashboard.putNumber("Left Position",Drivetrain.getInstance().getLeftMaster().getActiveTrajectoryPosition(Global.PID_PRIMARY));       
-            SmartDashboard.putNumber("Right Velocity", Drivetrain.getInstance().getRightMaster().getActiveTrajectoryVelocity(Global.PID_PRIMARY)); 
-		    SmartDashboard.putNumber("Left Velocity",Drivetrain.getInstance().getLeftMaster().getActiveTrajectoryVelocity(Global.PID_PRIMARY));       
-            SmartDashboard.putNumber("left error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
-            SmartDashboard.putNumber("right error", Drivetrain.getInstance().getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
-		    SmartDashboard.putNumber("Left Encoder vel", Drivetrain.getInstance().getLeftMaster().getSelectedSensorVelocity(Global.PID_PRIMARY));
-		    SmartDashboard.putNumber("Right Encoder vel", Drivetrain.getInstance().getRightMaster().getSelectedSensorVelocity(Global.PID_PRIMARY));
-        }
-        else
-        {
-            SmartDashboard.putString("status", "null");
-        }
+        SmartDashboard.putNumber("Top Buffer", status.topBufferCnt);
+        SmartDashboard.putNumber("Bottom Buffer", status.btmBufferCnt);  
+        SmartDashboard.putBoolean("Is Valid", status.activePointValid);
+        SmartDashboard.putNumber("left error", Drivetrain.getInstance().getLeftMaster().getClosedLoopError(Global.PID_PRIMARY));
+        SmartDashboard.putNumber("right error", Drivetrain.getInstance().getRightMaster().getClosedLoopError(Global.PID_PRIMARY));
+        
+        SmartDashboard.putNumber("Yaw", Limelight.getInstance().getCamtranYaw());
+        SmartDashboard.putNumber("X distance (corrected)", Limelight.getInstance().getCamtranZ());
+        SmartDashboard.putNumber("Y distance", Limelight.getInstance().getCamtranX());
     }
 
     @Override
     protected boolean isFinished() {
-        return false;
+        return status.isLast || 
+                Math.abs(OI.getInstance().getDriverGamepad().getLeftX()) >= OI.DRIVER_DEADBAND ||
+                Math.abs(OI.getInstance().getDriverGamepad().getLeftY()) >= OI.DRIVER_DEADBAND;
     }
 
 	@Override
@@ -177,22 +160,22 @@ public class GenerateAndFollowPath extends Command
     {
         Limelight instance = Limelight.getInstance();
 
-        double finalX = (instance.getCamtranZ() - VERT_OFFSET) / Conversions.INCHES_PER_FOOT;
+        double finalX = (instance.getCamtranZ() - LL_Z_OFFSET) / Conversions.INCHES_PER_FOOT;
         double finalY = (instance.getCamtranX()) / Conversions.INCHES_PER_FOOT;
         double finalHeading = instance.getCamtranYaw();
 
         double offset = Math.tan(Math.toRadians(finalHeading))*finalX/5;
 
 		double[][] waypoints = new double[][]{
-			{0, 0},
-			{finalX/5, 0},
+			{0, LL_X_OFFSET},
+			{finalX/5, LL_X_OFFSET},
 			{finalX*4/5, finalY - offset},
 			{finalX, finalY}
         };
 
         for (double[] point : waypoints)
         {
-            System.out.println("{" + point[0] + ", " + point[1] + "},");
+            System.out.println("{" + -point[0] + ", " + -point[1] + "},");
         }
 
         return waypoints;
