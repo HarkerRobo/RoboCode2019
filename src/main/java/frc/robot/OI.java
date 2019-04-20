@@ -153,7 +153,7 @@ public class OI {
    private OI() {
       driver = Driver.CHRIS;
       driverGamepad = new XboxGamepad(DRIVER_PORT);
-      operatorGamepad = new LogitechGamepad(OPERATOR_PORT);
+      operatorGamepad = new XboxGamepad(OPERATOR_PORT);
       //customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
       cargoBayToggleMode = false;
       wristToggleMode = false;

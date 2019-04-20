@@ -29,6 +29,7 @@ import frc.robot.commands.drivetrain.SetLimelightViewMode;
 import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
 import frc.robot.commands.elevator.MoveElevatorManual;
 import frc.robot.commands.groups.SetScoringPosition;
+import frc.robot.commands.hatchpanelintake.SetExtenderState;
 import frc.robot.commands.wrist.MoveWristManual;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmDirection;
@@ -142,6 +143,8 @@ public class Robot extends TimedRobot {
       HatchLatcher.getInstance().setExtenderState(ExtenderDirection.IN);
       HatchLatcher.getInstance().setFlowerState(FlowerDirection.OPEN);
       new SetArmState(ArmDirection.UP).start();
+
+      new SetExtenderState(ExtenderDirection.IN).start();
 
       Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
    }
