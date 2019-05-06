@@ -4,8 +4,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import frc.robot.OI;
+import frc.robot.Robot;
+import frc.robot.Robot.Side;
 import frc.robot.RobotMap.Global;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Wrist;
 import harkerrobolib.commands.IndefiniteCommand;
 import harkerrobolib.util.MathUtil;
 
@@ -16,44 +19,68 @@ import harkerrobolib.util.MathUtil;
  * @since 1/10/19
  */
 public class MoveElevatorManual extends IndefiniteCommand {
+   private boolean isHolding;
+   private boolean shouldClosedLoop;
+   private double lastPos;
 
-    public MoveElevatorManual() {
-        requires(Elevator.getInstance());
-    }
+   public MoveElevatorManual() {
+      requires(Elevator.getInstance());
+      Robot.log("MoveElevatorManual constructed.");
+      isHolding = false;
+      shouldClosedLoop = false;
+      lastPos = 0;
+   }
 
-    @Override
-    public void initialize() {
-        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-    }
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      Elevator.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative,
+            Global.PID_PRIMARY);
+      Elevator.getInstance().setUpMotionMagic();
+   }
 
-    @Override
-    public void execute() {
-        OI oi = OI.getInstance();
-        double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightY(), OI.DRIVER_DEADBAND);
-        Elevator.getInstance().getMaster().set(ControlMode.PercentOutput, desiredSpeed);
-        if(Math.abs(desiredSpeed) > 0)
-        {
-            boolean isDown = desiredSpeed < 0;
-            int position = Elevator.getInstance().getMaster().getSelectedSensorPosition(Global.PID_PRIMARY);
-            boolean reverseBeyondLimit = position
-                                         <= Elevator.REVERSE_SOFT_LIMIT;
-            double currSpeed = Elevator.getInstance().getMaster().getSelectedSensorVelocity(Global.PID_PRIMARY);
-            double distFromSoft = position - Elevator.REVERSE_SOFT_LIMIT;
-            double outputFactor = 1.0;
-            if(isDown && reverseBeyondLimit && Math.abs(currSpeed) / Elevator.MAX_SPEED < Elevator.SLOW_DOWN_PERCENT)
-            {
-                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, Elevator.MAX_OUTPUT_FACTOR, Elevator.MIN_LESS_OUTPUT_FACTOR);
-            }
-            else if(isDown && reverseBeyondLimit) {
-                outputFactor = MathUtil.map(distFromSoft, 0, Elevator.REVERSE_SOFT_LIMIT, Elevator.MAX_OUTPUT_FACTOR, Elevator.MIN_MORE_OUTPUT_FACTOR);
-            }
-            desiredSpeed *= outputFactor;
-            Elevator.getInstance().moveElevatorVelocity(desiredSpeed);
-        }
-        else {
-            Elevator.getInstance().moveElevatorVelocity(0);
-        }
-        
-    }
-    
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      double desiredSpeed = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getLeftY(),
+            OI.DRIVER_DEADBAND);
+      if (Math.abs(desiredSpeed) > 0) {
+         isHolding = false;
+         shouldClosedLoop = true;
+
+         Elevator.getInstance().setElevator(ControlMode.PercentOutput, desiredSpeed);
+      } else {
+         if (!isHolding) {
+            lastPos = Elevator.getInstance().getCurrentPositionEncoder();
+         }
+         isHolding = true;
+      }
+
+      boolean isWristPullingUp = false;//Elevator.getInstance().isAbove(Elevator.RAIL_POSITION)
+            // && Wrist.getInstance().getCurrentSide() == Side.FRONT;
+      if (isHolding && shouldClosedLoop && !isWristPullingUp) {
+         Elevator.getInstance().setElevator(ControlMode.MotionMagic, lastPos);
+      } else if (isWristPullingUp) {
+         Elevator.getInstance().setElevator(ControlMode.Disabled, 0.0);
+      }
+   }
+
+   public void disableClosedLoop() {
+      shouldClosedLoop = false;
+   }
+
+   public void setLastPosition(double lastPos) {
+      this.lastPos = lastPos;
+   }
+
+   /**
+    * Sets the last position to be the current elevator position.
+    */
+   public void setLastPosition() {
+      this.setLastPosition(Elevator.getInstance().getCurrentPositionEncoder());
+   }
 }

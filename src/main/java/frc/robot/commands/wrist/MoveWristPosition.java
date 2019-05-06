@@ -1,10 +1,9 @@
 package frc.robot.commands.wrist;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap.Global;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Wrist;
 
 /**
@@ -17,27 +16,43 @@ import frc.robot.subsystems.Wrist;
  * @since 1/12/19
  */
 public class MoveWristPosition extends Command {
-    private double position;
+   private double position;
 
-    public MoveWristPosition (double position) {
-        requires (Wrist.getInstance());
-        this.position = position;                
-    }            
-    
-    @Override
-    public void initialize() {
-        Wrist.getInstance().getMasterTalon().selectProfileSlot (Wrist.POSITION_SLOT, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-        Wrist.getInstance().getMasterTalon().setSensorPhase(Wrist.SENSOR_PHASE);        
-    }
-    
-    @Override
-    public void execute() {
-        Wrist.getInstance().getMasterTalon().set(ControlMode.Position, position);
-    }        
-        
-    @Override
-    protected boolean isFinished() {
-        return Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT)) < Wrist.ALLOWABLE_ERROR;
-    }  
+   public static final double KF = 0.0;
+   public static final double KP = 0.5;
+   public static final double KI = 0;
+   public static final double KD = 1;
+   public static final int IZONE = 0;
+
+   public MoveWristPosition(double angle) {
+      requires(Wrist.getInstance());
+      this.position = Wrist.getInstance().convertDegreesToEncoder(angle);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void initialize() {
+      Wrist.getInstance().setupPositionPID();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      SmartDashboard.putNumber("Wrist Error", Wrist.getInstance().getMasterTalon().getClosedLoopError());
+      Wrist.getInstance().setWrist(ControlMode.Position, position);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected boolean isFinished() {
+      return true;// return
+                  // Math.abs(Wrist.getInstance().getMasterTalon().getClosedLoopError(Wrist.POSITION_SLOT))
+                  // < Wrist.ALLOWABLE_ERROR;
+   }
 }

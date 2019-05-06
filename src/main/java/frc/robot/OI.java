@@ -1,124 +1,362 @@
 package frc.robot;
 
-import frc.robot.commands.SpinIntakeAndRollers;
-import frc.robot.commands.arm.SetArmPosition;
-import frc.robot.commands.elevator.MoveElevatorMotionMagic;
-import frc.robot.commands.elevator.MoveElevatorPosition;
-import frc.robot.commands.hatchpanelintake.SetHatchPusherDirection;
+import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import frc.robot.commands.arm.ToggleArmState;
+import frc.robot.commands.drivetrain.AlignWithLimelightDrive;
+import frc.robot.commands.drivetrain.SetLimelightLEDMode;
+import frc.robot.commands.drivetrain.SetLimelightLEDMode.LEDMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode;
+import frc.robot.commands.drivetrain.SetLimelightViewMode.ViewMode;
+import frc.robot.commands.drivetrain.ToggleLimelightLEDMode;
+import frc.robot.commands.elevator.ZeroElevator;
+import frc.robot.commands.groups.SetScoringPosition;
+import frc.robot.commands.groups.SpinIntakeAndRollers;
+import frc.robot.commands.groups.SetScoringPosition.Location;
+import frc.robot.commands.groups.StowHatchAndCargoIntake;
+import frc.robot.commands.hatchpanelintake.ToggleExtenderState;
+import frc.robot.commands.hatchpanelintake.ToggleFlowerState;
+import frc.robot.commands.intake.SpinIntakeIndefinite;
+import frc.robot.commands.intake.SpinIntakeManual;
+import frc.robot.commands.intake.SpinIntakeVelocity;
 import frc.robot.commands.rollers.SpinRollersIndefinite;
-import frc.robot.commands.wrist.MoveWristPosition;
-import frc.robot.subsystems.Arm.ArmDirection;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.HatchPusher;
+import frc.robot.commands.rollers.SpinRollersManual;
+import frc.robot.commands.rollers.ToggleRollers;
+import frc.robot.commands.wrist.ZeroWrist;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.IntakeDirection;
+
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
-import frc.robot.subsystems.Wrist;
+import frc.robot.util.ConditionalCommand;
+import frc.robot.util.CustomOperatorGamepad;
+import frc.robot.util.RunIfNotEqualCommand;
+import frc.robot.util.TriggerButton;
+import frc.robot.util.TriggerButton.TriggerSide;
 import harkerrobolib.auto.ParallelCommandGroup;
-import harkerrobolib.wrappers.HSDPadButton;
+import harkerrobolib.auto.SequentialCommandGroup;
+import harkerrobolib.commands.CallMethodCommand;
+import harkerrobolib.commands.PrintCommand;
 import harkerrobolib.wrappers.HSGamepad;
 import harkerrobolib.wrappers.LogitechAnalogGamepad;
+import harkerrobolib.wrappers.LogitechGamepad;
 import harkerrobolib.wrappers.XboxGamepad;
 
 /**
- * Contains both driver and operator gamepads.
+ * Class that manages input and output from gamepads.
  * 
  * @since 1/7/19
  */
 public class OI {
-    private HSGamepad driverGamepad;
-    private HSGamepad operatorGamepad;
-    private static OI instance;
+   public enum Driver {
+      CHRIS(0), PRANAV(1), ANGELA(0);
 
-    private static final int DRIVER_PORT = 0;
-    private static final int OPERATOR_PORT = 1;
+      private int id;
 
-    public static final double DRIVER_DEADBAND = 0.1;
-    public static final double OPERATOR_DEADBAND_JOYSTICK = 0.1;
-    public static final double OPERATOR_DEADBAND_TRIGGER = 0.1;
+      private Driver(int id) {
+         this.id = id;
+      }
 
-    public static final boolean HAS_TWO_CONTROLLERS = true;
+      public int getId() {
+         return id;
+      }
+   }
 
-    //DPad angles in degrees
-    public static final int DPAD_UP_ANGLE = 0;
-    public static final int DPAD_LEFT_ANGLE = 270;
-    public static final int DPAD_RIGHT_ANGLE = 90;
-    public static final int DPAD_DOWN_ANGLE = 180;
+   public enum TriggerMode {
+      ALIGN(0), WRIST_MANUAL(1), CLIMB(2);
 
-    private OI() {
-        driverGamepad = new XboxGamepad(DRIVER_PORT);
-        operatorGamepad = new LogitechAnalogGamepad(OPERATOR_PORT);
+      private int value;
 
-        initBindings();
-    }
-    
-    public void initBindings() {
-        //driver bumpers
-        driverGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.DOWN));
-        driverGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.UP));
-    
-        //driver buttons
-        driverGamepad.getButtonA().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorPosition(Elevator.INTAKE_POSITION),
-            new MoveWristPosition(Wrist.WRIST_ANGLE_INTAKE)
-        ));
+      private TriggerMode(int value) {
+         this.value = value;
+      }
 
-        driverGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(Rollers.DEFAULT_ROLLER_MAGNITUDE, RollerDirection.IN));
-                 
-        driverGamepad.getButtonX().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorMotionMagic(Elevator.LOW_SCORING_POSITION),
-            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)
-        ));
+      public int getValue() {
+         return value;
+      }
+   }
 
-        driverGamepad.getButtonY().whenPressed(new ParallelCommandGroup(
-            new MoveElevatorPosition(Elevator.MEDIUM_SCORING_POSITION),
-            new MoveWristPosition(Wrist.WRIST_ANGLE_SCORING)            
-        ));
+   /*
+   * Represents the possible modes for driving. ARCADE_YX corresponds to an arcade drive using Y for speed and X for turn (
+   * on the same joystick); ARCADE_YY corresponds to an arcade drive using Y for speed and Y for turn (on two different
+   * joysticks).
+   */
+   public enum DriveMode {
+      ARCADE_YX(0, () -> OI.getInstance().getDriverGamepad().getLeftY(), () -> OI.getInstance().getDriverGamepad().getLeftX()), 
+      ARCADE_YY(1, () -> OI.getInstance().getDriverGamepad().getLeftY(), 
+         () -> (OI.getInstance().getDriverGamepad().getButtonStickRight().get() || Math.abs(OI.getInstance().getDriverGamepad().getLeftY()) > DRIVER_DEADBAND) ?
+            ((OI.getInstance().getDriverGamepad().getLeftY() > 0 || OI.getInstance().getDriverGamepad().getButtonStickRight().get() ? 1 : -1 ) * OI.getInstance().getDriverGamepad().getRightX()) : 0);
+            
+      
+      private int value;
+      private Supplier<Double> speedFunction;
+      private Supplier<Double> turnFunction;
+      private DriveMode (int value, Supplier<Double> speedFunction, Supplier<Double> turnFunction) {
+         this.value = value;
 
-        driverGamepad.getButtonB().whenPressed(new SetArmPosition(ArmDirection.DOWN));
-        driverGamepad.getButtonB().whilePressed(new SpinIntakeAndRollers());
+         this.speedFunction = speedFunction;
+         this.turnFunction = turnFunction;
+      }
 
-        //driver dpad
-        HSDPadButton driverUpDPad = new HSDPadButton(driverGamepad, DPAD_UP_ANGLE);
-        HSDPadButton driverLeftDPad = new HSDPadButton(driverGamepad, DPAD_LEFT_ANGLE);
-        HSDPadButton driverDownDPad = new HSDPadButton(driverGamepad, DPAD_DOWN_ANGLE);
-        HSDPadButton driverRightDPad = new HSDPadButton(driverGamepad, DPAD_RIGHT_ANGLE);
+      public int getValue() {
+         return value;
+      }
 
-        driverUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
-        driverDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+      public static DriveMode getMode (int value) {
+         for (DriveMode mode : DriveMode.values()) {
+            if (mode.getValue() == value) { return mode; }
+         }
+         return null;
+      }
 
-        //operator bumpers                 
-        operatorGamepad.getButtonBumperRight().whenPressed(new SetArmPosition(ArmDirection.UP));
-        operatorGamepad.getButtonBumperLeft().whenPressed(new SetArmPosition(ArmDirection.DOWN));
-             //done           
-        //operator dpad
-        HSDPadButton operatorUpDPad = new HSDPadButton(operatorGamepad, DPAD_UP_ANGLE);
-        HSDPadButton operatorLeftDPad = new HSDPadButton(operatorGamepad, DPAD_LEFT_ANGLE);
-        HSDPadButton operatorDownDPad = new HSDPadButton(operatorGamepad, DPAD_DOWN_ANGLE);
-        HSDPadButton operatorRightDPad = new HSDPadButton(operatorGamepad, DPAD_RIGHT_ANGLE);
-        //done
+      public Supplier<Double> getSpeedFunction () { return speedFunction; }
+      public Supplier<Double> getTurnFunction () { return turnFunction; }
 
-        //operator dpad
-        operatorUpDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.OUT));
-        operatorDownDPad.whenPressed(new SetHatchPusherDirection(HatchPusher.PushDirection.IN));
+   }
+
+   private HSGamepad driverGamepad;
+   private CustomOperatorGamepad customOperatorGamepad;
+   private static OI instance;
+   private static HSGamepad operatorGamepad;
+
+   private TriggerMode currentTriggerMode;
+
+   private static final int DRIVER_PORT = 0;
+   private static final int OPERATOR_PORT = 1;
+
+   public static final double DRIVER_DEADBAND = 0.15;
+   public static final double DRIVER_DEADBAND_TRIGGER = 0.16;
+   public static final double OPERATOR_DEADBAND_JOYSTICK = 0.1;
+   public static final double OPERATOR_DEADBAND_TRIGGER = 0.1;
+
+   public static final boolean HAS_TWO_CONTROLLERS = true;
+
+   // DPad angles in degrees
+   public static final int DPAD_UP_ANGLE = 0;
+   public static final int DPAD_LEFT_ANGLE = 270;
+   public static final int DPAD_RIGHT_ANGLE = 90;
+   public static final int DPAD_DOWN_ANGLE = 180;
+
+   private static Driver driver;
+
+   private boolean cargoBayToggleMode;
+   private boolean wristToggleMode;
+   private boolean driveStraightMode;
+   private boolean runRollersAndIntake;
+
+   public static DriveMode currentDriveMode;
+
+   private OI() {
+      driver = Driver.CHRIS;
+      driverGamepad = new XboxGamepad(DRIVER_PORT);
+      operatorGamepad = new XboxGamepad(OPERATOR_PORT);
+      //customOperatorGamepad = new CustomOperatorGamepad(OPERATOR_PORT);
+      cargoBayToggleMode = false;
+      wristToggleMode = false;
+      driveStraightMode = false;
+      runRollersAndIntake = false;
+      currentTriggerMode = TriggerMode.ALIGN;
+      currentDriveMode = DriveMode.ARCADE_YX;
+
+      initBindings();
+   }
+
+   public void initBindings() {
+      driverGamepad.getButtonBumperRight().whenPressed(new InstantCommand() {
+         @Override
+         public void initialize() {
+            cargoBayToggleMode = !cargoBayToggleMode;
+
+            if (cargoBayToggleMode) {
+               OI.getInstance().getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0.4);
+               OI.getInstance().getDriverGamepad().setRumble(RumbleType.kRightRumble, 0.4);
+            } else {
+               OI.getInstance().getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0);
+               OI.getInstance().getDriverGamepad().setRumble(RumbleType.kRightRumble, 0);
+            }
+            Robot.log(cargoBayToggleMode ? "Enabled cargo ship mode." : "Enabled rocket mode.");
+         }
+      });
+
+      driverGamepad.getButtonBumperLeft().whilePressed(new ParallelCommandGroup(
+         new SpinIntakeVelocity( IntakeDirection.IN, Intake.DEFAULT_INTAKE_VELOCITY),
+         new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN)));
+      driverGamepad.getButtonB().whenPressed(new ToggleFlowerState());
+      driverGamepad.getButtonA().whenPressed(new ToggleExtenderState());
+      driverGamepad.getButtonY()
+            .whenPressed(new ToggleArmState());
+      driverGamepad.getButtonX()
+            .whilePressed(new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersOutput, RollerDirection.OUT));
+      driverGamepad.getButtonStart().whenPressed(new InstantCommand() {
+         public void initialize() {
+            wristToggleMode = !wristToggleMode;
+            Robot.log(wristToggleMode ? "Enabled wrist scoring mode." : "Enabled Limelight align mode.");
+         }
+      });
+
         
-        //operator buttons
-        
-        operatorGamepad.getButtonA().whilePressed(new SpinRollersIndefinite(SpinRollersIndefinite.magnitude1,RollerDirection.OUT));
-        operatorGamepad.getButtonY().whilePressed(new SpinRollersIndefinite(SpinRollersIndefinite.magnitude2,RollerDirection.OUT));
-    }  
+      // driverGamepad.getButtonSelect()
+      //      .whenPressed(new CallMethodCommand(() -> currentTriggerMode = TriggerMode.CLIMB));
+      driverGamepad.getButtonSelect()
+         .whenPressed(new ToggleLimelightLEDMode());
+      driverGamepad.getButtonStart().whenPressed(new CallMethodCommand (() -> {
+          if (currentTriggerMode == TriggerMode.ALIGN || currentTriggerMode == TriggerMode.WRIST_MANUAL) {
+            currentTriggerMode = (currentTriggerMode == TriggerMode.ALIGN ? TriggerMode.WRIST_MANUAL : TriggerMode.ALIGN);
+          } else {
+            currentTriggerMode = TriggerMode.ALIGN; // reset to default value
+          }
+      }));
 
-    public HSGamepad getDriverGamepad() {
-        return driverGamepad;
-    }
+      driverGamepad.getUpDPadButton().whenPressed(new StowHatchAndCargoIntake());
 
-    public HSGamepad getOperatorGamepad() {
-        return operatorGamepad;
-    }
-    
-    public static OI getInstance() {
-        if(instance == null){
-            instance = new OI();
-        }
-        return instance;
-    }
+      // driverGamepad.getDownDPadButton().whenPressed(new ZeroForMatch());
+
+      final double LL_TX_SETPOINT = -10.5;
+
+      Trigger rightTrigger = new TriggerButton(driverGamepad, TriggerSide.RIGHT);
+      rightTrigger.whileActive(new ConditionalCommand(() -> currentTriggerMode == TriggerMode.ALIGN,
+            new SequentialCommandGroup(new CallMethodCommand(() -> Robot.log("Aligning with Limelight.")),
+                  new SetLimelightLEDMode(LEDMode.ON), new SetLimelightViewMode(ViewMode.VISION),
+                  new AlignWithLimelightDrive(LL_TX_SETPOINT)))); // align to center
+      rightTrigger.whenInactive(new ConditionalCommand(() -> currentTriggerMode == TriggerMode.ALIGN, new SequentialCommandGroup(new SetLimelightViewMode(ViewMode.DRIVER),
+            new SetLimelightLEDMode(LEDMode.OFF))));
+      Trigger leftTrigger = new TriggerButton(driverGamepad, TriggerSide.LEFT);
+      leftTrigger.whenActive(new InstantCommand() {
+         public void initialize() {
+            if (currentTriggerMode == TriggerMode.ALIGN) {
+               driveStraightMode = true;
+            } 
+            Robot.log("Enabled drive straight mode.");
+         }
+      });
+
+      leftTrigger.whenInactive(new InstantCommand() {
+         public void initialize() {
+            if (currentTriggerMode == TriggerMode.ALIGN) {
+               driveStraightMode = false;
+            }
+            Robot.log("Disabled drive straight mode.");
+         }
+      });
+
+      // customOperatorGamepad.getForwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_FRONT),
+      //             () -> Robot.getSetScoringCommand()),
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F1), () -> Robot.getSetScoringCommand())));
+      // customOperatorGamepad.getBackwardOneButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_BACK),
+      //             () -> Robot.getSetScoringCommand()),
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B1), () -> Robot.getSetScoringCommand())));
+
+      // customOperatorGamepad.getForwardOneButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F1), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getForwardTwoButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F2), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getForwardThreeButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F3), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getBackwardOneButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B1), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getBackwardTwoButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B2), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getBackwardThreeButton().whenPressed(
+      //       new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B3), () -> Robot.getSetScoringCommand()));
+
+      // customOperatorGamepad.getCargoIntakingButton().whenPressed(new RunIfNotEqualCommand(
+      //       () -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand()));
+      // customOperatorGamepad.getZeroWristButton().whilePressed(new ZeroWrist());
+      // customOperatorGamepad.getZeroElevatorButton().whilePressed(new ZeroElevator());
+      // customOperatorGamepad.getHatchIntakingButton().whenPressed(new RunIfNotEqualCommand(
+      //       () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
+
+      operatorGamepad.getDownDPadButton().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_FRONT),
+                  () -> Robot.getSetScoringCommand()),
+            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F1), () -> Robot.getSetScoringCommand())));
+      operatorGamepad.getButtonA().whenPressed(new ConditionalCommand(() -> cargoBayToggleMode,
+            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_SHIP_BACK),
+                  () -> Robot.getSetScoringCommand()),
+            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B1), () -> Robot.getSetScoringCommand())));
+
+      operatorGamepad.getUpDPadButton().whenPressed(
+            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.F2), () -> Robot.getSetScoringCommand()));
+      operatorGamepad.getButtonY().whenPressed(
+            new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.B2), () -> Robot.getSetScoringCommand()));
+
+      operatorGamepad.getButtonBumperLeft().whenPressed(new ParallelCommandGroup(new SpinIntakeVelocity(IntakeDirection.IN, Intake.SLOW_INTAKE_VELOCITY),
+                                                                                 new SpinRollersIndefinite(Rollers.getInstance()::getRecommendedRollersInput, RollerDirection.IN),
+                                                      new RunIfNotEqualCommand(() -> new SetScoringPosition(Location.CARGO_INTAKE, () -> false), () -> Robot.getSetScoringCommand())));
+      operatorGamepad.getButtonBumperRight().whenPressed(new RunIfNotEqualCommand(
+         () -> new SetScoringPosition(Location.HATCH_INTAKE, () -> true), () -> Robot.getSetScoringCommand()));
+      
+
+      //operatorGamepad.trig
+         
+      Trigger leftTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.LEFT);
+      leftTriggerOperator.whileActive(new ZeroWrist());
+      
+      Trigger rightTriggerOperator = new TriggerButton(operatorGamepad, TriggerSide.RIGHT);
+      rightTriggerOperator.whileActive(new ZeroElevator()); 
+      
+      // operatorGamepad.getButtonSelect().whenPressed(new InstantCommand() {
+      //                public void initialize() {
+      //                   Robot.setupRobot();
+      //                   Scheduler.getInstance().removeAll();
+      //                }
+      //                                  });
+      // operatorGamepad.getButtonStart().whenPressed(new InstantCommand() {
+      //    public void initialize() {
+      //       currentDriveMode = DriveMode.getMode((currentDriveMode.getValue() + 1) % DriveMode.values().length);
+      //    }
+      // });
+
+
+   }
+
+   public HSGamepad getDriverGamepad() {
+      return driverGamepad;
+   }
+
+   public CustomOperatorGamepad getCustomOperatorGamepad() {
+      return customOperatorGamepad;
+   }
+
+   public HSGamepad getOperatorGamepad() {
+      return operatorGamepad;
+   }
+
+   public Driver getDriver() {
+      return driver;
+   }
+
+   public static OI getInstance() {
+      if (instance == null) {
+         instance = new OI();
+      }
+      return instance;
+   }
+
+   public boolean getCargoBayToggleMode() {
+      return cargoBayToggleMode;
+   }
+
+   public boolean getWristToggleMode() {
+      return wristToggleMode;
+   }
+
+   public boolean getDriveStraightMode() {
+      return driveStraightMode;
+   }
+
+   public TriggerMode getCurrentTriggerMode() {
+      return currentTriggerMode;
+   }
+
+   public boolean getRunRollersAndIntake() {
+      return runRollersAndIntake;
+   }
+
 }

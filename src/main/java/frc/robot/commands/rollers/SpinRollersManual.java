@@ -1,10 +1,10 @@
 package frc.robot.commands.rollers;
 
 import frc.robot.OI;
+import frc.robot.Robot;
 import frc.robot.subsystems.Rollers;
 import frc.robot.subsystems.Rollers.RollerDirection;
 import harkerrobolib.commands.IndefiniteCommand;
-import harkerrobolib.util.MathUtil;
 
 /**
  * Allows manual control over the rollers for intake and outtake.
@@ -12,47 +12,25 @@ import harkerrobolib.util.MathUtil;
  * @author Chirag Kaushik
  * @author Shahzeb Lakhani
  * @author Dawson Chen
- * @since January 10, 2019
+ * @since 1/10/19
  */
 public class SpinRollersManual extends IndefiniteCommand {
-	public SpinRollersManual() {
-		requires(Rollers.getInstance());
-    }	
 
-    @Override
-	public void execute() {
-    
-        double driverLeftTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getLeftTrigger(), OI.DRIVER_DEADBAND);
-        double driverRightTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getDriverGamepad().getRightTrigger(), OI.DRIVER_DEADBAND);
+   public SpinRollersManual() {
+      requires(Rollers.getInstance());
+      Robot.log("SpinRollersManual constructed.");
+   }
 
-        if((driverRightTrigger > 0 || driverLeftTrigger > 0)) {
-            if(driverRightTrigger > driverLeftTrigger) {
-                Rollers.getInstance().moveRollers(driverRightTrigger, RollerDirection.OUT);
-            } else {
-                Rollers.getInstance().moveRollers(driverLeftTrigger, RollerDirection.IN);
-            }      
-        }
-
-        else if(OI.HAS_TWO_CONTROLLERS) {
-            double operatorRightTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getRightTrigger(), OI.OPERATOR_DEADBAND_TRIGGER);
-            double operatorLeftTrigger = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getLeftTrigger(), OI.OPERATOR_DEADBAND_TRIGGER);
-            double operatorRightJoystick = MathUtil.mapJoystickOutput(OI.getInstance().getOperatorGamepad().getRightY(), OI.OPERATOR_DEADBAND_JOYSTICK);
-
-            if(operatorRightTrigger > 0) {
-                Rollers.getInstance().moveRollers(operatorRightTrigger, RollerDirection.OUT);
-            }
-            else if(operatorLeftTrigger > 0) {
-                Rollers.getInstance().moveRollers(operatorLeftTrigger, RollerDirection.IN);
-            }
-            else if(operatorRightJoystick > 0) {
-                Rollers.getInstance().moveRollers(operatorRightJoystick, RollerDirection.IN);
-            }
-            else if(operatorRightJoystick < 0) {
-                Rollers.getInstance().moveRollers(operatorRightJoystick, RollerDirection.OUT);
-            }
-        }
-        else {
-            Rollers.getInstance().stopRollers();
-        }
-	}
+   /**
+    * The driver controller will take priority and spin the roller according to the
+    * amount that the right and left triggers are pressed. {@inheritDoc}
+    */
+   @Override
+   public void execute() {
+      if(OI.getInstance().getRunRollersAndIntake()) {
+         Rollers.getInstance().moveRollers(Rollers.DEFAULT_ROLLER_MAGNITUDE, RollerDirection.IN);
+      } else {
+         Rollers.getInstance().moveRollers(0, RollerDirection.IN);
+      }
+   }
 }

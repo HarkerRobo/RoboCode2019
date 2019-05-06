@@ -1,42 +1,72 @@
 package frc.robot.commands.elevator;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap.Global;
+import frc.robot.Robot;
+import frc.robot.RobotMap;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Elevator;
 
 /**
- * Brings the elevator to the bottom and zeros that position.
- * The command is checked for completion by monitoring the current.
+ * Brings the elevator to the bottom and zeros that position. The command is
+ * checked for completion by monitoring the current.
  * 
  * @author Angela Jia
  * @author Arun Sundaresan
+ * @author Finn Frankis
  * @since 1/14/19
  */
 public class ZeroElevator extends Command {
 
-    private static final double ZERO_DOWN_SPEED = -0.3;
-    private static final int ZERO_POSITION = 0;
-    public ZeroElevator() {
-        requires(Elevator.getInstance());        
-    }
+   private static final double ZERO_SPEED;
+   static {
+      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+         ZERO_SPEED = -0.34;
+      } else {
+         ZERO_SPEED = -0.25;
+      }
+   }
+   private static final double CURRENT_SPIKE = 2.8;
+   private static final double TIMEOUT = 5000;
 
-	@Override
-	protected boolean isFinished() {
-		return Elevator.getInstance().getMaster().getOutputCurrent() >= Elevator.ZERO_CURRENT_SPIKE;
-	}
+   private ArrayList<Double> currentVals;
+   private int VALUES_TO_SAMPLE = 10;
+   private int startTime = 0;
 
-    public void initialize() {
-        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Global.PID_PRIMARY);
-    }
+   public ZeroElevator() {
+      requires(Elevator.getInstance());
+      currentVals = new ArrayList<Double>();
+   }
 
-    public void execute() {
-        Elevator.getInstance().getMaster().set(ControlMode.PercentOutput, ZERO_DOWN_SPEED);
-    }
+   public void initialize() {
+      Robot.log("ZeroElevator initialized.");
+      startTime = Robot.getTime();
+   }
 
-    public void end() {
-        Elevator.getInstance().getMaster().setSelectedSensorPosition(ZERO_POSITION, Global.PID_PRIMARY);
-    }
+   @Override
+   public void execute() {
+      Elevator.getInstance().setElevator(ControlMode.PercentOutput, ZERO_SPEED);
+   }
+
+   /**
+    * @return true if wrist has hit hard limit on front side
+    */
+   @Override
+   protected boolean isFinished() {
+      if (Robot.getTime() - startTime > TIMEOUT) {
+         return true;
+      }
+
+      return Elevator.getInstance().getMasterTalon().getSensorCollection().isRevLimitSwitchClosed();
+   }
+
+   protected void end() {
+      Elevator.getInstance().getMasterTalon().set(ControlMode.Disabled, 0);
+      Elevator.getInstance().getMasterTalon().setSelectedSensorPosition(0);
+      ((MoveElevatorManual) Elevator.getInstance().getDefaultCommand()).setLastPosition(0);
+      Robot.log("ZeroElevator over");
+   }
 }

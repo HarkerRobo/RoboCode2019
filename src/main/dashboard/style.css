@@ -1,0 +1,58 @@
+div {
+    vertical-align: top;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+img {
+    float:left;
+}
+
+.big {
+    font-size: 30pt;
+}
+
+.medium {
+    font-size: 20pt;
+}
+
+.hidden {
+    display: none;
+}
+
+#canvas {
+    border: 1px solid black;
+}
+
+#message img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+span {
+    font-family: "Comic Sans MS", cursive, sans-serif	
+}
+
+.mode-icon {
+    height: 15vh;
+}
+
+#pneumatics {
+    position: absolute;
+    right: 2vh;
+}
+
+.red {
+    color: red;
+}
+
+.green { 
+    color: green;
+}
+
+#ll-feed-canvas {
+    width: 30vw;
+    height: 22.5vw;
+    border: 1px solid black;
+}

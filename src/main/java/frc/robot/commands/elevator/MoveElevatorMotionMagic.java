@@ -1,40 +1,114 @@
 package frc.robot.commands.elevator;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap.Global;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
+import frc.robot.RobotMap;
+import frc.robot.RobotMap.RobotType;
 import frc.robot.subsystems.Elevator;
 
 /**
- * Move the elevator 
+ * Moves the elevator to a specified setpoint using motion magic.
  * 
  * @author Dawson Chen
+ * @author Angela Jia
  * @since 1/14/19
  */
 public class MoveElevatorMotionMagic extends Command {
 
-	private double setpoint;
+   private int setpoint;
 
-    public MoveElevatorMotionMagic(double setpoint) {
-        requires(Elevator.getInstance());
-        this.setpoint = setpoint;
-    }
+   /**
+    * Elevator motion magic constants
+    */
+   public static final double KF;
+   public static final double KP;
+   public static final double KI;
+   public static final double KD;
+   public static final int IZONE;
+   public static final int MOTION_MAGIC_ACCELERATION;
+   public static final int CRUISE_VELOCITY;
 
-    @Override
-    protected boolean isFinished() {
-        return false;
-    }
+   public static final boolean MOTION_MAGIC_SENSOR_PHASE;
+   public static final int ALLOWABLE_ERROR;
 
-    @Override
-    protected void initialize() {
-        Elevator.getInstance().getMaster().selectProfileSlot(Elevator.MOTIONMAGIC_SLOT_INDEX, Global.PID_PRIMARY);
-        Elevator.getInstance().getMaster().configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Global.PID_PRIMARY);
-    }
+   static {
+      if (RobotMap.ROBOT_TYPE == RobotType.COMP) {
+         KF = 0.31;
+         KP = 0.26;
+         KI = 0.0015;
+         KD = 5;
+         IZONE = 500;
+         MOTION_MAGIC_ACCELERATION = 10000;
+         CRUISE_VELOCITY = (int)(6000);
 
-    @Override
-    protected void execute() {
-        Elevator.getInstance().getMaster().set(ControlMode.MotionMagic, setpoint);  
-    }
+         MOTION_MAGIC_SENSOR_PHASE = false;
+         ALLOWABLE_ERROR = 100;
+
+      } else {
+         KF = 0.31;
+         KP = 0.26;
+         KI = 0.0015;
+         KD = 5;
+         IZONE = 500;
+         MOTION_MAGIC_ACCELERATION = 15000;
+         CRUISE_VELOCITY = 11000;
+
+         MOTION_MAGIC_SENSOR_PHASE = false;
+         ALLOWABLE_ERROR = 100;
+      }
+   }
+
+   private Supplier<Integer> setpointLambda;
+
+   public MoveElevatorMotionMagic(int setpoint) {
+      requires(Elevator.getInstance());
+      this.setpoint = setpoint;
+   }
+
+   public MoveElevatorMotionMagic(Supplier<Integer> setpointLambda) {
+      this(0);
+      this.setpointLambda = setpointLambda;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected boolean isFinished() {
+      return Math
+            .abs(setpoint - Elevator.getInstance().getMasterTalon().getSelectedSensorPosition()) <= ALLOWABLE_ERROR;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void initialize() {
+      if (setpointLambda != null) {
+         this.setpoint = setpointLambda.get();
+      }
+      System.out.println("EL MOTION MAGIC " + setpoint);
+      Robot.log("MoveElevatorMotionMagic initialized.");
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void execute() {
+      Elevator.getInstance().setElevator(ControlMode.MotionMagic, setpoint);
+      SmartDashboard.putNumber("el error", Elevator.getInstance().getMasterTalon().getClosedLoopError());
+
+   }
+
+   public void end() {
+      System.out.println("command ended");
+      Robot.log("MoveElevatorMotionMagic ended.");
+   }
 }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href = "style.css" type="text/css" rel = "stylesheet"/>
+    </head>
+    <body>
+        <section id="container">
+            <div id="llfeed">
+                <canvas id="ll-feed-canvas"></canvas>
+                <img src="http://10.10.72.11:5800" style="display: none;" id="ll-image" width="1440px" height="1080px"/>
+            </div>
+            <div id="message">
+                <div id="cargoship">
+                    <img src="cargo_ship.png" class="mode-icon"/>
+                    <span class="big">Cargo Ship Mode</span>
+                </div>
+                <div id="rocket">
+                    <img src="rocket.png" class="mode-icon" />
+                    <span class="big">Rocket Mode</span>
+                </div>
+                <br /><br /><br/>
+                <div id="hatch">
+                    <img src="hatchpanel.png" class="mode-icon" />
+                    <span class="big">Has Hatch Panel</span>
+                </div>
+                <div id="cargo">
+                    <img src="cargo.png" class="mode-icon" />
+                    <span class="big">Has Cargo</span>
+                </div>
+                <br /><br /><br/>
+                <div id="align">
+                    <img src="limelight.png" class="mode-icon" />
+                    <span class="big">Limelight Align Mode</span>
+                </div>
+                <div id="wrist">
+                    <img src="wrist.png"class="mode-icon" />
+                    <span class="big">Wrist Manual Mode</span>
+                </div>
+                <div id="climb">
+                    <img src="hab.png" class="mode-icon" />
+                    <span class="big">Climb Mode</span>
+                </div>
+            </div>
+            <div id="pneumatics">
+                <span id="robot-connected" class="medium red">Robot Disconnected</span>
+            </div>
+            </div><br />
+            <div id = "numberContainer">
+                <span> <b> Elevator Position: </b> </span> <span id = "elevatorPos"></span> <br />
+                <span> <b> Wrist Position: </b> </span> <span id = "wristPos"></span><br />
+                <span> <b> Kangaroo battery percentage: </b> <span id="kangaroo_battery"></span></span>
+            </div> 
+        </section>
+        
+        <script src="/lib_jquery-3.3.1.js"></script>
+        <script src="/networktables/camera.js"></script>
+        <script src="/networktables/networktables.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
