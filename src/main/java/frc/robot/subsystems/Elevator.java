@@ -89,6 +89,10 @@ public class Elevator extends Subsystem {
         Elevator.getInstance().getMaster().configMotionCruiseVelocity(Elevator.CRUISE_VELOCITY);
     }
 
+    /**
+     * Moves the elevator at a certain speed forward
+     * @param speed is the inputed speed at which the elevator is to move forward at
+     */
     public void moveElevatorVelocity(double speed) {
         elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     
@@ -98,14 +102,27 @@ public class Elevator extends Subsystem {
     
         elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
     }
+
+    /**
+     * Gets the master talon of the elevator.
+     * @return the master talon of the elevator
+     */
     public HSTalon getMaster() {
         return elTalon;
     }
 
+    /**
+     * Gets one of the victor sensors
+     * @return the first of the victor sensors
+     */
     public VictorSPX getVictorOne() {
         return victorOne;
     }
 
+    /**
+     * Gets second one of the victor sensors
+     * @return the second of the victor sensors
+     */
     public VictorSPX getVictorTwo() {
         return victorTwo;
     }
