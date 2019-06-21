@@ -26,115 +26,6 @@ import harkerrobolib.wrappers.HSTalon;
 public class Elevator extends Subsystem {
    private static Elevator el;
 
-<<<<<<< HEAD
-    private static Elevator el; 
-    private HSTalon elTalon;
-    private VictorSPX victorOne;
-    private VictorSPX victorTwo;
-    
-    private static final int PEAK_CURRENT_LIMIT = 0;
-    private static final int CONT_CURRENT_LIMIT = 0;
-    private static final int PEAK_CURRENT_TIME = 0;
-    private static final boolean INVERTED_MASTER = false;
-    private static final boolean INVERTED_VICT_ONE = false;
-    private static final boolean INVERTED_VICT_TWO = false;
-
-    public static final int REVERSE_SOFT_LIMIT= 0;
-    public static final int POSITION_PID = 0;
-    public static final double INTAKE_POSITION = 0.0;
-    public static final double LOW_SCORING_POSITION = 60.0;
-    public static final double MEDIUM_SCORING_POSITION = 120.0;
-    public static final double HIGH_SCORING_POSITION = 180.0;
-    public static final int MAX_SPEED = 0;
-    public static final int SLOW_DOWN_PERCENT = 0;
-    public static final int FFGRAV = 0;
-    public static final int MAX_OUTPUT_FACTOR = 1;
-    public static final double MIN_LESS_OUTPUT_FACTOR = 0;
-    public static final double MIN_MORE_OUTPUT_FACTOR = -0.5;
-
-    public static final int POSITION_SLOT_INDEX = 0;
-    public static final int MOTIONMAGIC_SLOT_INDEX = 1;
-
-    public static final int PEAK_ACCELERATION = 0;
-    public static final int ZERO_CURRENT_SPIKE = 0;
-    private static final int CRUISE_VELOCITY = 0;
-
-    private Elevator() {
-        elTalon = new HSTalon(CAN_IDs.EL_MASTER);
-        victorOne = new VictorSPX(CAN_IDs.EL_VICTOR_ONE);
-        victorTwo = new VictorSPX(CAN_IDs.EL_VICTOR_TWO);
-    }
-
-    @Override
-    protected void initDefaultCommand() {
-        setDefaultCommand(new MoveElevatorManual());
-    }
-
-    public static Elevator getInstance() {
-        if(el == null)
-            el = new Elevator();
-        return el;
-    }
-
-    public void talonInit() {
-        victorOne.follow(elTalon);
-        victorTwo.follow(elTalon);
-        victorOne.setNeutralMode(NeutralMode.Brake);
-        victorTwo.setNeutralMode(NeutralMode.Brake);
-        elTalon.setNeutralMode(NeutralMode.Brake);
-        elTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
-        elTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-        elTalon.configPeakCurrentDuration(PEAK_CURRENT_TIME);
-        elTalon.setInverted(INVERTED_MASTER);
-        victorOne.setInverted(INVERTED_VICT_ONE);
-        victorTwo.setInverted(INVERTED_VICT_TWO);
-
-        Elevator.getInstance().getMaster().config_kF(POSITION_SLOT_INDEX, MoveElevatorPosition.kF);
-        Elevator.getInstance().getMaster().config_kP(POSITION_SLOT_INDEX, MoveElevatorPosition.kP);
-        Elevator.getInstance().getMaster().config_kI(POSITION_SLOT_INDEX, MoveElevatorPosition.kI);
-        Elevator.getInstance().getMaster().config_kD(POSITION_SLOT_INDEX, MoveElevatorPosition.kD);
-        Elevator.getInstance().getMaster().configMotionAcceleration(Elevator.PEAK_ACCELERATION);
-        Elevator.getInstance().getMaster().configMotionCruiseVelocity(Elevator.CRUISE_VELOCITY);
-    }
-
-    /**
-     * Moves the elevator at a certain speed forward
-     * @param speed is the inputed speed at which the elevator is to move forward at
-     */
-    public void moveElevatorVelocity(double speed) {
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
-    
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
-    
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
-    
-        elTalon.set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
-    }
-
-    /**
-     * Gets the master talon of the elevator.
-     * @return the master talon of the elevator
-     */
-    public HSTalon getMaster() {
-        return elTalon;
-    }
-
-    /**
-     * Gets one of the victor sensors
-     * @return the first of the victor sensors
-     */
-    public VictorSPX getVictorOne() {
-        return victorOne;
-    }
-
-    /**
-     * Gets second one of the victor sensors
-     * @return the second of the victor sensors
-     */
-    public VictorSPX getVictorTwo() {
-        return victorTwo;
-    }
-=======
    private HSTalon masterTalon;
    private VictorSPX leftFrontVictor;
    private VictorSPX leftBackVictor;
@@ -319,7 +210,7 @@ public class Elevator extends Subsystem {
       }
 
       followMasters();
-      
+
       masterTalon.setNeutralMode(NeutralMode.Brake);
       leftFrontVictor.setNeutralMode(NeutralMode.Brake);
       leftBackVictor.setNeutralMode(NeutralMode.Brake);
@@ -334,7 +225,6 @@ public class Elevator extends Subsystem {
       masterTalon.setSensorPhase(SENSOR_PHASE);
       masterTalon.configNominalOutputForward(NOMINAL_OUTPUT);
       masterTalon.configNominalOutputReverse(NOMINAL_OUTPUT);
-
 
       masterTalon.configContinuousCurrentLimit(CONT_CURRENT_LIMIT);
       masterTalon.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
@@ -353,10 +243,10 @@ public class Elevator extends Subsystem {
       leftBackVictor.follow(masterTalon);
       followerTalon.follow(masterTalon);
    }
+
    public void moveElevatorPercentOutput(double speed) {
       getMasterTalon().set(ControlMode.PercentOutput, speed, DemandType.ArbitraryFeedForward, FFGRAV);
    }
-
 
    public void setUpMotionMagic() {
       Elevator.getInstance().getMasterTalon()
@@ -431,5 +321,4 @@ public class Elevator extends Subsystem {
    public int getCurrentPositionEncoder() {
       return getMasterTalon().getSelectedSensorPosition();
    }
->>>>>>> ac58b745ae8c3a643e884c68f815bec4f1529829
 }
